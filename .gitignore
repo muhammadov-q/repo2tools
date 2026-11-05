@@ -9,3 +9,7 @@ __pycache__/
 # large or rebuildable outputs (see README.md, "Rebuild from source")
 out/packaging/test_cases.jsonl
 out/handover/
+out/traces/reference-*.jsonl
+
+# clones and environments of repositories we generate tools from
+.cache/

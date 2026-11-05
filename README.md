@@ -8,14 +8,16 @@ Tool-Gym track of the "Agentic Reasoning, Tooling" project at the University of 
 
 | Part | State |
 | --- | --- |
-| Scan a repo's public functions (`scrape_repo.py`) | Works; needs a local folder and the package name |
+| Scan a repo's public functions (`scrape_repo.py`) | Works |
 | Tools over pypa/packaging: 21 small, 2 coarser | Work; written with Claude in a chat, not generated automatically |
 | MCP server for those tools | Works |
 | 242 exercises with known answers | Work |
 | Run a model with or without tools, and score it | Works |
 | Export the tools to ToolGym's catalog | Works; ToolGym's own checks accept all 21 tools |
-| `repo2tools <url>`: repo link in, generated tools out | Planned |
-| Trace collection, repetition analysis, context compression | Planned |
+| `repo2tools.py <url>`: repo link in, generated tools out | Built and tested with a scripted LLM; first run with a real model is pending |
+| Trace collection (`traces.py`, `run_model.py`, `collect_reference_traces.py`) | Works for known-good solutions; model runs pending |
+| Repetition analysis (`analyze_traces.py`) | Works on known-good solutions; model runs pending |
+| Context compression in a real run | Only simulated so far |
 
 ## Results so far
 
@@ -57,10 +59,70 @@ uv run python run_model.py out/packaging/exercises.jsonl --mode none --base-url 
 python3 -I compare_runs.py out/runs/qwen3-8b-tools.jsonl out/runs/qwen3-8b-none.jsonl
 ```
 
+## From a repo link to tools
+
+```sh
+uv run python repo2tools.py https://github.com/pypa/packaging --commit c1d2a9d \
+    --base-url http://127.0.0.1:18000/v1 --model qwen3-8b
+```
+
+It clones the repo at a recorded commit, finds the package (`src/` layout or top level), and scrapes its public API. Then, for up to `--max-tools` functions, an LLM writes a test and the code, one tool per library function. Each tool must pass these checks, with errors going back to the LLM for a few repair rounds (`--repair-rounds`):
+
+| Check | What it means |
+| --- | --- |
+| `static` | Read without running: one public function, type hints, a docstring, no dangerous imports |
+| `loads` | The file imports |
+| `fastmcp` | FastMCP accepts it, with the agreed parameters |
+| `runs` | It runs on the sample inputs; bad input gives `ValueError`, not a crash |
+| `differential` | Same result as a direct library call on the same input |
+
+The result goes to `toolsets/generated/<repo>-<model>/` (one file per tool, `server.py`, `run_server.sh`, `manifest.json`) and `out/generated/<repo>-<model>/` (`report.md`, `api.json`, and `llm_log.jsonl` with every LLM request). First version: pure-Python libraries, one tool per function.
+
+**Limits of the checks.** The same model writes the tool and the direct call it is compared with, in separate requests, so the two can share a misunderstanding of the library. The check also sees only what the sample inputs reach: a tool that drops a requirement's extras passes if no sample has extras. A real score needs exercises with known answers.
+
+**Untrusted code.** Repo code and generated code run only in their own environment under `.cache/envs/`:
+
+- Only repos you name are cloned. The repo is never built or installed: its dependencies come as wheels (`--no-build`), and the package is copied in, so no `setup.py` runs.
+- Generated code gets an empty environment, so no API keys.
+- On macOS it runs inside `sandbox-exec`: no network, no reading the home folder (SSH keys, the API key), writing only to one scratch folder. `tests/test_repo2tools.py` runs hostile code to check this.
+- Other systems have no such sandbox. The tool then warns, and the report says so. Only use repos you trust there.
+
+To score generated tools on exercises, use `run_model.py` with `run_server.sh` as the server command. `run_reference_calls.py` needs the hand-made tool names, so it doesn't work on generated tools.
+
+## Traces and repetition
+
+A trace records every request of a run, with its full messages and token counts. `traces.py` describes the format. There's one format for all sources, and anything with a list of tool calls and outputs can be added with `trace_from_calls()`.
+
+```sh
+# known-good solutions, no model (the file is 4.6 MB, so it isn't committed)
+uv run python collect_reference_traces.py out/packaging/exercises.jsonl -o out/traces/reference-function.jsonl -- uv run python toolsets/pypa_packaging/server.py
+
+# model runs save traces to out/traces/. --tool-choice first|always forces tool use
+uv run python run_model.py out/packaging/exercises.jsonl --mode tools --horizon long --tool-choice always \
+    --base-url http://127.0.0.1:18000/v1 --model qwen3-8b -- uv run python toolsets/pypa_packaging/server.py
+
+# what repeats, and how many tokens each compression idea would save
+uv run --group analysis python analyze_traces.py out/traces/reference-function.jsonl out/traces/*.gz -o out/traces/analysis
+```
+
+The analysis counts tokens with the model's own tokenizer and chat template. The parts of a prompt add up to exactly the rendered prompt. Savings are simulated on recorded runs, and their effect on accuracy is not measured.
+
+## Tests
+
+```sh
+uv run --group dev --group analysis pytest
+```
+
+No GPU or API key needed. The LLM and the endpoint are scripted.
+
 ## What's here
 
 | Path | What it does |
 | --- | --- |
+| `repo2tools.py` | Repo link to checked tools; see above. |
+| `tool_worker.py` | Checks one generated tool. It runs inside the tool set's environment and sandbox. |
+| `traces.py` | The trace format. |
+| `collect_reference_traces.py`, `analyze_traces.py` | Known-good solutions as traces; what repeats and what compression would save. |
 | `scrape_repo.py` | Static `ast` scan of a package's public API: signatures, types, defaults, docstrings, source location. Never imports the package. |
 | `toolsets/pypa_packaging/tools.py` | 21 tools over pypa/packaging (versions, version constraints, requirements, markers, names, wheel files, tags). `GYM_TYPES` holds their ToolGym types. |
 | `toolsets/pypa_packaging/coarse_tools.py` | The same library cut coarser: `check_requirement` (one requirement line) and `check_requirements` (a whole list). |

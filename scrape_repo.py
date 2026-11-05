@@ -175,6 +175,24 @@ def scrape_package(repo: Path, package: str) -> tuple[list[Callable], list[str]]
     return callables, [n for n in all_names if n not in found]
 
 
+def constructors(repo: Path, callables: list[Callable]) -> dict[str, dict]:
+    """How to build each class that has exported methods: its __init__ parameters, if it has one."""
+    found: dict[str, dict] = {}
+    for c in callables:
+        if "." not in c.qualname or c.qualname.split(".")[0] in found:
+            continue
+        name = c.qualname.split(".")[0]
+        tree = ast.parse((repo / c.file).read_text(encoding="utf-8"))
+        node = next((n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == name), None)
+        init = functions_in(node.body).get("__init__") if node else None
+        found[name] = {
+            "module": c.module,
+            "params": [asdict(p) for p in collect_params(init[0].args, drop_first=True)] if init else None,
+            "summary": (ast.get_docstring(node) or "").split("\n\n")[0].replace("\n", " ") if node else "",
+        }
+    return found
+
+
 def git_commit(repo: Path) -> str | None:
     result = subprocess.run(["git", "-C", str(repo), "rev-parse", "--short", "HEAD"],
                             capture_output=True, text=True)
@@ -196,6 +214,7 @@ def main() -> None:
         "n_callables": len(callables),
         "other_exports": other_exports,
         "callables": [asdict(c) for c in callables],
+        "classes": constructors(args.repo, callables),
     }
     if args.output:
         args.output.write_text(json.dumps(result, indent=2), encoding="utf-8")

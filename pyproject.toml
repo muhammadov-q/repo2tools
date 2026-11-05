@@ -11,5 +11,14 @@ dependencies = [
     "packaging @ git+https://github.com/pypa/packaging@c1d2a9d8f5ca7cc11b7d2e902ed5ee3e255e8560",
 ]
 
+[dependency-groups]
+dev = ["pytest>=8"]
+# counting tokens with the model's own tokenizer and chat template; no torch needed
+analysis = ["transformers>=4.51", "jinja2>=3.1"]
+
 [tool.uv]
 package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
