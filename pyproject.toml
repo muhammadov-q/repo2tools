@@ -1,0 +1,15 @@
+[project]
+name = "repo2tools"
+version = "0.1.0"
+description = "Turn a Python repository into tools an AI model can call, and measure how well models use them"
+requires-python = ">=3.12"
+dependencies = [
+    # same major version as ToolGym's MCP client (1.26); 2.x renamed FastMCP
+    "mcp>=1.26,<2",
+    "openai>=1.40",
+    # the exact commit the 21 tools and the exercises were built from
+    "packaging @ git+https://github.com/pypa/packaging@c1d2a9d8f5ca7cc11b7d2e902ed5ee3e255e8560",
+]
+
+[tool.uv]
+package = false

@@ -1,0 +1,17 @@
+qwen3-8b, mode=none
+horizon  kind                       passed
+long     requirements_check         0/20  
+short    marker_evaluate            6/14  
+short    name_canonicalize          4/10  
+short    specifier_contains        11/20  
+short    specifier_filter          12/20  
+short    specifier_satisfiable     12/20  
+short    specifier_subset          16/20  
+short    version_base               8/20  
+short    version_canonicalize       3/10  
+short    version_compare           14/20  
+short    version_is_prerelease     20/20  
+short    version_normalize          9/20  
+short    version_valid             12/20  
+short    wheel_tags                 6/8   
+total 133/242 (55%) -> out/runs/qwen3-8b-none.jsonl

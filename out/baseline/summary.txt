@@ -1,0 +1,41 @@
+servers=13 tools=49
+chain lines=629 kinds={'direct': 225, 'cast': 173, 'extraction': 231} cross-server lines by kind={'cast': 108, 'direct': 85, 'extraction': 224}
+unique tool->tool edges=299 same-server=120 cross-server=179
+
+no chain in or out (16): ceydasimsekk_book_mcp/search_books_tool, hashicorp_terraform_mcp_server/get_latest_module_version, hashicorp_terraform_mcp_server/get_latest_provider_version, hashicorp_terraform_mcp_server/get_module_details, hashicorp_terraform_mcp_server/get_policy_details, hashicorp_terraform_mcp_server/get_provider_capabilities, hashicorp_terraform_mcp_server/get_provider_details, hashicorp_terraform_mcp_server/search_modules, hashicorp_terraform_mcp_server/search_policies, hashicorp_terraform_mcp_server/search_providers, hcatakli_dictionary_mcp/get_definitions, yokingma_time_mcp/convert_time, yokingma_time_mcp/days_in_month, yokingma_time_mcp/get_timestamp, yokingma_time_mcp/get_week_year, yokingma_time_mcp/relative_time
+only start a chain (15): alan5543_calculator_mcp/cos, alan5543_calculator_mcp/factorial, alan5543_calculator_mcp/is_prime, alan5543_calculator_mcp/power, alan5543_calculator_mcp/sin, alan5543_calculator_mcp/tan, biocontext_pubchem_mcp/get_compound_properties, daheepk_arxiv_paper_mcp/scrape_recent_category_papers, forceconstant_lyrical_mcp/count_syllables, forceconstant_lyrical_mcp/find_rhymes, harunguclu_bible_mcp/get_bible_verse, harunguclu_bible_mcp/list_bible_books, harunguclu_bible_mcp/list_bible_chapters, harunguclu_bible_mcp/list_bible_translations, myrve_mcp_fruit/get_fruit_info
+only end a chain (1): daheepk_arxiv_paper_mcp/get_paper_info
+
+cross-server links (server -> server: tool pairs):
+  alan5543_calculator_mcp -> mach123089_basic_float_math_mcp: 64
+  mach123089_basic_float_math_mcp -> alan5543_calculator_mcp: 20
+  alan5543_calculator_mcp -> esmakymkci_yeni_detect_lang_mcp: 16
+  alan5543_calculator_mcp -> ilaydabayrak_simple_mcp: 16
+  biocontext_pubchem_mcp -> alan5543_calculator_mcp: 9
+  forceconstant_lyrical_mcp -> alan5543_calculator_mcp: 6
+  harunguclu_bible_mcp -> alan5543_calculator_mcp: 6
+  mach123089_basic_float_math_mcp -> esmakymkci_yeni_detect_lang_mcp: 4
+  mach123089_basic_float_math_mcp -> ilaydabayrak_simple_mcp: 4
+  myrve_mcp_fruit -> mach123089_basic_float_math_mcp: 4
+  biocontext_pubchem_mcp -> mach123089_basic_float_math_mcp: 4
+  esmakymkci_yeni_detect_lang_mcp -> mach123089_basic_float_math_mcp: 4
+  esmakymkci_yeni_detect_lang_mcp -> alan5543_calculator_mcp: 3
+  myrve_mcp_fruit -> alan5543_calculator_mcp: 3
+  harunguclu_bible_mcp -> esmakymkci_yeni_detect_lang_mcp: 3
+  harunguclu_bible_mcp -> ilaydabayrak_simple_mcp: 3
+  biocontext_pubchem_mcp -> ilaydabayrak_simple_mcp: 1
+  daheepk_arxiv_paper_mcp -> ilaydabayrak_simple_mcp: 1
+  esmakymkci_yeni_detect_lang_mcp -> ilaydabayrak_simple_mcp: 1
+  forceconstant_lyrical_mcp -> esmakymkci_yeni_detect_lang_mcp: 1
+  myrve_mcp_fruit -> ilaydabayrak_simple_mcp: 1
+  daheepk_arxiv_paper_mcp -> esmakymkci_yeni_detect_lang_mcp: 1
+  myrve_mcp_fruit -> esmakymkci_yeni_detect_lang_mcp: 1
+  forceconstant_lyrical_mcp -> ilaydabayrak_simple_mcp: 1
+  ilaydabayrak_simple_mcp -> esmakymkci_yeni_detect_lang_mcp: 1
+  biocontext_pubchem_mcp -> esmakymkci_yeni_detect_lang_mcp: 1
+
+groups of tools that can reach each other (cycles): [11, 5]
+  size 11: servers ['alan5543_calculator_mcp', 'esmakymkci_yeni_detect_lang_mcp', 'ilaydabayrak_simple_mcp', 'mach123089_basic_float_math_mcp']
+  size 5: servers ['alan5543_calculator_mcp']
+upper bound on distinct tools in one chain: 18 (starting from group of size 1)
+longest chain where every step uses a different server: 5 tools

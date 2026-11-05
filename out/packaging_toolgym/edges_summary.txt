@@ -1,0 +1,14 @@
+ToolGym links between 21 tools: 144
+  noise: boolean into a flag   35
+  noise: cast                  27
+  useful: direct               34
+  useful: extraction           48
+tools with no link at all: none
+tools with no useful link: ['is_valid_specifier', 'is_valid_version']
+
+data-flow links used by the exercises' reference solutions: 4 distinct, 236 uses
+  parse_requirement -> filter_versions (specifier): 79 uses, in ToolGym [extraction]
+  filter_versions -> sort_versions (versions): 79 uses, in ToolGym [direct]
+  parse_requirement -> evaluate_marker (marker): 49 uses, in ToolGym [extraction]
+  parse_requirement -> canonicalize_name (name): 29 uses, in ToolGym [extraction]
+covered: 4/4 distinct links

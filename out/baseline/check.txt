@@ -1,0 +1,127 @@
+Servers: 13
+Tools:   49 (49 ok, 0 failed)
+
+  [OK] alan5543_calculator_mcp: 17 tools
+    add(integer, integer) -> integer
+    sub(integer, integer) -> integer
+    mul(integer, integer) -> integer
+    div(integer, NonZeroInteger) -> number
+    power(PowerBase, PowerExponent) -> number
+    square_root(NonNegativeNumber) -> NonNegativeNumber
+    factorial(FactorialN) -> integer
+    log(PositiveNumber, PositiveNumber) -> number
+    sin(AngleRadians) -> number
+    cos(AngleRadians) -> number
+    tan(AngleRadians) -> number
+    degrees_to_radians(number) -> number
+    radians_to_degrees(number) -> number
+    gcd(integer, integer) -> integer
+    lcm(integer, integer) -> integer
+    is_prime(PrimeCandidate) -> boolean
+    quadratic_roots(number, number, number) -> QuadraticRoots
+  [OK] biocontext_pubchem_mcp: 1 tools
+    get_compound_properties(PubChemCID) -> CompoundProperties
+  [OK] ceydasimsekk_book_mcp: 1 tools
+    search_books_tool(Word) -> string
+  [OK] daheepk_arxiv_paper_mcp: 2 tools
+    scrape_recent_category_papers(ArxivCode, SearchResultCount) -> ArxivPaperList
+    get_paper_info(ArxivID) -> string
+  [OK] esmakymkci_yeni_detect_lang_mcp: 1 tools
+    detect(Text) -> DetectionResult
+  [OK] forceconstant_lyrical_mcp: 2 tools
+    count_syllables(Word) -> SyllableCounts
+    find_rhymes(Word) -> Rhymes
+  [OK] harunguclu_bible_mcp: 4 tools
+    get_bible_verse(BibleReference, TranslationID) -> BibleVerse
+    list_bible_translations() -> BibleTranslationList
+    list_bible_books(TranslationID) -> BibleBookList
+    list_bible_chapters(BookID, TranslationID) -> BibleChapterList
+  [OK] hashicorp_terraform_mcp_server: 9 tools
+    get_latest_module_version(TerraformModuleName, TerraformModuleProvider, TerraformModuleNamespace) -> string
+    get_latest_provider_version(TerraformProviderName, TerraformProviderNamespace) -> string
+    get_module_details(TerraformModuleID) -> string
+    get_policy_details(TerraformPolicyID) -> string
+    get_provider_capabilities(TerraformProviderName, TerraformProviderNamespace, TerraformProviderVersion) -> string
+    get_provider_details(TerraformProviderDocID) -> string
+    search_modules(TerraformPaginationOffset, TerraformSearchQuery) -> string
+    search_policies(TerraformPolicyName) -> string
+    search_providers(TerraformDocumentType, TerraformProviderName, TerraformProviderNamespace, TerraformProviderVersion, TerraformServiceSlug) -> string
+  [OK] hcatakli_dictionary_mcp: 1 tools
+    get_definitions(Word) -> string
+  [OK] ilaydabayrak_simple_mcp: 1 tools
+    reverse_text_tool(Text) -> Text
+  [OK] mach123089_basic_float_math_mcp: 4 tools
+    add_float(number, number) -> number
+    sub_float(number, number) -> number
+    mul_float(number, number) -> number
+    div_float(number, number) -> number
+  [OK] myrve_mcp_fruit: 1 tools
+    get_fruit_info(Fruit) -> FruitInfo
+  [OK] yokingma_time_mcp: 5 tools
+    relative_time(Timestamp) -> string
+    days_in_month(Date) -> string
+    get_timestamp(Timestamp) -> string
+    convert_time(Timezone, Timezone, Timestamp) -> string
+    get_week_year(Date) -> string
+
+Disabled servers: 4
+  _ahmetcvlk_nationality_mcp
+  _metehangzl_pokemcp
+  _mikechao_metmuseum_mcp
+  _sellisd_mcp_units
+
+Disabled tools: 2
+  daheepk_arxiv_paper_mcp/search_papers
+  yokingma_time_mcp/current_time
+
+Types: 50 distinct
+  number                    25 occurrences  in  13 tools  across  2 servers
+  integer                   17 occurrences  in   7 tools  across  1 server
+  string                    17 occurrences  in  17 tools  across  5 servers
+  Word                       4 occurrences  in   4 tools  across  3 servers
+  AngleRadians               3 occurrences  in   3 tools  across  1 server
+  TerraformProviderName      3 occurrences  in   3 tools  across  1 server
+  TerraformProviderNamespace   3 occurrences  in   3 tools  across  1 server
+  Text                       3 occurrences  in   2 tools  across  2 servers
+  Timestamp                  3 occurrences  in   3 tools  across  1 server
+  TranslationID              3 occurrences  in   3 tools  across  1 server
+  Date                       2 occurrences  in   2 tools  across  1 server
+  NonNegativeNumber          2 occurrences  in   1 tool   across  1 server
+  PositiveNumber             2 occurrences  in   1 tool   across  1 server
+  TerraformProviderVersion   2 occurrences  in   2 tools  across  1 server
+  Timezone                   2 occurrences  in   1 tool   across  1 server
+  ArxivCode                  1 occurrence   in   1 tool   across  1 server
+  ArxivID                    1 occurrence   in   1 tool   across  1 server
+  ArxivPaperList             1 occurrence   in   1 tool   across  1 server
+  BibleBookList              1 occurrence   in   1 tool   across  1 server
+  BibleChapterList           1 occurrence   in   1 tool   across  1 server
+  BibleReference             1 occurrence   in   1 tool   across  1 server
+  BibleTranslationList       1 occurrence   in   1 tool   across  1 server
+  BibleVerse                 1 occurrence   in   1 tool   across  1 server
+  BookID                     1 occurrence   in   1 tool   across  1 server
+  CompoundProperties         1 occurrence   in   1 tool   across  1 server
+  DetectionResult            1 occurrence   in   1 tool   across  1 server
+  FactorialN                 1 occurrence   in   1 tool   across  1 server
+  Fruit                      1 occurrence   in   1 tool   across  1 server
+  FruitInfo                  1 occurrence   in   1 tool   across  1 server
+  NonZeroInteger             1 occurrence   in   1 tool   across  1 server
+  PowerBase                  1 occurrence   in   1 tool   across  1 server
+  PowerExponent              1 occurrence   in   1 tool   across  1 server
+  PrimeCandidate             1 occurrence   in   1 tool   across  1 server
+  PubChemCID                 1 occurrence   in   1 tool   across  1 server
+  QuadraticRoots             1 occurrence   in   1 tool   across  1 server
+  Rhymes                     1 occurrence   in   1 tool   across  1 server
+  SearchResultCount          1 occurrence   in   1 tool   across  1 server
+  SyllableCounts             1 occurrence   in   1 tool   across  1 server
+  TerraformDocumentType      1 occurrence   in   1 tool   across  1 server
+  TerraformModuleID          1 occurrence   in   1 tool   across  1 server
+  TerraformModuleName        1 occurrence   in   1 tool   across  1 server
+  TerraformModuleNamespace   1 occurrence   in   1 tool   across  1 server
+  TerraformModuleProvider    1 occurrence   in   1 tool   across  1 server
+  TerraformPaginationOffset   1 occurrence   in   1 tool   across  1 server
+  TerraformPolicyID          1 occurrence   in   1 tool   across  1 server
+  TerraformPolicyName        1 occurrence   in   1 tool   across  1 server
+  TerraformProviderDocID     1 occurrence   in   1 tool   across  1 server
+  TerraformSearchQuery       1 occurrence   in   1 tool   across  1 server
+  TerraformServiceSlug       1 occurrence   in   1 tool   across  1 server
+  boolean                    1 occurrence   in   1 tool   across  1 server

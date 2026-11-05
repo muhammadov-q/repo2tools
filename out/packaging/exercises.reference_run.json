@@ -1,0 +1,94 @@
+{
+ "per_kind": {
+  "version_compare": {
+   "passed": 20
+  },
+  "version_normalize": {
+   "passed": 20
+  },
+  "version_base": {
+   "passed": 20
+  },
+  "version_is_prerelease": {
+   "passed": 20
+  },
+  "version_valid": {
+   "passed": 20
+  },
+  "specifier_contains": {
+   "passed": 20
+  },
+  "specifier_filter": {
+   "passed": 20
+  },
+  "specifier_satisfiable": {
+   "passed": 20
+  },
+  "specifier_subset": {
+   "passed": 20
+  },
+  "name_canonicalize": {
+   "passed": 10
+  },
+  "version_canonicalize": {
+   "passed": 10
+  },
+  "wheel_tags": {
+   "passed": 8
+  },
+  "marker_evaluate": {
+   "passed": 14
+  },
+  "requirements_check": {
+   "passed": 20
+  }
+ },
+ "per_tool": {
+  "compare_versions": {
+   "calls": 20
+  },
+  "normalize_version": {
+   "calls": 20
+  },
+  "base_version": {
+   "calls": 20
+  },
+  "version_info": {
+   "calls": 20
+  },
+  "is_valid_version": {
+   "calls": 20
+  },
+  "version_satisfies": {
+   "calls": 20
+  },
+  "filter_versions": {
+   "calls": 99
+  },
+  "is_satisfiable": {
+   "calls": 20
+  },
+  "specifier_is_subset": {
+   "calls": 20
+  },
+  "canonicalize_name": {
+   "calls": 39
+  },
+  "canonicalize_version": {
+   "calls": 10
+  },
+  "parse_wheel_filename": {
+   "calls": 8
+  },
+  "evaluate_marker": {
+   "calls": 63
+  },
+  "parse_requirement": {
+   "calls": 106
+  },
+  "sort_versions": {
+   "calls": 79
+  }
+ },
+ "failures": []
+}

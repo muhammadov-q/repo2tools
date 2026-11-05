@@ -1,0 +1,17 @@
+qwen3-8b, mode=tools
+horizon  kind                       passed
+long     requirements_check         0/20  
+short    marker_evaluate           13/14  
+short    name_canonicalize         10/10  
+short    specifier_contains        16/20  
+short    specifier_filter          19/20  
+short    specifier_satisfiable     19/20  
+short    specifier_subset          16/20  
+short    version_base              20/20  
+short    version_canonicalize      10/10  
+short    version_compare           19/20  
+short    version_is_prerelease     20/20  
+short    version_normalize         20/20  
+short    version_valid             20/20  
+short    wheel_tags                 7/8   
+total 209/242 (86%) -> out/runs/qwen3-8b-tools.jsonl
