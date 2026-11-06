@@ -3,6 +3,7 @@
   "traces": 20,
   "requests": 362,
   "calls": 342,
+  "exact_repeated_calls": 7,
   "completion_tokens": 24459,
   "ideas": {
    "Nothing changed": {
@@ -187,6 +188,7 @@
   "traces": 222,
   "requests": 444,
   "calls": 222,
+  "exact_repeated_calls": 0,
   "completion_tokens": 12584,
   "ideas": {
    "Nothing changed": {
@@ -251,6 +253,636 @@
   "server": {
    "requests": 0,
    "tokens": 0,
+   "gap": 0
+  }
+ },
+ "qwen3-8b, tools: generated-coder, tool choice: auto, short tasks": {
+  "traces": 222,
+  "requests": 317,
+  "calls": 123,
+  "exact_repeated_calls": 0,
+  "completion_tokens": 7787,
+  "ideas": {
+   "Nothing changed": {
+    "all_requests": 1285353,
+    "final_context": 901994
+   },
+   "Tool list: only the 5 tools a perfect search finds": {
+    "all_requests": 364527,
+    "final_context": 256401
+   },
+   "Tool list: only the tools this run used (best case)": {
+    "all_requests": 99704,
+    "final_context": 59670
+   },
+   "Old outputs: keep the newest 5 in full": {
+    "all_requests": 1285353,
+    "final_context": 901994
+   },
+   "Old outputs: keep the newest 3 in full": {
+    "all_requests": 1285353,
+    "final_context": 901994
+   },
+   "Old outputs: keep the newest 1 in full": {
+    "all_requests": 1285255,
+    "final_context": 901896
+   },
+   "Old outputs: replace exact duplicates": {
+    "all_requests": 1285353,
+    "final_context": 901994
+   },
+   "Arguments: refer to values from earlier calls": {
+    "all_requests": 1285316,
+    "final_context": 901957
+   },
+   "Together: 5 tools, newest 5 outputs, references": {
+    "all_requests": 364490,
+    "final_context": 256364
+   },
+   "Prefix cache on the server (same context, less reading)": {
+    "all_requests": 901994,
+    "final_context": 901994
+   }
+  },
+  "parts": {
+   "tool list": 1241055,
+   "end of prompt (start of the model's reply)": 2219,
+   "system prompt and task": 34881,
+   "the model's earlier calls": 6150,
+   "newest tool output": 732,
+   "older tool outputs": 316
+  },
+  "first_time": 901994,
+  "resent": 383359,
+  "arguments": {
+   "argument tokens": 1997,
+   "copied from earlier calls or outputs": 165,
+   "copied from the task": 860
+  },
+  "repeated_argument_names": [
+   [
+    "specifier_set",
+    154
+   ],
+   [
+    "version",
+    11
+   ]
+  ],
+  "sequences": [],
+  "used_tools": 92,
+  "offered_tools": 4884,
+  "server": {
+   "requests": 317,
+   "tokens": 1285353,
+   "gap": 0
+  }
+ },
+ "qwen3-8b, tools: generated-coder-60, tool choice: auto, short tasks": {
+  "traces": 222,
+  "requests": 397,
+  "calls": 212,
+  "exact_repeated_calls": 3,
+  "completion_tokens": 11311,
+  "ideas": {
+   "Nothing changed": {
+    "all_requests": 2009249,
+    "final_context": 1127866
+   },
+   "Tool list: only the 5 tools a perfect search finds": {
+    "all_requests": 384891,
+    "final_context": 218681
+   },
+   "Tool list: only the tools this run used (best case)": {
+    "all_requests": 153086,
+    "final_context": 82344
+   },
+   "Old outputs: keep the newest 5 in full": {
+    "all_requests": 2009228,
+    "final_context": 1127845
+   },
+   "Old outputs: keep the newest 3 in full": {
+    "all_requests": 2009158,
+    "final_context": 1127796
+   },
+   "Old outputs: keep the newest 1 in full": {
+    "all_requests": 2008848,
+    "final_context": 1127619
+   },
+   "Old outputs: replace exact duplicates": {
+    "all_requests": 2009149,
+    "final_context": 1127785
+   },
+   "Arguments: refer to values from earlier calls": {
+    "all_requests": 2009152,
+    "final_context": 1127783
+   },
+   "Together: 5 tools, newest 5 outputs, references": {
+    "all_requests": 384773,
+    "final_context": 218577
+   },
+   "Prefix cache on the server (same context, less reading)": {
+    "all_requests": 1127866,
+    "final_context": 1127866
+   }
+  },
+  "parts": {
+   "tool list": 1948476,
+   "end of prompt (start of the model's reply)": 2779,
+   "system prompt and task": 44151,
+   "the model's earlier calls": 11084,
+   "newest tool output": 1924,
+   "older tool outputs": 835
+  },
+  "first_time": 1127866,
+  "resent": 881383,
+  "arguments": {
+   "argument tokens": 3188,
+   "copied from earlier calls or outputs": 299,
+   "copied from the task": 1467
+  },
+  "repeated_argument_names": [
+   [
+    "specifier_set",
+    232
+   ],
+   [
+    "version",
+    67
+   ]
+  ],
+  "sequences": [],
+  "used_tools": 165,
+  "offered_tools": 6438,
+  "server": {
+   "requests": 397,
+   "tokens": 2009249,
+   "gap": 0
+  }
+ },
+ "qwen3-8b, tools: traces, tool choice: always, long tasks": {
+  "traces": 20,
+  "requests": 502,
+  "calls": 502,
+  "exact_repeated_calls": 250,
+  "completion_tokens": 27921,
+  "ideas": {
+   "Nothing changed": {
+    "all_requests": 2277489,
+    "final_context": 102287
+   },
+   "Tool list: only the 5 tools a perfect search finds": {
+    "all_requests": 1266486,
+    "final_context": 61695
+   },
+   "Tool list: only the tools this run used (best case)": {
+    "all_requests": 1155671,
+    "final_context": 57338
+   },
+   "Old outputs: keep the newest 5 in full": {
+    "all_requests": 2212509,
+    "final_context": 99081
+   },
+   "Old outputs: keep the newest 3 in full": {
+    "all_requests": 2205613,
+    "final_context": 98752
+   },
+   "Old outputs: keep the newest 1 in full": {
+    "all_requests": 2198152,
+    "final_context": 98458
+   },
+   "Old outputs: replace exact duplicates": {
+    "all_requests": 2260551,
+    "final_context": 101144
+   },
+   "Arguments: refer to values from earlier calls": {
+    "all_requests": 2166290,
+    "final_context": 95764
+   },
+   "Together: 5 tools, newest 5 outputs, references": {
+    "all_requests": 1090307,
+    "final_context": 51966
+   },
+   "Prefix cache on the server (same context, less reading)": {
+    "all_requests": 102287,
+    "final_context": 102287
+   }
+  },
+  "parts": {
+   "tool list": 1371464,
+   "end of prompt (start of the model's reply)": 3514,
+   "system prompt and task": 238257,
+   "the model's earlier calls": 519206,
+   "newest tool output": 7582,
+   "older tool outputs": 137466
+  },
+  "first_time": 102287,
+  "resent": 2175202,
+  "arguments": {
+   "argument tokens": 16239,
+   "copied from earlier calls or outputs": 10603,
+   "copied from the task": 1150
+  },
+  "repeated_argument_names": [
+   [
+    "environment",
+    4509
+   ],
+   [
+    "versions",
+    3174
+   ],
+   [
+    "marker",
+    2067
+   ],
+   [
+    "specifier",
+    732
+   ],
+   [
+    "version",
+    121
+   ]
+  ],
+  "sequences": [
+   {
+    "sequence": [
+     "sort_versions",
+     "sort_versions",
+     "sort_versions",
+     "sort_versions"
+    ],
+    "times": 12,
+    "traces": 2,
+    "calls_saved": 36,
+    "tokens_after": 2069542,
+    "final_after": 99663
+   },
+   {
+    "sequence": [
+     "sort_versions",
+     "sort_versions",
+     "sort_versions"
+    ],
+    "times": 16,
+    "traces": 2,
+    "calls_saved": 32,
+    "tokens_after": 2092361,
+    "final_after": 100121
+   },
+   {
+    "sequence": [
+     "sort_versions",
+     "sort_versions"
+    ],
+    "times": 27,
+    "traces": 2,
+    "calls_saved": 27,
+    "tokens_after": 2122374,
+    "final_after": 100809
+   },
+   {
+    "sequence": [
+     "parse_requirement",
+     "evaluate_marker"
+    ],
+    "times": 9,
+    "traces": 4,
+    "calls_saved": 9,
+    "tokens_after": 2245523,
+    "final_after": 102135
+   },
+   {
+    "sequence": [
+     "parse_requirement",
+     "evaluate_marker",
+     "version_satisfies",
+     "version_satisfies"
+    ],
+    "times": 2,
+    "traces": 2,
+    "calls_saved": 6,
+    "tokens_after": 2255752,
+    "final_after": 102181
+   },
+   {
+    "sequence": [
+     "filter_versions",
+     "submit_answer"
+    ],
+    "times": 5,
+    "traces": 5,
+    "calls_saved": 5,
+    "tokens_after": 2262911,
+    "final_after": 102382
+   },
+   {
+    "sequence": [
+     "filter_versions",
+     "sort_versions"
+    ],
+    "times": 4,
+    "traces": 4,
+    "calls_saved": 4,
+    "tokens_after": 2270740,
+    "final_after": 102544
+   },
+   {
+    "sequence": [
+     "filter_versions",
+     "version_satisfies"
+    ],
+    "times": 4,
+    "traces": 1,
+    "calls_saved": 4,
+    "tokens_after": 2260554,
+    "final_after": 102186
+   }
+  ],
+  "used_tools": 58,
+  "offered_tools": 440,
+  "server": {
+   "requests": 502,
+   "tokens": 2277489,
+   "gap": 0
+  }
+ },
+ "qwen3-8b, tools: traces, tool choice: auto, long tasks": {
+  "traces": 20,
+  "requests": 31,
+  "calls": 49,
+  "exact_repeated_calls": 4,
+  "completion_tokens": 4557,
+  "ideas": {
+   "Nothing changed": {
+    "all_requests": 102797,
+    "final_context": 66487
+   },
+   "Tool list: only the 5 tools a perfect search finds": {
+    "all_requests": 41059,
+    "final_context": 26085
+   },
+   "Tool list: only the tools this run used (best case)": {
+    "all_requests": 28272,
+    "final_context": 15851
+   },
+   "Old outputs: keep the newest 5 in full": {
+    "all_requests": 102267,
+    "final_context": 66250
+   },
+   "Old outputs: keep the newest 3 in full": {
+    "all_requests": 102087,
+    "final_context": 66195
+   },
+   "Old outputs: keep the newest 1 in full": {
+    "all_requests": 101972,
+    "final_context": 66153
+   },
+   "Old outputs: replace exact duplicates": {
+    "all_requests": 102797,
+    "final_context": 66487
+   },
+   "Arguments: refer to values from earlier calls": {
+    "all_requests": 102593,
+    "final_context": 66371
+   },
+   "Together: 5 tools, newest 5 outputs, references": {
+    "all_requests": 40325,
+    "final_context": 25732
+   },
+   "Prefix cache on the server (same context, less reading)": {
+    "all_requests": 66487,
+    "final_context": 66487
+   }
+  },
+  "parts": {
+   "tool list": 82429,
+   "end of prompt (start of the model's reply)": 217,
+   "system prompt and task": 13931,
+   "the model's earlier calls": 3756,
+   "newest tool output": 1075,
+   "older tool outputs": 1389
+  },
+  "first_time": 66487,
+  "resent": 36310,
+  "arguments": {
+   "argument tokens": 1134,
+   "copied from earlier calls or outputs": 300,
+   "copied from the task": 273
+  },
+  "repeated_argument_names": [
+   [
+    "environment",
+    120
+   ],
+   [
+    "specifier",
+    101
+   ],
+   [
+    "marker",
+    69
+   ],
+   [
+    "version",
+    10
+   ]
+  ],
+  "sequences": [
+   {
+    "sequence": [
+     "parse_requirement",
+     "evaluate_marker"
+    ],
+    "times": 2,
+    "traces": 1,
+    "calls_saved": 2,
+    "tokens_after": 102921,
+    "final_after": 66484
+   }
+  ],
+  "used_tools": 13,
+  "offered_tools": 420,
+  "server": {
+   "requests": 31,
+   "tokens": 102797,
+   "gap": 0
+  }
+ },
+ "qwen3-8b, tools: traces, tool choice: auto, short tasks": {
+  "traces": 222,
+  "requests": 448,
+  "calls": 226,
+  "exact_repeated_calls": 0,
+  "completion_tokens": 8960,
+  "ideas": {
+   "Nothing changed": {
+    "all_requests": 1257255,
+    "final_context": 629620
+   },
+   "Tool list: only the 5 tools a perfect search finds": {
+    "all_requests": 346343,
+    "final_context": 178266
+   },
+   "Tool list: only the tools this run used (best case)": {
+    "all_requests": 160241,
+    "final_context": 85813
+   },
+   "Old outputs: keep the newest 5 in full": {
+    "all_requests": 1257255,
+    "final_context": 629620
+   },
+   "Old outputs: keep the newest 3 in full": {
+    "all_requests": 1257255,
+    "final_context": 629620
+   },
+   "Old outputs: keep the newest 1 in full": {
+    "all_requests": 1257208,
+    "final_context": 629573
+   },
+   "Old outputs: replace exact duplicates": {
+    "all_requests": 1257255,
+    "final_context": 629620
+   },
+   "Arguments: refer to values from earlier calls": {
+    "all_requests": 1257248,
+    "final_context": 629613
+   },
+   "Together: 5 tools, newest 5 outputs, references": {
+    "all_requests": 346336,
+    "final_context": 178259
+   },
+   "Prefix cache on the server (same context, less reading)": {
+    "all_requests": 629620,
+    "final_context": 629620
+   }
+  },
+  "parts": {
+   "tool list": 1191232,
+   "end of prompt (start of the model's reply)": 3136,
+   "system prompt and task": 49351,
+   "the model's earlier calls": 9814,
+   "newest tool output": 3639,
+   "older tool outputs": 83
+  },
+  "first_time": 629620,
+  "resent": 627635,
+  "arguments": {
+   "argument tokens": 3152,
+   "copied from earlier calls or outputs": 23,
+   "copied from the task": 2168
+  },
+  "repeated_argument_names": [
+   [
+    "specifier",
+    23
+   ]
+  ],
+  "sequences": [],
+  "used_tools": 226,
+  "offered_tools": 4662,
+  "server": {
+   "requests": 448,
+   "tokens": 1257255,
+   "gap": 0
+  }
+ },
+ "qwen3-8b, tools: traces, tool choice: first, long tasks": {
+  "traces": 20,
+  "requests": 126,
+  "calls": 106,
+  "exact_repeated_calls": 5,
+  "completion_tokens": 6248,
+  "ideas": {
+   "Nothing changed": {
+    "all_requests": 425668,
+    "final_context": 71937
+   },
+   "Tool list: only the 5 tools a perfect search finds": {
+    "all_requests": 174612,
+    "final_context": 32097
+   },
+   "Tool list: only the tools this run used (best case)": {
+    "all_requests": 132079,
+    "final_context": 25100
+   },
+   "Old outputs: keep the newest 5 in full": {
+    "all_requests": 424710,
+    "final_context": 71376
+   },
+   "Old outputs: keep the newest 3 in full": {
+    "all_requests": 422604,
+    "final_context": 70718
+   },
+   "Old outputs: keep the newest 1 in full": {
+    "all_requests": 419427,
+    "final_context": 70288
+   },
+   "Old outputs: replace exact duplicates": {
+    "all_requests": 425668,
+    "final_context": 71937
+   },
+   "Arguments: refer to values from earlier calls": {
+    "all_requests": 424698,
+    "final_context": 71468
+   },
+   "Together: 5 tools, newest 5 outputs, references": {
+    "all_requests": 172684,
+    "final_context": 31067
+   },
+   "Prefix cache on the server (same context, less reading)": {
+    "all_requests": 71937,
+    "final_context": 71937
+   }
+  },
+  "parts": {
+   "tool list": 335034,
+   "end of prompt (start of the model's reply)": 882,
+   "system prompt and task": 57660,
+   "the model's earlier calls": 19841,
+   "newest tool output": 3559,
+   "older tool outputs": 8692
+  },
+  "first_time": 71937,
+  "resent": 353731,
+  "arguments": {
+   "argument tokens": 2828,
+   "copied from earlier calls or outputs": 813,
+   "copied from the task": 1057
+  },
+  "repeated_argument_names": [
+   [
+    "environment",
+    520
+   ],
+   [
+    "marker",
+    252
+   ],
+   [
+    "versions",
+    41
+   ]
+  ],
+  "sequences": [
+   {
+    "sequence": [
+     "parse_requirement",
+     "evaluate_marker"
+    ],
+    "times": 3,
+    "traces": 2,
+    "calls_saved": 3,
+    "tokens_after": 416149,
+    "final_after": 71954
+   }
+  ],
+  "used_tools": 31,
+  "offered_tools": 420,
+  "server": {
+   "requests": 126,
+   "tokens": 425668,
    "gap": 0
   }
  }

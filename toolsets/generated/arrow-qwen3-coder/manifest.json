@@ -1,0 +1,578 @@
+{
+ "url": "https://github.com/arrow-py/arrow",
+ "commit": "2224255c4acc594d734cef0bbc83360452a67983",
+ "package": "arrow",
+ "model": "qwen3-coder",
+ "thinking": false,
+ "set": "arrow-qwen3-coder",
+ "toolset": "toolsets/generated/arrow-qwen3-coder",
+ "sandbox": "macOS sandbox-exec: no network, home folder unreadable, one scratch folder writable",
+ "dependencies": [
+  "python-dateutil>=2.7.0",
+  "backports.zoneinfo==0.2.1;python_version<'3.9'",
+  "tzdata;python_version>='3.9'"
+ ],
+ "dropped_proposals": 0,
+ "tools": [
+  {
+   "name": "parse_date",
+   "wraps": "arrow.api.get",
+   "description": "Parse a date string into an Arrow object using flexible input formats. date_string: A date string to parse, e.g. '2023-01-01' -> '2023-01-01T00:00:00+00:00'.",
+   "verified": true,
+   "direct_call": "arrow.api.get(date_string)",
+   "samples": [
+    {
+     "date_string": "2023-10-15"
+    },
+    {
+     "date_string": "October 15, 2023"
+    },
+    {
+     "date_string": "2023-10-15T14:30:00Z"
+    },
+    {
+     "date_string": "15/10/2023"
+    },
+    {
+     "date_string": "invalid-date"
+    }
+   ]
+  },
+  {
+   "name": "get_utc_now",
+   "wraps": "arrow.api.utcnow",
+   "description": "Get the current time in UTC as an Arrow object. -> The current UTC time as an ISO 8601 formatted string.",
+   "verified": false,
+   "direct_call": "arrow.api.utcnow()",
+   "samples": [
+    {},
+    {}
+   ]
+  },
+  {
+   "name": "get_local_now",
+   "wraps": "arrow.api.now",
+   "description": "Get the current time in the local timezone as an Arrow object. tz: The timezone to get the current time in. If not provided, uses the local timezone. Example: get_local_now() -> '2023-01-01T12:00:00+00:00'.",
+   "verified": false,
+   "direct_call": "arrow.api.now(tz)",
+   "samples": [
+    {
+     "tz": null
+    },
+    {
+     "tz": "America/New_York"
+    },
+    {
+     "tz": "Europe/London"
+    },
+    {
+     "tz": "Asia/Tokyo"
+    },
+    {
+     "tz": "UTC"
+    },
+    {
+     "tz": "Invalid/Timezone"
+    }
+   ]
+  },
+  {
+   "name": "create_arrow_now",
+   "wraps": "arrow.arrow.Arrow.now",
+   "description": "Constructs an :class:`Arrow <arrow.arrow.Arrow>` object, representing \"now\" in the given timezone.\n    \n    :param tzinfo: (optional) a timezone identifier (e.g., 'America/New_York', 'UTC'). Defaults to local time.\n    \n    Usage::\n    \n        >>> create_arrow_now('Asia/Baku')\n        '2019-01-24T20:26:31.146412+04:00'\n    ",
+   "verified": false,
+   "direct_call": "arrow.arrow.Arrow.now(tzinfo)",
+   "samples": [
+    {
+     "tzinfo": "America/New_York"
+    },
+    {
+     "tzinfo": "UTC"
+    },
+    {
+     "tzinfo": "Asia/Tokyo"
+    },
+    {
+     "tzinfo": null
+    },
+    {
+     "tzinfo": "Europe/London"
+    }
+   ]
+  },
+  {
+   "name": "create_arrow_utc",
+   "wraps": "arrow.arrow.Arrow.utcnow",
+   "description": "Constructs an Arrow object representing the current time in UTC.\n    \n    Returns:\n        A string representation of the Arrow object for the current UTC time.\n        \n    Example:\n        >>> create_arrow_utc()\n        '2019-01-24T16:31:40.651108+00:00'\n    ",
+   "verified": false,
+   "direct_call": "arrow.arrow.Arrow.utcnow()",
+   "samples": [
+    {},
+    {}
+   ]
+  },
+  {
+   "name": "create_arrow_from_timestamp",
+   "wraps": "arrow.arrow.Arrow.fromtimestamp",
+   "description": "Create an Arrow object from a Unix timestamp and optional timezone.\n    \n    Constructs an Arrow object from a Unix timestamp, converted to the given timezone.\n    \n    Args:\n        timestamp: A Unix timestamp as an int, float, or string that converts to either.\n        tzinfo: (optional) A timezone identifier (e.g., 'US/Eastern', 'UTC'). Defaults to local time.\n        \n    Returns:\n        A string representation of the Arrow object.\n        \n    Example:\n        >>> create_arrow_from_timestamp(1609459200, 'UTC')\n        '2021-01-01T00:00:00+00:00'\n    ",
+   "verified": true,
+   "direct_call": "arrow.arrow.Arrow.fromtimestamp(timestamp, tzinfo)",
+   "samples": [
+    {
+     "timestamp": 1609459200,
+     "tzinfo": "UTC"
+    },
+    {
+     "timestamp": 1609459200.5,
+     "tzinfo": "US/Pacific"
+    },
+    {
+     "timestamp": "1609459200",
+     "tzinfo": null
+    },
+    {
+     "timestamp": 1609459200,
+     "tzinfo": "Europe/London"
+    },
+    {
+     "timestamp": "invalid_timestamp"
+    }
+   ]
+  },
+  {
+   "name": "create_arrow_from_string",
+   "wraps": "arrow.arrow.Arrow.strptime",
+   "description": "Constructs an Arrow object from a date string and format, in the style of datetime.strptime. Optionally replaces the parsed timezone.\n    \n    Args:\n        date_str: The date string to parse.\n        fmt: The format string using datetime format codes.\n        tzinfo: (optional) A timezone expression. Defaults to the parsed timezone if fmt contains a timezone directive, otherwise UTC.\n        \n    Returns:\n        A string representation of the created Arrow object.\n        \n    Example:\n        >>> create_arrow_from_string('20-01-2019 15:49:10', '%d-%m-%Y %H:%M:%S')\n        '2019-01-20T15:49:10+00:00'\n    ",
+   "verified": true,
+   "direct_call": "arrow.arrow.Arrow.strptime(date_str, fmt, tzinfo)",
+   "samples": [
+    {
+     "date_str": "20-01-2019 15:49:10",
+     "fmt": "%d-%m-%Y %H:%M:%S"
+    },
+    {
+     "date_str": "2019-01-20T15:49:10",
+     "fmt": "%Y-%m-%dT%H:%M:%S"
+    },
+    {
+     "date_str": "20-01-2019 15:49:10 +0500",
+     "fmt": "%d-%m-%Y %H:%M:%S %z"
+    },
+    {
+     "date_str": "Jan 20, 2019",
+     "fmt": "%b %d, %Y"
+    },
+    {
+     "date_str": "invalid-date",
+     "fmt": "%Y-%m-%d"
+    }
+   ]
+  },
+  {
+   "name": "generate_time_range",
+   "wraps": "arrow.arrow.Arrow.range",
+   "description": "Generate a range of Arrow objects between two dates at a specified interval.\n    \n    Args:\n        frame (str): The timeframe (year, month, day, hour, minute, second)\n        start (str): A datetime string in ISO format, the start of the range\n        end (str, optional): A datetime string in ISO format, the end of the range\n        limit (int, optional): A maximum number of results to return\n    \n    Returns:\n        List[str]: A list of datetime strings in ISO format representing the time range\n    \n    Example:\n        >>> generate_time_range('hour', '2023-01-01T00:00:00', '2023-01-01T03:00:00')\n        ['2023-01-01T00:00:00+00:00', '2023-01-01T01:00:00+00:00', '2023-01-01T02:00:00+00:00', '2023-01-01T03:00:00+00:00']\n    ",
+   "verified": true,
+   "direct_call": "list(arrow.arrow.Arrow.range(frame, arrow.arrow.Arrow.strptime(start, '%Y-%m-%dT%H:%M:%SZ'), arrow.arrow.Arrow.strptime(end, '%Y-%m-%dT%H:%M:%SZ') if end is not None else None, limit=limit))",
+   "samples": [
+    {
+     "frame": "hour",
+     "start": "2023-01-01T10:00:00Z",
+     "end": "2023-01-01T14:00:00Z"
+    },
+    {
+     "frame": "day",
+     "start": "2023-01-01T00:00:00Z",
+     "end": "2023-01-05T00:00:00Z"
+    },
+    {
+     "frame": "minute",
+     "start": "2023-01-01T12:00:00Z",
+     "limit": 5
+    },
+    {
+     "frame": "week",
+     "start": "2023-01-01T00:00:00Z",
+     "end": "2023-03-01T00:00:00Z"
+    },
+    {
+     "frame": "second",
+     "start": "2023-01-01T12:00:00Z",
+     "end": "2023-01-01T12:00:10Z"
+    }
+   ]
+  },
+  {
+   "name": "get_time_span",
+   "wraps": "arrow.arrow.Arrow.span",
+   "description": "Get the start and end of a time span for a given frame. frame: The timeframe to span (year, quarter, month, week, day, hour, minute, second). count: The number of frames to span. bounds: A string specifying whether to include or exclude start and end values ('()', '(]', '[)', or '[]'). Returns a tuple of start and end timestamps as strings.",
+   "verified": true,
+   "direct_call": "arrow.arrow.Arrow(2023, 5, 9, 3, 32, 36, 186203, tzinfo=None).span(frame, count, bounds)",
+   "samples": [
+    {
+     "frame": "day"
+    },
+    {
+     "frame": "hour",
+     "count": 2
+    },
+    {
+     "frame": "week",
+     "bounds": "[]"
+    },
+    {
+     "frame": "minute",
+     "count": 5,
+     "bounds": "(]"
+    },
+    {
+     "frame": "invalid_frame"
+    }
+   ]
+  },
+  {
+   "name": "humanize_time_difference",
+   "wraps": "arrow.arrow.Arrow.humanize",
+   "description": "Convert a time difference into a human-readable string.\n    \n    Args:\n        time_diff: Time difference in seconds\n        locale: Locale for the humanized string (default: \"en-us\")\n        only_distance: If true, returns only the time difference without \"in\" or \"ago\" part\n        \n    Returns:\n        Human-readable time difference string\n        \n    Example:\n        >>> humanize_time_difference(-3600)\n        '1 hour ago'\n    ",
+   "verified": true,
+   "direct_call": "arrow.arrow.Arrow.utcnow().shift(seconds=time_diff).humanize(locale=locale, only_distance=only_distance)",
+   "samples": [
+    {
+     "time_diff": -3600,
+     "locale": "en-us",
+     "only_distance": false
+    },
+    {
+     "time_diff": 7200,
+     "locale": "fr",
+     "only_distance": true
+    },
+    {
+     "time_diff": 0,
+     "locale": "de",
+     "only_distance": false
+    },
+    {
+     "time_diff": -5,
+     "locale": "en-us",
+     "only_distance": true
+    },
+    {
+     "time_diff": 1000000,
+     "locale": "es",
+     "only_distance": false
+    }
+   ]
+  },
+  {
+   "name": "extract_date_component",
+   "wraps": "arrow.arrow.Arrow.date",
+   "description": "Extract the date component from an Arrow object. year: The year component of the date, month: The month component of the date, day: The day component of the date, hour: The hour component of the time, minute: The minute component of the time, second: The second component of the time, microsecond: The microsecond component of the time.",
+   "verified": true,
+   "direct_call": "arrow.arrow.Arrow(year, month, day, hour, minute, second, microsecond).date()",
+   "samples": [
+    {
+     "year": 2023,
+     "month": 12,
+     "day": 25
+    },
+    {
+     "year": 2020,
+     "month": 2,
+     "day": 29,
+     "hour": 14,
+     "minute": 30,
+     "second": 45
+    },
+    {
+     "year": 1999,
+     "month": 1,
+     "day": 1,
+     "hour": 0,
+     "minute": 0,
+     "second": 0,
+     "microsecond": 0
+    },
+    {
+     "year": 2024,
+     "month": 7,
+     "day": 4,
+     "hour": 23,
+     "minute": 59,
+     "second": 59,
+     "microsecond": 999999
+    },
+    {
+     "year": 2023,
+     "month": 13,
+     "day": 1
+    }
+   ]
+  },
+  {
+   "name": "get_timestamp",
+   "wraps": "arrow.arrow.Arrow.timestamp",
+   "description": "Get the Unix timestamp of an Arrow object. year: The year component of the date, month: The month component of the date, day: The day component of the date, hour: The hour component of the time, minute: The minute component of the time, second: The second component of the time, microsecond: The microsecond component of the time, tzinfo: The timezone information. Example: get_timestamp(2021, 3, 15) -> 1615766400.0",
+   "verified": true,
+   "direct_call": "arrow.arrow.Arrow(year, month, day, hour, minute, second, microsecond, tzinfo).timestamp()",
+   "samples": [
+    {
+     "year": 2021,
+     "month": 3,
+     "day": 15
+    },
+    {
+     "year": 2020,
+     "month": 2,
+     "day": 29,
+     "hour": 12,
+     "minute": 30,
+     "second": 45,
+     "microsecond": 123456
+    },
+    {
+     "year": 2023,
+     "month": 12,
+     "day": 31,
+     "hour": 23,
+     "minute": 59,
+     "second": 59,
+     "microsecond": 999999
+    },
+    {
+     "year": 2022,
+     "month": 1,
+     "day": 1,
+     "tzinfo": "UTC"
+    },
+    {
+     "year": 2021,
+     "month": 7,
+     "day": 4,
+     "hour": 10,
+     "minute": 20,
+     "second": 30,
+     "microsecond": 0
+    }
+   ]
+  },
+  {
+   "name": "get_integer_timestamp",
+   "wraps": "arrow.arrow.Arrow.int_timestamp",
+   "description": "Get the integer Unix timestamp of an Arrow object. year: The year component of the date, month: The month component of the date, day: The day component of the date, hour: The hour component of the time, minute: The minute component of the time, second: The second component of the time, microsecond: The microsecond component of the time, tzinfo: The timezone information. Example: get_integer_timestamp(2020, 1, 1) -> 1577836800.",
+   "verified": true,
+   "direct_call": "arrow.arrow.Arrow(year, month, day, hour, minute, second, microsecond, tzinfo).int_timestamp",
+   "samples": [
+    {
+     "year": 2020,
+     "month": 1,
+     "day": 1
+    },
+    {
+     "year": 2023,
+     "month": 12,
+     "day": 31,
+     "hour": 23,
+     "minute": 59,
+     "second": 59
+    },
+    {
+     "year": 2023,
+     "month": 6,
+     "day": 15,
+     "hour": 12,
+     "minute": 30,
+     "second": 45,
+     "microsecond": 123456
+    },
+    {
+     "year": 1970,
+     "month": 1,
+     "day": 1
+    },
+    {
+     "year": 2023,
+     "month": 2,
+     "day": 29
+    }
+   ]
+  },
+  {
+   "name": "clone_arrow",
+   "wraps": "arrow.arrow.Arrow.clone",
+   "description": "Create a copy of an Arrow object. year: The year component of the Arrow object, month: The month component of the Arrow object, day: The day component of the Arrow object, hour: The hour component of the Arrow object, minute: The minute component of the Arrow object, second: The second component of the Arrow object, microsecond: The microsecond component of the Arrow object, tzinfo: The timezone info for the Arrow object. Example: clone_arrow(2023, 1, 1) -> '2023-01-01T00:00:00+00:00'.",
+   "verified": true,
+   "direct_call": "arrow.arrow.Arrow(year, month, day, hour, minute, second, microsecond, tzinfo).clone()",
+   "samples": [
+    {
+     "year": 2023,
+     "month": 10,
+     "day": 15,
+     "hour": 14,
+     "minute": 30,
+     "second": 45,
+     "microsecond": 123456,
+     "tzinfo": "UTC"
+    },
+    {
+     "year": 2020,
+     "month": 2,
+     "day": 29,
+     "hour": 0,
+     "minute": 0,
+     "second": 0,
+     "microsecond": 0,
+     "tzinfo": "US/Eastern"
+    },
+    {
+     "year": 1999,
+     "month": 12,
+     "day": 31,
+     "hour": 23,
+     "minute": 59,
+     "second": 59,
+     "microsecond": 999999,
+     "tzinfo": "Europe/London"
+    },
+    {
+     "year": 2024,
+     "month": 7,
+     "day": 4,
+     "hour": 12,
+     "minute": 0,
+     "second": 0,
+     "microsecond": 0,
+     "tzinfo": null
+    },
+    {
+     "year": 2023,
+     "month": 1,
+     "day": 1,
+     "hour": 0,
+     "minute": 0,
+     "second": 0,
+     "microsecond": 0,
+     "tzinfo": "Asia/Tokyo"
+    }
+   ]
+  },
+  {
+   "name": "format_ctime",
+   "wraps": "arrow.arrow.Arrow.ctime",
+   "description": "Format an Arrow object as a ctime string. year: The year, month: The month, day: The day, hour: The hour (optional), minute: The minute (optional), second: The second (optional), microsecond: The microsecond (optional), tzinfo: The timezone info (optional). Example: format_ctime(2019, 1, 19, 18, 26, 50) -> 'Sat Jan 19 18:26:50 2019'.",
+   "verified": true,
+   "direct_call": "arrow.arrow.Arrow(year, month, day, hour, minute, second, microsecond, tzinfo).ctime()",
+   "samples": [
+    {
+     "year": 2019,
+     "month": 1,
+     "day": 19,
+     "hour": 18,
+     "minute": 26,
+     "second": 50,
+     "microsecond": 0,
+     "tzinfo": null
+    },
+    {
+     "year": 2023,
+     "month": 12,
+     "day": 25,
+     "hour": 0,
+     "minute": 0,
+     "second": 0,
+     "microsecond": 0,
+     "tzinfo": null
+    },
+    {
+     "year": 2000,
+     "month": 2,
+     "day": 29,
+     "hour": 12,
+     "minute": 30,
+     "second": 45,
+     "microsecond": 123456,
+     "tzinfo": null
+    },
+    {
+     "year": 1999,
+     "month": 7,
+     "day": 4,
+     "hour": 23,
+     "minute": 59,
+     "second": 59,
+     "microsecond": 999999,
+     "tzinfo": null
+    },
+    {
+     "year": 2020,
+     "month": 1,
+     "day": 1,
+     "hour": 0,
+     "minute": 0,
+     "second": 0,
+     "microsecond": 0,
+     "tzinfo": "UTC"
+    }
+   ]
+  },
+  {
+   "name": "factory_parse_date",
+   "wraps": "arrow.factory.ArrowFactory.get",
+   "description": "Parse a date string into an Arrow object using the factory method.\n    \n    :param date_string: A date string to parse into an Arrow object\n    :param tzinfo: A timezone expression to replace the timezone\n    :return: String representation of the parsed Arrow object\n    \n    Example:\n        >>> factory_parse_date('2023-01-01', 'US/Eastern')\n        '2023-01-01T00:00:00+00:00'\n    ",
+   "verified": true,
+   "direct_call": "arrow.factory.ArrowFactory().get(date_string, tzinfo=tzinfo)",
+   "samples": [
+    {
+     "date_string": "2023-12-25T10:30:00",
+     "tzinfo": "US/Eastern"
+    },
+    {
+     "date_string": "2023-12-25",
+     "tzinfo": "Europe/London"
+    },
+    {
+     "date_string": "20231225T103000",
+     "tzinfo": "Asia/Tokyo"
+    },
+    {
+     "date_string": "invalid-date-string"
+    }
+   ]
+  },
+  {
+   "name": "factory_get_utc_now",
+   "wraps": "arrow.factory.ArrowFactory.utcnow",
+   "description": "Returns an :class:`Arrow <arrow.arrow.Arrow>` object, representing \"now\" in UTC time.\n    \n    Usage::\n    \n        >>> import arrow\n        >>> arrow.utcnow()\n        <Arrow [2013-05-08T05:19:07.018993+00:00]>\n    \n    Returns:\n        A string representation of the current UTC time in Arrow format.\n    ",
+   "verified": false,
+   "direct_call": "arrow.factory.ArrowFactory().utcnow()",
+   "samples": [
+    {},
+    {}
+   ]
+  },
+  {
+   "name": "factory_get_local_now",
+   "wraps": "arrow.factory.ArrowFactory.now",
+   "description": "Returns an Arrow object representing \"now\" in the given timezone.\n    \n    :param tz: (optional) A timezone expression. Defaults to local time.\n    \n    Example:\n        >>> factory_get_local_now()\n        '2013-05-07T22:19:11.363410-07:00'\n    ",
+   "verified": false,
+   "direct_call": "arrow.factory.ArrowFactory(type=arrow.arrow.Arrow).now(tz)",
+   "samples": [
+    {
+     "tz": null
+    },
+    {
+     "tz": "US/Pacific"
+    },
+    {
+     "tz": "+02:00"
+    },
+    {
+     "tz": "local"
+    },
+    {
+     "tz": "Europe/London"
+    }
+   ]
+  }
+ ]
+}

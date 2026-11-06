@@ -110,8 +110,8 @@ def options(url, **kwargs):
     return Namespace(**{**defaults, **kwargs})
 
 
-PROPOSAL = json.dumps([{"id": 1, "name": "add_numbers", "description": "Add two numbers."},
-                       {"id": 2, "name": "double_text", "description": "Repeat a text."}])
+PROPOSAL = json.dumps([{"function": "tinylib.core.add", "name": "add_numbers", "description": "Add two numbers."},
+                       {"function": "tinylib.core.double", "name": "double_text", "description": "Repeat a text."}])
 
 
 def test_links_are_checked():
@@ -142,14 +142,37 @@ def test_native_code_is_found(tmp_path):
     assert native_code(package) == ["fast.pyx"]
 
 
-def test_invented_function_ids_are_dropped():
-    picks, problem = parse_proposal(json.dumps([{"id": 99, "name": "made_up", "description": "x"},
-                                                {"id": 1, "name": "real", "description": "y"},
-                                                {"id": 1, "name": "second_for_same_function", "description": "z"},
-                                                {"id": 2, "name": "Bad-Name", "description": "w"}]),
-                                    {1: {"qualname": "a"}, 2: {"qualname": "b"}})
-    assert problem is None
-    assert [p["name"] for p in picks] == ["real"]
+API = [{"module": "lib.a", "qualname": "real"}, {"module": "lib.a", "qualname": "other"}, {"module": "lib.b", "qualname": "other"},
+       {"module": "lib.b", "qualname": "Thing.method"}]
+
+
+def test_invented_functions_are_dropped():
+    picks, problem, dropped = parse_proposal(json.dumps([
+        {"function": "lib.a.made_up", "name": "made_up", "description": "x"},
+        {"function": "lib.a.real", "name": "real_tool", "description": "y"},
+        {"function": "lib.a.real", "name": "second_for_same_function", "description": "z"},
+        {"function": "lib.b.Thing.method", "name": "Bad-Name", "description": "w"}]), API)
+    assert problem is None and dropped == 3
+    assert [p["name"] for p in picks] == ["real_tool"]
+
+
+def test_a_tool_wraps_the_function_it_names():
+    """Regression: a real model numbered its own picks 1, 2, 3, so with ids `evaluate_marker` wrapped DirectUrl.from_dict."""
+    picks, _, _ = parse_proposal(json.dumps([
+        {"id": 1, "function": "lib.b.Thing.method", "name": "use_thing", "description": "y"},
+        {"id": 2, "function": "lib.a.real", "name": "use_real", "description": "y"}]), API)
+    assert {p["name"]: p["callable"]["qualname"] for p in picks} == {"use_thing": "Thing.method", "use_real": "real"}
+    picks, problem, _ = parse_proposal(json.dumps([{"id": 1, "name": "numbers_only", "description": "y"}]), API)
+    assert picks == [] and "names a listed function" in problem
+
+
+def test_function_path_forms():
+    picks, _, _ = parse_proposal(json.dumps([
+        {"function": "real", "name": "by_short_name", "description": "y"},  # unique, so it is clear
+        {"function": "other", "name": "ambiguous", "description": "y"},  # in two modules
+        {"function": "lib.b.other(a, b)", "name": "with_parameters", "description": "y"}]), API)
+    assert {p["name"]: (p["callable"]["module"], p["callable"]["qualname"]) for p in picks} == \
+        {"by_short_name": ("lib.a", "real"), "with_parameters": ("lib.b", "other")}
 
 
 @pytest.mark.parametrize("expression, problem", [
@@ -158,7 +181,8 @@ def test_invented_function_ids_are_dropped():
     ("[tinylib.add(x) for x in a]", "may not use"),
     ("tinylib.other(a)", "must use the library"),
     ("tinylib.add(1)", "does not use: a"),
-    ("os.path.exists(a) or tinylib.add(a)", "may not use"),
+    ("os.path.exists(a) or tinylib.add(a)", "may not use: os"),
+    ("tinylib.add(x for x in a)", "may not use"),
     ("os.add(a)", "may not use: os"),
 ])
 def test_bad_direct_calls_are_refused(expression, problem):
@@ -167,6 +191,8 @@ def test_bad_direct_calls_are_refused(expression, problem):
 
 def test_good_direct_call_is_accepted():
     assert tool_worker.direct_call_problem("tinylib.core.Thing(a).add(b, flag=True)", ["a", "b"], "add") is None
+    assert tool_worker.direct_call_problem("tinylib.add(a, b) if b is not None else tinylib.add(a)", ["a", "b"], "add") is None
+    assert tool_worker.direct_call_problem("not tinylib.add(a)", ["a"], "add") is None
 
 
 def test_spec_needs_samples():

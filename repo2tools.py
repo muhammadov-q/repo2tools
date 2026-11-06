@@ -276,8 +276,12 @@ def signature(c: dict) -> str:
     return f"{c['module']}.{c['qualname']}({', '.join(map(format_param, c['params']))}) -> {c['returns']}"
 
 
-def propose_messages(package: str, numbered: list[tuple[int, dict]], max_tools: int) -> list[dict]:
-    listing = "\n".join(f"{i}. {c['kind']} {signature(c)} | {c['summary'][:110]}" for i, c in numbered)
+def function_path(c: dict) -> str:
+    return f"{c['module']}.{c['qualname']}"
+
+
+def propose_messages(package: str, callables: list[dict], max_tools: int) -> list[dict]:
+    listing = "\n".join(f"- {c['kind']} {signature(c)} | {c['summary'][:110]}" for c in callables)
     return [
         {"role": "system", "content": "You design tools for an AI agent. A tool is one Python function that wraps "
                                       "one function of a library and takes and returns plain JSON values. "
@@ -286,10 +290,10 @@ def propose_messages(package: str, numbered: list[tuple[int, dict]], max_tools: 
 
 {listing}
 
-Pick at most {max_tools} that are the most useful for an agent solving tasks with this library. Make one tool per library function. Inputs must be JSON values: a tool can build a library object from a string, for example. Leave out what needs files or network, what depends on the computer the tool runs on, what returns a plain attribute with little use on its own, and what only makes sense inside the library.
+Pick at most {max_tools} that are the most useful for an agent solving tasks with this library. Choose from the whole list, and prefer the library's main features over rarely used ones. Make one tool per library function. Inputs must be JSON values: a tool can build a library object from a string, for example. Leave out what needs files or network, what depends on the computer the tool runs on, what returns a plain attribute with little use on its own, and what only makes sense inside the library.
 
-Reply with a JSON list, one object per tool:
-[{{"id": 3, "name": "snake_case_tool_name", "description": "One sentence for a model that does not know this library."}}]"""},
+Reply with a JSON list, one object per tool. "function" is the full path of the library function, exactly as listed, without its parameters:
+[{{"function": "{function_path(callables[0])}", "name": "snake_case_tool_name", "description": "One sentence for a model that does not know this library."}}]"""},
     ]
 
 
@@ -351,8 +355,8 @@ def spec_messages(pick: dict, root: Path, classes: dict) -> list[dict]:
 {target_context(pick, root, classes)}
 
 Reply with one JSON object:
-- "parameters": the tool's inputs. Each has "name", "type" (string, integer, number, boolean, array or object), "description", "required" (true or false). A parameter that is not required needs a "default".
-- "direct_call": one Python expression that calls the library directly and gives the true result, without the tool. Use the parameter names as variables and the library's full dotted path. Use every parameter. No imports, lambdas or comprehensions.
+- "parameters": the tool's inputs. Keep them few: only what a caller really needs, and leave rarely used options at the library's default. Each has "name", "type" (string, integer, number, boolean, array or object), "description", "required" (true or false). A parameter that is not required needs a "default".
+- "direct_call": one Python expression that calls the library directly and gives the true result, without the tool. Use the parameter names as variables and the library's full dotted path. Use every parameter. No imports, lambdas or comprehensions. Everything the call needs must come from the parameters: for a method, a parameter gives the value that builds the object. Do not hard-code values such as a fixed date.
 - "samples": 4 to 6 different inputs, each an object that maps parameter names to values. Include normal inputs and edge cases, and one invalid input if inputs can be invalid.
 
 {SPEC_EXAMPLE}"""},
@@ -379,26 +383,39 @@ Its parameters, with exactly these names:
 # --- checks ----------------------------------------------------------------------------------
 
 
-def parse_proposal(text: str, numbered: dict[int, dict]) -> tuple[list[dict], str | None]:
+def parse_proposal(text: str, callables: list[dict]) -> tuple[list[dict], str | None, int]:
+    """Valid picks, a problem to send back, and how many entries were dropped.
+
+    A pick names its function by full path, and that path must be in the scraped API. Numbers would
+    not do: a model may number its own picks, and each tool would then wrap the wrong function, with
+    a correct-looking name and code that passes every check.
+    """
     try:
         data = extract_json(text)
     except ValueError as e:
-        return [], str(e)
+        return [], str(e), 0
     if isinstance(data, dict):
         data = next((v for v in data.values() if isinstance(v, list)), None)
     if not isinstance(data, list):
-        return [], "the reply must be a JSON list of tools"
-    picks, names, ids = [], set(), set()
+        return [], "the reply must be a JSON list of tools", 0
+    by_path = {function_path(c): c for c in callables}
+    short = Counter(c["qualname"] for c in callables)
+    by_path |= {c["qualname"]: c for c in callables if short[c["qualname"]] == 1}
+    picks, names, used = [], set(), set()
     for item in data:
-        if not isinstance(item, dict) or item.get("id") not in numbered or item["id"] in ids:
-            continue  # an invented function, or a second tool for the same one
+        if not isinstance(item, dict):
+            continue
+        target = by_path.get(re.split(r"[( ]", str(item.get("function", "")).strip())[0])
         name = str(item.get("name", ""))
+        if target is None or function_path(target) in used:
+            continue  # an invented function, or a second tool for the same one
         if not TOOL_NAME.match(name) or name in names or not item.get("description"):
             continue
-        ids.add(item["id"])
+        used.add(function_path(target))
         names.add(name)
-        picks.append({"callable": numbered[item["id"]], "name": name, "description": str(item["description"])})
-    return picks, None if picks else "none of the listed tools has a valid id, a snake_case name and a description"
+        picks.append({"callable": target, "name": name, "description": str(item["description"])})
+    dropped = len(data) - len(picks)
+    return picks, None if picks else 'no entry names a listed function in "function", with a snake_case name and a description', dropped
 
 
 def parse_spec(text: str, pick: dict) -> tuple[dict | None, str | None]:
@@ -660,7 +677,7 @@ def write_report(path: Path, meta: dict, results: list[ToolResult], picks_count:
         f"({', '.join(f'{k} {v:,}' for k, v in llm.tokens.items())})", "",
         "## Result", "",
         "| | Tools |", "| --- | --- |",
-        f"| Picked by the LLM | {picks_count} |",
+        f"| Picked by the LLM | {picks_count} (dropped: {meta.get('dropped_proposals', 0)}, for unknown functions, duplicates or bad names) |",
         f"| Accepted | {len(accepted)} |",
         f"| Accepted and confirmed against a direct library call | {report['verified']} |",
         f"| Passed all checks on the first try | {first_try['ok']} |",
@@ -724,17 +741,18 @@ async def generate(args, llm=None) -> dict:
     started = time.monotonic()
 
     # which functions become tools; big APIs are asked about in parts, so they fit the model's context
-    numbered = {i: asdict(c) for i, c in enumerate(callables, 1)}
-    items = list(numbered.items())
+    items = [asdict(c) for c in callables]
     chunks = [items[i:i + LISTING_CHUNK] for i in range(0, len(items), LISTING_CHUNK)]
     picks: list[dict] = []
+    dropped_picks = 0
     for chunk in chunks:
         share = max(1, round(args.max_tools * len(chunk) / len(items)))
         chat = propose_messages(package, chunk, share)
         for _ in range(args.repair_rounds + 1):
             reply = await llm.chat("propose", package, chat, max_tokens=6000)
-            found, problem = parse_proposal(reply, dict(chunk))
+            found, problem, dropped = parse_proposal(reply, chunk)
             if not problem:
+                dropped_picks += dropped
                 seen = {p["name"] for p in picks}
                 picks += [p for p in found if p["name"] not in seen][:share]
                 break
@@ -743,7 +761,7 @@ async def generate(args, llm=None) -> dict:
     if not picks:
         raise SystemExit("the LLM proposed no usable tools; see the log in " + str(out / "llm_log.jsonl"))
     picks = picks[: args.max_tools]
-    print(f"{len(picks)} tools picked out of {len(callables)} callables", file=sys.stderr)
+    print(f"{len(picks)} tools picked out of {len(callables)} callables; {dropped_picks} proposals dropped", file=sys.stderr)
 
     async def one(pick):
         result = await build_tool(pick, llm, box, base, classes, args.repair_rounds)
@@ -756,7 +774,8 @@ async def generate(args, llm=None) -> dict:
     sandbox = "macOS sandbox-exec: no network, home folder unreadable, one scratch folder writable" if box.profile \
         else "NONE: this system has no sandbox-exec, only a separate environment"
     meta = {"url": url, "commit": commit, "package": package, "model": getattr(llm, "model", "unknown"), "thinking": getattr(llm, "thinking", False),
-            "set": set_name, "toolset": str(toolset.relative_to(ROOT)), "sandbox": sandbox, "dependencies": dependencies}
+            "set": set_name, "toolset": str(toolset.relative_to(ROOT)), "sandbox": sandbox, "dependencies": dependencies,
+            "dropped_proposals": dropped_picks}
     write_toolset(toolset, set_name, tag, meta, accepted)
 
     # the finished server, over real MCP; anything that fails here leaves the tool set

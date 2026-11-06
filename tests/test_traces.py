@@ -8,7 +8,7 @@ from types import SimpleNamespace
 from openai.types.chat import ChatCompletion
 
 import run_model
-from analyze_traces import Change, analyze, flows, measure, merge_change, occurrences, prompts, repeated_arguments, sequences
+from analyze_traces import Change, analyze, exact_repeats, flows, measure, merge_change, occurrences, prompts, repeated_arguments, sequences
 from traces import SCHEMA, read_traces, tool_list_id, trace_from_calls, write_traces
 
 
@@ -145,6 +145,19 @@ def test_flow_ignores_trivial_values():
     assert not flows(earlier, {"arguments": {"flag": True}})
     assert not flows(earlier, {"arguments": {"values": []}})
     assert flows({"output": []}, {"arguments": {"values": []}})  # the whole output, even if it is empty
+
+
+def test_a_boolean_equal_to_a_flag_is_not_data_flow():
+    """Regression: on real traces, version_satisfies > version_satisfies counted as a workflow because false == false."""
+    assert not flows({"output": False}, {"arguments": {"include_prereleases": False}})
+    assert not flows({"output": 3}, {"arguments": {"limit": 3}})
+
+
+def test_exact_repeats_count_only_same_tool_and_arguments():
+    calls = [{"tool": "sort", "arguments": {"v": ["1"]}, "output": "[]"}, {"tool": "sort", "arguments": {"v": ["1"]}, "output": "[]"},
+             {"tool": "sort", "arguments": {"v": ["2"]}, "output": "[]"}, {"tool": "parse", "arguments": {"v": ["1"]}, "output": "[]"}]
+    m = measure(trace_from_calls("model", "t", "task", "system", TOOLS, calls, "1", meta={}), WordTokenizer())
+    assert exact_repeats(m) == 1
 
 
 def test_repeated_arguments_are_found_and_sorted_by_origin():

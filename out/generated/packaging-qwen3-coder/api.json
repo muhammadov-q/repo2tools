@@ -1,0 +1,2189 @@
+{
+  "repo": "https://github.com/pypa/packaging",
+  "package": "packaging",
+  "commit": "c1d2a9d8f5ca7cc11b7d2e902ed5ee3e255e8560",
+  "n_callables": 92,
+  "callables": [
+    {
+      "qualname": "resolve_dependency_groups",
+      "module": "packaging.dependency_groups",
+      "kind": "function",
+      "params": [
+        {
+          "name": "dependency_groups",
+          "annotation": "Mapping[str, Sequence[str | Mapping[str, str]]]",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "groups",
+          "annotation": "str",
+          "default": null,
+          "kind": "var_positional"
+        }
+      ],
+      "returns": "tuple[str, ...]",
+      "summary": "Resolve a dependency group to a tuple of requirements, as strings.",
+      "docstring": "Resolve a dependency group to a tuple of requirements, as strings.\n\n:param dependency_groups: the parsed contents of the ``[dependency-groups]`` table\n    from ``pyproject.toml``\n:param groups: the name of the group(s) to resolve\n\n.. versionadded:: 26.1",
+      "file": "packaging/dependency_groups.py",
+      "line": 303,
+      "loc": 14,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "DependencyGroupResolver.lookup",
+      "module": "packaging.dependency_groups",
+      "kind": "method",
+      "params": [
+        {
+          "name": "group",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "tuple[Requirement | DependencyGroupInclude, ...]",
+      "summary": "Lookup a group name, returning the parsed dependency data for that group. This will not resolve includes.",
+      "docstring": "Lookup a group name, returning the parsed dependency data for that group.\nThis will not resolve includes.\n\n:param group: the name of the group to lookup",
+      "file": "packaging/dependency_groups.py",
+      "line": 133,
+      "loc": 13,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "DependencyGroupResolver.resolve",
+      "module": "packaging.dependency_groups",
+      "kind": "method",
+      "params": [
+        {
+          "name": "group",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "tuple[Requirement, ...]",
+      "summary": "Resolve a dependency group to a list of requirements.",
+      "docstring": "Resolve a dependency group to a list of requirements.\n\n:param group: the name of the group to resolve",
+      "file": "packaging/dependency_groups.py",
+      "line": 147,
+      "loc": 12,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "DirectUrl.from_dict",
+      "module": "packaging.direct_url",
+      "kind": "classmethod",
+      "params": [
+        {
+          "name": "d",
+          "annotation": "Mapping[str, Any]",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "Self",
+      "summary": "Create and validate a DirectUrl instance from a JSON dictionary.",
+      "docstring": "Create and validate a DirectUrl instance from a JSON dictionary.",
+      "file": "packaging/direct_url.py",
+      "line": 273,
+      "loc": 3,
+      "n_overloads": 0,
+      "decorators": [
+        "classmethod"
+      ]
+    },
+    {
+      "qualname": "DirectUrl.to_dict",
+      "module": "packaging.direct_url",
+      "kind": "method",
+      "params": [
+        {
+          "name": "generate_legacy_hash",
+          "annotation": "bool",
+          "default": "False",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "strip_user_password",
+          "annotation": "bool",
+          "default": "True",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "safe_user_passwords",
+          "annotation": "Collection[str]",
+          "default": "('git',)",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "Mapping[str, Any]",
+      "summary": "Convert the DirectUrl instance to a JSON dictionary.",
+      "docstring": "Convert the DirectUrl instance to a JSON dictionary.\n\n:param generate_legacy_hash: If True, include a legacy `hash` field in\n    `archive_info` for backward compatibility with tools that don't\n    support the `hashes` field.\n:param strip_user_password: If True, strip user:password from the URL\n    unless it is formed with environment variables as specified in PEP\n    610, or it is a safe user:password such as `git`.\n:param safe_user_passwords: A collection of user:password strings that\n    should not be stripped from the URL even if `strip_user_password` is\n    True.",
+      "file": "packaging/direct_url.py",
+      "line": 277,
+      "loc": 26,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "DirectUrl.validate",
+      "module": "packaging.direct_url",
+      "kind": "method",
+      "params": [],
+      "returns": "None",
+      "summary": "Validate the DirectUrl instance against the specification.",
+      "docstring": "Validate the DirectUrl instance against the specification.\n\nRaises :class:`DirectUrlValidationError` if invalid.",
+      "file": "packaging/direct_url.py",
+      "line": 304,
+      "loc": 6,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "canonicalize_license_expression",
+      "module": "packaging.licenses",
+      "kind": "function",
+      "params": [
+        {
+          "name": "raw_license_expression",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "NormalizedLicenseExpression",
+      "summary": "This function takes a valid License-Expression, and returns the normalized form of it.",
+      "docstring": "This function takes a valid License-Expression, and returns the normalized\nform of it.\n\nThe return type is typed as :class:`NormalizedLicenseExpression`. This\nallows type checkers to help require that a string has passed through this\nfunction before use.\n\n:param str raw_license_expression: The License-Expression to canonicalize.\n:raises InvalidLicenseExpression: If the License-Expression is invalid due to an\n    invalid/unknown license identifier or invalid syntax.\n\n.. doctest::\n\n    >>> from packaging.licenses import canonicalize_license_expression\n    >>> canonicalize_license_expression(\"mit\")\n    'MIT'\n    >>> canonicalize_license_expression(\"mit and (apache-2.0 or bsd-2-clause)\")\n    'MIT AND (Apache-2.0 OR BSD-2-Clause)'\n    >>> canonicalize_license_expression(\"(mit\")\n    Traceback (most recent call last):\n      ...\n    InvalidLicenseExpression: Invalid license expression: '(mit'\n    >>> canonicalize_license_expression(\"Use-it-after-midnight\")\n    Traceback (most recent call last):\n      ...\n    InvalidLicenseExpression: Unknown license: 'Use-it-after-midnight'",
+      "file": "packaging/licenses/__init__.py",
+      "line": 71,
+      "loc": 132,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "default_environment",
+      "module": "packaging.markers",
+      "kind": "function",
+      "params": [],
+      "returns": "Environment",
+      "summary": "Return the default marker environment for the current Python process.",
+      "docstring": "Return the default marker environment for the current Python process.\n\nThis is the base environment used by :meth:`Marker.evaluate`. A fresh copy\nis returned on every call so callers may freely mutate the result; a shallow\ncopy suffices because all values are immutable strings.\n\n.. versionchanged:: 26.3\n    The environment is computed once per process and cached, since it is\n    derived from process-constant data. Patching ``platform``/``sys``/``os``\n    after the first call has no effect; pass an explicit ``environment`` to\n    :meth:`Marker.evaluate` to evaluate against different values.",
+      "file": "packaging/markers.py",
+      "line": 363,
+      "loc": 14,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "Marker.evaluate",
+      "module": "packaging.markers",
+      "kind": "method",
+      "params": [
+        {
+          "name": "environment",
+          "annotation": "Mapping[str, str | AbstractSet[str]] | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "context",
+          "annotation": "EvaluateContext",
+          "default": "'metadata'",
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Evaluate a marker.",
+      "docstring": "Evaluate a marker.\n\nReturn the boolean from evaluating this marker against the environment.\nThe environment is determined from the current Python process unless\npassed in explicitly.\n\n:param environment: Mapping containing keys and values to override the\n   detected environment.\n:param EvaluateContext context: The context in which the marker is\n    evaluated, which influences what marker names are considered valid.\n    Accepted values are ``\"metadata\"`` (for core metadata; default),\n    ``\"lock_file\"``, and ``\"requirement\"`` (i.e. all other situations).\n:raises UndefinedComparison: If the marker uses a comparison on values\n    that are not valid versions per the :ref:`specification of version\n    specifiers <pypug:version-specifiers>`.\n:raises UndefinedEnvironmentName: If the marker references a value that\n    is missing from the evaluation environment.\n:returns: ``True`` if the marker matches, otherwise ``False``.\n\n.. versionchanged:: 25.0\n    Added the ``context`` parameter, which influences which marker names\n    are considered valid.",
+      "file": "packaging/markers.py",
+      "line": 510,
+      "loc": 51,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "parse_email",
+      "module": "packaging.metadata",
+      "kind": "function",
+      "params": [
+        {
+          "name": "data",
+          "annotation": "bytes | str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "tuple[RawMetadata, dict[str, list[str]]]",
+      "summary": "Parse a distribution's metadata stored as email headers (e.g. from ``METADATA``).",
+      "docstring": "Parse a distribution's metadata stored as email headers (e.g. from ``METADATA``).\n\nThis function returns a two-item tuple of dicts. The first dict is of\nrecognized fields from the core metadata specification. Fields that can be\nparsed and translated into Python's built-in types are converted\nappropriately. All other fields are left as-is. Fields that are allowed to\nappear multiple times are stored as lists.\n\nThe second dict contains all other fields from the metadata. This includes\nany unrecognized fields. It also includes any fields which are expected to\nbe parsed into a built-in type but were not formatted appropriately. Finally,\nany fields that are expected to appear only once but are repeated are\nincluded in this dict.",
+      "file": "packaging/metadata.py",
+      "line": 361,
+      "loc": 179,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "RFC822Policy.header_store_parse",
+      "module": "packaging.metadata",
+      "kind": "method",
+      "params": [
+        {
+          "name": "name",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "value",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "tuple[str, str]",
+      "summary": "",
+      "docstring": "",
+      "file": "packaging/metadata.py",
+      "line": 331,
+      "loc": 4,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "RFC822Message.as_bytes",
+      "module": "packaging.metadata",
+      "kind": "method",
+      "params": [
+        {
+          "name": "unixfrom",
+          "annotation": "bool",
+          "default": "False",
+          "kind": "positional"
+        },
+        {
+          "name": "policy",
+          "annotation": "email.policy.Policy | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "bytes",
+      "summary": "Return the bytes representation of the message.",
+      "docstring": "Return the bytes representation of the message.\n\nThis handles unicode encoding.",
+      "file": "packaging/metadata.py",
+      "line": 350,
+      "loc": 9,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "Metadata.from_raw",
+      "module": "packaging.metadata",
+      "kind": "classmethod",
+      "params": [
+        {
+          "name": "data",
+          "annotation": "RawMetadata",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "validate",
+          "annotation": "bool",
+          "default": "True",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "Metadata",
+      "summary": "Create an instance from :class:`RawMetadata`.",
+      "docstring": "Create an instance from :class:`RawMetadata`.\n\nIf *validate* is true, all metadata will be validated and all related\nexceptions will be gathered and raised as an :class:`ExceptionGroup`;\notherwise, validation happens per attribute when it is accessed.",
+      "file": "packaging/metadata.py",
+      "line": 834,
+      "loc": 53,
+      "n_overloads": 0,
+      "decorators": [
+        "classmethod"
+      ]
+    },
+    {
+      "qualname": "Metadata.from_email",
+      "module": "packaging.metadata",
+      "kind": "classmethod",
+      "params": [
+        {
+          "name": "data",
+          "annotation": "bytes | str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "validate",
+          "annotation": "bool",
+          "default": "True",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "Metadata",
+      "summary": "Parse metadata from email headers.",
+      "docstring": "Parse metadata from email headers.\n\nIf *validate* is true, the metadata will be validated. All exceptions\nrelated to validation will be gathered and raised as an :class:`ExceptionGroup`.",
+      "file": "packaging/metadata.py",
+      "line": 889,
+      "loc": 35,
+      "n_overloads": 0,
+      "decorators": [
+        "classmethod"
+      ]
+    },
+    {
+      "qualname": "Metadata.as_rfc822",
+      "module": "packaging.metadata",
+      "kind": "method",
+      "params": [],
+      "returns": "RFC822Message",
+      "summary": "Return an RFC822 message with the metadata.",
+      "docstring": "Return an RFC822 message with the metadata.\n\n.. versionadded:: 26.0",
+      "file": "packaging/metadata.py",
+      "line": 1022,
+      "loc": 9,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "is_valid_pylock_path",
+      "module": "packaging.pylock",
+      "kind": "function",
+      "params": [
+        {
+          "name": "path",
+          "annotation": "Path",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Check if the given path is a valid pylock file path.",
+      "docstring": "Check if the given path is a valid pylock file path.",
+      "file": "packaging/pylock.py",
+      "line": 85,
+      "loc": 3,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "PackageSdist.filename",
+      "module": "packaging.pylock",
+      "kind": "property",
+      "params": [],
+      "returns": "str",
+      "summary": "Get the filename of the sdist.",
+      "docstring": "Get the filename of the sdist.\n\n.. versionadded:: 26.1",
+      "file": "packaging/pylock.py",
+      "line": 418,
+      "loc": 9,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "PackageWheel.filename",
+      "module": "packaging.pylock",
+      "kind": "property",
+      "params": [],
+      "returns": "str",
+      "summary": "Get the filename of the wheel.",
+      "docstring": "Get the filename of the wheel.",
+      "file": "packaging/pylock.py",
+      "line": 454,
+      "loc": 6,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Package.is_direct",
+      "module": "packaging.pylock",
+      "kind": "property",
+      "params": [],
+      "returns": "bool",
+      "summary": "",
+      "docstring": "",
+      "file": "packaging/pylock.py",
+      "line": 566,
+      "loc": 2,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Pylock.from_dict",
+      "module": "packaging.pylock",
+      "kind": "classmethod",
+      "params": [
+        {
+          "name": "d",
+          "annotation": "Mapping[str, Any]",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "Self",
+      "summary": "Create and validate a Pylock instance from a TOML dictionary.",
+      "docstring": "Create and validate a Pylock instance from a TOML dictionary.\n\nRaises :class:`PylockValidationError` if the input data is not\nspec-compliant.",
+      "file": "packaging/pylock.py",
+      "line": 608,
+      "loc": 7,
+      "n_overloads": 0,
+      "decorators": [
+        "classmethod"
+      ]
+    },
+    {
+      "qualname": "Pylock.to_dict",
+      "module": "packaging.pylock",
+      "kind": "method",
+      "params": [],
+      "returns": "Mapping[str, Any]",
+      "summary": "Convert the Pylock instance to a TOML dictionary.",
+      "docstring": "Convert the Pylock instance to a TOML dictionary.",
+      "file": "packaging/pylock.py",
+      "line": 616,
+      "loc": 3,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "Pylock.validate",
+      "module": "packaging.pylock",
+      "kind": "method",
+      "params": [],
+      "returns": "None",
+      "summary": "Validate the Pylock instance against the specification.",
+      "docstring": "Validate the Pylock instance against the specification.\n\nRaises :class:`PylockValidationError` otherwise.",
+      "file": "packaging/pylock.py",
+      "line": 620,
+      "loc": 5,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "Pylock.select",
+      "module": "packaging.pylock",
+      "kind": "method",
+      "params": [
+        {
+          "name": "environment",
+          "annotation": "Environment | None",
+          "default": "None",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "tags",
+          "annotation": "Sequence[Tag] | None",
+          "default": "None",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "extras",
+          "annotation": "Collection[str] | None",
+          "default": "None",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "dependency_groups",
+          "annotation": "Collection[str] | None",
+          "default": "None",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "prefer_sdist_predicate",
+          "annotation": "Callable[[NormalizedName], bool] | None",
+          "default": "None",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "Iterator[tuple[Package, PackageVcs | PackageDirectory | PackageArchive | PackageWheel | PackageSdist]]",
+      "summary": "Select what to install from the lock file.",
+      "docstring": "Select what to install from the lock file.\n\nThe *environment* and *tags* parameters represent the environment being\nselected for. If unspecified, ``packaging.markers.default_environment()`` and\n``packaging.tags.sys_tags()`` are used.\n\nThe *extras* parameter represents the extras to install.\n\nThe *dependency_groups* parameter represents the groups to install. If\nunspecified, the default groups are used.\n\nThe *prefer_sdist_predicate* parameter is called for packages with a source\ndistribution. If it returns ``True``, the source distribution is selected\nbefore attempting wheel compatibility. If no source distribution is\navailable, wheel selection proceeds as usual without calling the predicate.\n\nThis method must be used on valid Pylock instances (i.e. one obtained\nfrom :meth:`Pylock.from_dict` or if constructed manually, after calling\n:meth:`Pylock.validate`).\n\n.. versionadded:: 26.1\n\n.. versionchanged:: 26.3\n    Added the *prefer_sdist_predicate* parameter.\n\n.. versionchanged:: 26.4\n    Raise :class:`PylockSelectError` if passed extras or dependency groups\n    that are not declared in the corresponding pylock fields.",
+      "file": "packaging/pylock.py",
+      "line": 626,
+      "loc": 223,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "VersionRange.empty",
+      "module": "packaging.ranges",
+      "kind": "classmethod",
+      "params": [
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "VersionRange",
+      "summary": "Return the empty range. No version satisfies it.",
+      "docstring": "Return the empty range. No version satisfies it.\n\n>>> VersionRange.empty().is_empty\nTrue\n>>> \"1.0\" in VersionRange.empty()\nFalse",
+      "file": "packaging/ranges.py",
+      "line": 1161,
+      "loc": 9,
+      "n_overloads": 0,
+      "decorators": [
+        "classmethod"
+      ]
+    },
+    {
+      "qualname": "VersionRange.full",
+      "module": "packaging.ranges",
+      "kind": "classmethod",
+      "params": [
+        {
+          "name": "admit_arbitrary",
+          "annotation": "bool",
+          "default": "True",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "VersionRange",
+      "summary": "Return the full range. Every PEP 440 version satisfies it.",
+      "docstring": "Return the full range. Every PEP 440 version satisfies it.\n\n``admit_arbitrary=False`` restricts the range to PEP 440 versions only\n(matching the same versions as ``SpecifierSet(\">=0.dev0\").to_range()``);\nits complement is :meth:`empty`. The flag propagates through set algebra\nand is part of equality. Default ``True`` so that ``r & full()``\npreserves ``r``'s own flag structurally.\n\n>>> \"1.0\" in VersionRange.full()\nTrue\n>>> \"wat\" in VersionRange.full()\nTrue\n>>> \"wat\" in VersionRange.full(admit_arbitrary=False)\nFalse",
+      "file": "packaging/ranges.py",
+      "line": 1172,
+      "loc": 23,
+      "n_overloads": 0,
+      "decorators": [
+        "classmethod"
+      ]
+    },
+    {
+      "qualname": "VersionRange.singleton",
+      "module": "packaging.ranges",
+      "kind": "classmethod",
+      "params": [
+        {
+          "name": "version",
+          "annotation": "Version | str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "VersionRange",
+      "summary": "Return the strict singleton range ``{version}``.",
+      "docstring": "Return the strict singleton range ``{version}``.\n\nBuilt as the closed interval ``[version, version]`` with strict\nequality. ``Specifier(\"==V\")`` matches ``V+local`` too, so the strict\nsingleton is narrower:\n\n>>> \"1.0+local\" in VersionRange.singleton(\"1.0\")\nFalse\n>>> \"1.0+local\" in SpecifierSet(\"==1.0\").to_range()\nTrue\n\n:raises packaging.version.InvalidVersion: if version is a string that\n    does not parse as a PEP 440 version.",
+      "file": "packaging/ranges.py",
+      "line": 1197,
+      "loc": 29,
+      "n_overloads": 0,
+      "decorators": [
+        "classmethod"
+      ]
+    },
+    {
+      "qualname": "VersionRange.intersection",
+      "module": "packaging.ranges",
+      "kind": "method",
+      "params": [
+        {
+          "name": "other",
+          "annotation": "VersionRange",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "VersionRange",
+      "summary": "Range containing exactly the versions in both self and other.",
+      "docstring": "Range containing exactly the versions in both self and other.\n\nBoth operands must share the same configured pre-release policy;\notherwise :exc:`ValueError` is raised.\n\n>>> a = SpecifierSet(\">=1.0\").to_range()\n>>> b = SpecifierSet(\"<2.0\").to_range()\n>>> a.intersection(b) == SpecifierSet(\">=1.0,<2.0\").to_range()\nTrue",
+      "file": "packaging/ranges.py",
+      "line": 1227,
+      "loc": 40,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "VersionRange.union",
+      "module": "packaging.ranges",
+      "kind": "method",
+      "params": [
+        {
+          "name": "other",
+          "annotation": "VersionRange",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "VersionRange",
+      "summary": "Range containing every version in self or other.",
+      "docstring": "Range containing every version in self or other.\n\nBoth operands must share the same configured pre-release policy;\notherwise :exc:`ValueError` is raised.\n\n>>> a = VersionRange.singleton(\"1.0\")\n>>> b = VersionRange.singleton(\"2.0\")\n>>> \"1.0\" in a.union(b) and \"2.0\" in a.union(b)\nTrue\n>>> \"1.5\" in a.union(b)\nFalse",
+      "file": "packaging/ranges.py",
+      "line": 1268,
+      "loc": 46,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "VersionRange.complement",
+      "module": "packaging.ranges",
+      "kind": "method",
+      "params": [],
+      "returns": "VersionRange",
+      "summary": "Range containing every version not in self.",
+      "docstring": "Range containing every version not in self.\n\nPreserves the configured pre-release policy. On the version set, double\nnegation holds for a range with no ``===`` literals (the arbitrary-string\nflag round-trips, so ``~~full() == full()``); for ``===`` ranges\ncomplement is one-way. The opt-in region is not restored (see below).\n\nThe opt-in region is dropped: a complement is an exclusion, and an\nexclusion expresses no pre-release preference. This is what lets\n``a & ~b`` shed ``b``'s opt-in, so an excluded ``b`` never force-admits a\npre-release into the result. Complement stays involutive on the version\nset, but not on the opt-in region: ``~~r`` covers the same versions as\n``r`` yet force-admits none of its pre-releases.\n\n>>> r = SpecifierSet(\">=1.0\").to_range()\n>>> \"0.5\" in r.complement()\nTrue\n>>> \"1.5\" in r.complement()\nFalse\n>>> r.complement().complement() == r\nTrue",
+      "file": "packaging/ranges.py",
+      "line": 1315,
+      "loc": 33,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "VersionRange.difference",
+      "module": "packaging.ranges",
+      "kind": "method",
+      "params": [
+        {
+          "name": "other",
+          "annotation": "VersionRange",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "VersionRange",
+      "summary": "Range containing the versions in self but not in other.",
+      "docstring": "Range containing the versions in self but not in other.\n\nMatches ``self & ~other`` on the version set and the opt-in region;\n``other`` acts as a bounds-only exclusion that grants no opt-in. The\narbitrary-string flag survives only when ``other`` removed no versions:\na difference that shrinks the bounds forgets it, as ``self & ~other``\nwould, so no later widening union can revive it. They still part on\n``===`` literals, whose complement is one-way: a ``===`` literal stays\nwhen ``self`` admits it and ``other`` does not. Both operands must\nshare the same configured pre-release policy (as :meth:`intersection`\nand :meth:`union` require); otherwise :exc:`ValueError` is raised.\n``a - empty()`` returns a range equal to ``a``.\n\n>>> a = SpecifierSet(\">=1.0\").to_range()\n>>> b = SpecifierSet(\">=2.0\").to_range()\n>>> \"1.5\" in a.difference(b)\nTrue\n>>> \"2.0\" in a.difference(b)\nFalse\n>>> a.difference(VersionRange.empty()) == a\nTrue",
+      "file": "packaging/ranges.py",
+      "line": 1349,
+      "loc": 60,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "VersionRange.is_subset",
+      "module": "packaging.ranges",
+      "kind": "method",
+      "params": [
+        {
+          "name": "other",
+          "annotation": "VersionRange",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Return whether every member of self is also a member of other.",
+      "docstring": "Return whether every member of self is also a member of other.\n\nOn versions and ``===`` literals this is\n``self.difference(other).is_empty``: subtracting other leaves nothing\nbehind. A live arbitrary admission (the flag at full bounds) is only a\nsubset of another live one.\n\nBoth operands must share the same configured pre-release policy;\notherwise :exc:`ValueError` is raised.\n\n>>> inner = SpecifierSet(\">=1.5,<1.8\").to_range()\n>>> outer = SpecifierSet(\">=1.0,<2.0\").to_range()\n>>> inner.is_subset(outer)\nTrue\n>>> outer.is_subset(inner)\nFalse\n>>> VersionRange.empty().is_subset(outer)\nTrue",
+      "file": "packaging/ranges.py",
+      "line": 1484,
+      "loc": 34,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "VersionRange.is_superset",
+      "module": "packaging.ranges",
+      "kind": "method",
+      "params": [
+        {
+          "name": "other",
+          "annotation": "VersionRange",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Return whether every member of other is also a member of self.",
+      "docstring": "Return whether every member of other is also a member of self.\n\nThe mirror of :meth:`is_subset`: ``a.is_superset(b)`` is\n``b.is_subset(a)``.\n\nBoth operands must share the same configured pre-release policy;\notherwise :exc:`ValueError` is raised.\n\n>>> outer = SpecifierSet(\">=1.0,<2.0\").to_range()\n>>> outer.is_superset(SpecifierSet(\">=1.5,<1.8\").to_range())\nTrue",
+      "file": "packaging/ranges.py",
+      "line": 1519,
+      "loc": 16,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "VersionRange.is_disjoint",
+      "module": "packaging.ranges",
+      "kind": "method",
+      "params": [
+        {
+          "name": "other",
+          "annotation": "VersionRange",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Return whether self and other share no member.",
+      "docstring": "Return whether self and other share no member.\n\nEquivalent to ``(self & other).is_empty``.\n\nBoth operands must share the same configured pre-release policy;\notherwise :exc:`ValueError` is raised.\n\n>>> a = SpecifierSet(\">=1.0,<2.0\").to_range()\n>>> a.is_disjoint(SpecifierSet(\">=2.0,<3.0\").to_range())\nTrue\n>>> a.is_disjoint(SpecifierSet(\">=1.5,<2.5\").to_range())\nFalse",
+      "file": "packaging/ranges.py",
+      "line": 1536,
+      "loc": 20,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "VersionRange.filter",
+      "module": "packaging.ranges",
+      "kind": "method",
+      "params": [
+        {
+          "name": "iterable",
+          "annotation": "Iterable[Any]",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "key",
+          "annotation": "Callable[[Any], Version | str] | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "Iterator[Any]",
+      "summary": "Yield items from iterable whose version falls inside the range.",
+      "docstring": "Yield items from iterable whose version falls inside the range.\n\nWith prereleases ``None`` the PEP 440 default applies: pre-releases are\nbuffered and only emitted if no final release in iterable is in range,\nexcept that a pre-release inside the autodetected opt-in region, or named\noutright by a ``===`` literal, is force-admitted in place (as\n``prereleases=True`` would yield it). A flushed buffer comes after\nevery in-place yield, so the output is not version-sorted.\n\nThe signature mirrors\n:meth:`~packaging.specifiers.SpecifierSet.filter`.\n\n>>> r = SpecifierSet(\">=1.0,<2.0\").to_range()\n>>> list(r.filter([\"0.9\", \"1.5\", \"2.0\"]))\n['1.5']",
+      "file": "packaging/ranges.py",
+      "line": 1583,
+      "loc": 41,
+      "n_overloads": 2,
+      "decorators": []
+    },
+    {
+      "qualname": "VersionRange.to_specifier_set",
+      "module": "packaging.ranges",
+      "kind": "method",
+      "params": [],
+      "returns": "SpecifierSet | None",
+      "summary": "Return a :class:`~packaging.specifiers.SpecifierSet` matching the same versions as self, or ``None`` if no single set expresses it.",
+      "docstring": "Return a :class:`~packaging.specifiers.SpecifierSet` matching the same\nversions as self, or ``None`` if no single set expresses it.\n\nPEP 440 has no syntax for the strict singleton ``{V}`` (an exclusive\nplain-version bound), a disjoint union of two or more intervals, or a\npartial pre-release opt-in region, so ranges built by set algebra often\nreturn ``None``. A gap that takes more than ``_MAX_EXCLUSION_RUN``\ncontiguous ``!=`` exclusions to spell returns ``None`` too,\nrather than a pathologically long chain; reaching that cap takes either\nset algebra or a specifier set that already spells the gap out with\nover a hundred contiguous ``!=N.*`` exclusions. An empty range maps to\n``SpecifierSet(\"<0\")``, unless it still carries the arbitrary-string\nflag (which no set reproduces), and a full range that admits arbitrary\nstrings maps to ``SpecifierSet(\"\")``.\n\nA range built from a :class:`~packaging.specifiers.SpecifierSet`\nre-encodes, short of that exclusion cap. The result is the simplest\ncandidate whose own\n:meth:`~packaging.specifiers.SpecifierSet.to_range` reproduces self\nexactly (bounds, ``===`` literals, and the opt-in region are all part of\nequality), so it filters the same versions. Two cases relax that\nexactness without changing what is filtered: an empty range recovers as\nthe canonical empty range (same versions, none, but not self's bounds),\nand under a ``prereleases=False`` policy the result need only match self's\nreleases, so ``(-inf, 3.14)`` recovers as the tighter ``<3.14`` rather\nthan ``!=3.14,<=3.14``.\n\nEach call encodes a handful of candidate spellings and keeps the\nsimplest one that verifies, where verifying means parsing the candidate\nand round-tripping it through\n:meth:`~packaging.specifiers.SpecifierSet.to_range`. The work grows\nwith the number of intervals and exclusions in the range, and the\nresult is not cached, so convert once and reuse the returned set rather\nthan converting per candidate version in a hot loop.\n\n>>> str(SpecifierSet(\">=1.0,<2.0\").to_range().to_specifier_set())\n'<2.0,>=1.0'\n>>> str(SpecifierSet(\"==1.0\").to_range().to_specifier_set())\n'==1.0'\n>>> VersionRange.singleton(\"1.5\").to_specifier_set() is None\nTrue",
+      "file": "packaging/ranges.py",
+      "line": 1757,
+      "loc": 144,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "VersionRange.is_empty",
+      "module": "packaging.ranges",
+      "kind": "property",
+      "params": [],
+      "returns": "bool",
+      "summary": "``True`` if no version or string satisfies this range.",
+      "docstring": "``True`` if no version or string satisfies this range.\n\nAgrees with :meth:`~packaging.specifiers.SpecifierSet.is_unsatisfiable`,\nincluding the pre-release policy: a range whose only members are\npre-releases is empty when that policy excludes them.\n\n>>> SpecifierSet(\">=2,<1\").to_range().is_empty\nTrue\n>>> SpecifierSet(\">=1,<2\").to_range().is_empty\nFalse\n>>> SpecifierSet(\"==1.0a1\", prereleases=False).to_range().is_empty\nTrue",
+      "file": "packaging/ranges.py",
+      "line": 1903,
+      "loc": 31,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "VersionRange.contains",
+      "module": "packaging.ranges",
+      "kind": "method",
+      "params": [
+        {
+          "name": "item",
+          "annotation": "Version | str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "installed",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Return whether item is contained in this range.",
+      "docstring": "Return whether item is contained in this range.\n\n:param item: a version string or :class:`~packaging.version.Version`.\n:param prereleases: whether to match pre-releases. ``None`` (default)\n    uses the range's own policy.\n:param installed: when ``True``, accept a pre-release item even if the\n    range would not otherwise allow it.\n\nUnlike :meth:`filter`, this does not consult the autodetected pre-release\nopt-in region; it reads only the configured policy. This mirrors\n:meth:`~packaging.specifiers.SpecifierSet.contains` versus\n:meth:`~packaging.specifiers.SpecifierSet.filter`.\n\nUnparsable strings do not match, except where the full\n``SpecifierSet`` would also match: the full range admits any string,\nand a ``===`` range admits items equal to the literal\ncase-insensitively.\n\n>>> r = SpecifierSet(\">=1.0,<2.0\").to_range()\n>>> r.contains(\"1.5\")\nTrue\n>>> r.contains(\"2.0\")\nFalse\n\n:raises TypeError: if item is not a str or Version.",
+      "file": "packaging/ranges.py",
+      "line": 1935,
+      "loc": 69,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "BaseSpecifier.prereleases",
+      "module": "packaging.specifiers",
+      "kind": "property",
+      "params": [],
+      "returns": "bool | None",
+      "summary": "Whether or not pre-releases as a whole are allowed.",
+      "docstring": "Whether or not pre-releases as a whole are allowed.\n\nThis can be set to either ``True`` or ``False`` to explicitly enable or disable\nprereleases or it can be set to ``None`` (the default) to use default semantics.",
+      "file": "packaging/specifiers.py",
+      "line": 173,
+      "loc": 6,
+      "n_overloads": 0,
+      "decorators": [
+        "property",
+        "abc.abstractmethod"
+      ]
+    },
+    {
+      "qualname": "BaseSpecifier.contains",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [
+        {
+          "name": "item",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Determines if the given item is contained within this specifier.",
+      "docstring": "Determines if the given item is contained within this specifier.",
+      "file": "packaging/specifiers.py",
+      "line": 188,
+      "loc": 4,
+      "n_overloads": 0,
+      "decorators": [
+        "abc.abstractmethod"
+      ]
+    },
+    {
+      "qualname": "BaseSpecifier.filter",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [
+        {
+          "name": "iterable",
+          "annotation": "Iterable[Any]",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "key",
+          "annotation": "Callable[[Any], UnparsedVersion] | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "Iterator[Any]",
+      "summary": "Takes an iterable of items and filters them so that only items which are contained within this specifier are allowed in it.",
+      "docstring": "Takes an iterable of items and filters them so that only items which\nare contained within this specifier are allowed in it.",
+      "file": "packaging/specifiers.py",
+      "line": 210,
+      "loc": 10,
+      "n_overloads": 2,
+      "decorators": [
+        "abc.abstractmethod"
+      ]
+    },
+    {
+      "qualname": "Specifier.prereleases",
+      "module": "packaging.specifiers",
+      "kind": "property",
+      "params": [],
+      "returns": "bool | None",
+      "summary": "",
+      "docstring": "",
+      "file": "packaging/specifiers.py",
+      "line": 473,
+      "loc": 26,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Specifier.operator",
+      "module": "packaging.specifiers",
+      "kind": "property",
+      "params": [],
+      "returns": "str",
+      "summary": "The operator of this specifier.",
+      "docstring": "The operator of this specifier.\n\n>>> Specifier(\"==1.2.3\").operator\n'=='",
+      "file": "packaging/specifiers.py",
+      "line": 544,
+      "loc": 7,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Specifier.version",
+      "module": "packaging.specifiers",
+      "kind": "property",
+      "params": [],
+      "returns": "str",
+      "summary": "The version of this specifier.",
+      "docstring": "The version of this specifier.\n\n>>> Specifier(\"==1.2.3\").version\n'1.2.3'",
+      "file": "packaging/specifiers.py",
+      "line": 553,
+      "loc": 7,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Specifier.contains",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [
+        {
+          "name": "item",
+          "annotation": "UnparsedVersion",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Return whether or not the item is contained in this specifier.",
+      "docstring": "Return whether or not the item is contained in this specifier.\n\n:param item:\n    The item to check for, which can be a version string or a\n    :class:`~packaging.version.Version` instance.\n:param prereleases:\n    Whether or not to match prereleases with this Specifier. If set to\n    ``None`` (the default), it will follow the recommendation from\n    :pep:`440` and match prereleases, as there are no other versions.\n\n>>> Specifier(\">=1.2.3\").contains(\"1.2.3\")\nTrue\n>>> Specifier(\">=1.2.3\").contains(Version(\"1.2.3\"))\nTrue\n>>> Specifier(\">=1.2.3\").contains(\"1.0.0\")\nFalse\n>>> Specifier(\">=1.2.3\").contains(\"1.3.0a1\")\nTrue\n>>> Specifier(\">=1.2.3\", prereleases=False).contains(\"1.3.0a1\")\nFalse\n>>> Specifier(\">=1.2.3\").contains(\"1.3.0a1\")\nTrue\n\n.. versionchanged:: 26.0\n\n    With ``prereleases=None``, a prerelease now matches. A single\n    version has no alternatives, so the :pep:`440` rule to accept\n    prereleases when nothing else satisfies the specifier applies.\n    Earlier versions rejected it. An unparsable version now returns\n    ``False`` instead of raising :exc:`~packaging.version.InvalidVersion`.",
+      "file": "packaging/specifiers.py",
+      "line": 656,
+      "loc": 55,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "Specifier.filter",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [
+        {
+          "name": "iterable",
+          "annotation": "Iterable[Any]",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "key",
+          "annotation": "Callable[[Any], UnparsedVersion] | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "Iterator[Any]",
+      "summary": "Filter items in the given iterable, that match the specifier.",
+      "docstring": "Filter items in the given iterable, that match the specifier.\n\n:param iterable:\n    An iterable that can contain version strings and\n    :class:`~packaging.version.Version` instances. The items in the\n    iterable will be filtered according to the specifier.\n:param prereleases:\n    Whether or not to allow prereleases in the returned iterator. If set to\n    ``None`` (the default), it will follow the recommendation from :pep:`440`\n    and match prereleases if there are no other versions.\n:param key:\n    A callable that takes a single argument (an item from the iterable) and\n    returns a version string or :class:`~packaging.version.Version`\n    instance to be used for filtering.\n\n>>> list(Specifier(\">=1.2.3\").filter([\"1.2\", \"1.3\", \"1.5a1\"]))\n['1.3']\n>>> list(Specifier(\">=1.2.3\").filter([\"1.2\", \"1.2.3\", \"1.3\", Version(\"1.4\")]))\n['1.2.3', '1.3', <Version('1.4')>]\n>>> list(Specifier(\">=1.2.3\").filter([\"1.2\", \"1.5a1\"]))\n['1.5a1']\n>>> list(Specifier(\">=1.2.3\").filter([\"1.3\", \"1.5a1\"], prereleases=True))\n['1.3', '1.5a1']\n>>> list(Specifier(\">=1.2.3\", prereleases=True).filter([\"1.3\", \"1.5a1\"]))\n['1.3', '1.5a1']\n>>> list(Specifier(\">=1.2.3\").filter(\n... [{\"ver\": \"1.2\"}, {\"ver\": \"1.3\"}],\n... key=lambda x: x[\"ver\"]))\n[{'ver': '1.3'}]\n\n.. versionchanged:: 26.1\n\n    Added the ``key`` parameter.",
+      "file": "packaging/specifiers.py",
+      "line": 728,
+      "loc": 53,
+      "n_overloads": 2,
+      "decorators": []
+    },
+    {
+      "qualname": "SpecifierSet.prereleases",
+      "module": "packaging.specifiers",
+      "kind": "property",
+      "params": [],
+      "returns": "bool | None",
+      "summary": "",
+      "docstring": "",
+      "file": "packaging/specifiers.py",
+      "line": 914,
+      "loc": 18,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "SpecifierSet.is_unsatisfiable",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [],
+      "returns": "bool",
+      "summary": "Check whether this specifier set can never be satisfied.",
+      "docstring": "Check whether this specifier set can never be satisfied.\n\nReturns True if no version can satisfy all specifiers simultaneously.\n\n>>> SpecifierSet(\">=2.0,<1.0\").is_unsatisfiable()\nTrue\n>>> SpecifierSet(\">=1.0,<2.0\").is_unsatisfiable()\nFalse\n>>> SpecifierSet(\"\").is_unsatisfiable()\nFalse\n>>> SpecifierSet(\"==1.0,!=1.0\").is_unsatisfiable()\nTrue\n\n.. versionadded:: 26.1",
+      "file": "packaging/specifiers.py",
+      "line": 1122,
+      "loc": 34,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "SpecifierSet.to_range",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [],
+      "returns": "ranges.VersionRange",
+      "summary": "Return the :class:`~packaging.ranges.VersionRange` this set accepts.",
+      "docstring": "Return the :class:`~packaging.ranges.VersionRange` this set accepts.\n\nAn empty set yields the full range; an unsatisfiable set yields the\nempty range. ``===`` specifiers contribute literal-string admission.\n\n>>> SpecifierSet(\">=1.0,<2.0\").to_range()\n<VersionRange '[1.0, 2.0.dev0)'>\n\n.. versionadded:: 26.3",
+      "file": "packaging/specifiers.py",
+      "line": 1196,
+      "loc": 14,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "SpecifierSet.is_subset",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [
+        {
+          "name": "other",
+          "annotation": "SpecifierSet",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Return whether every version matching this set also matches other.",
+      "docstring": "Return whether every version matching this set also matches other.\n\n:raises ValueError:\n    If either set uses ``===`` specifiers, or the two sets were\n    given different ``prereleases`` arguments (unset on one side\n    counts as different).\n:raises TypeError:\n    If other is not a :class:`SpecifierSet`.\n\n>>> SpecifierSet(\">=3.12,<3.13\").is_subset(SpecifierSet(\">=3.12\"))\nTrue\n>>> SpecifierSet(\">=3.12\").is_subset(SpecifierSet(\">=3.12,<3.13\"))\nFalse\n\n.. versionadded:: 26.3",
+      "file": "packaging/specifiers.py",
+      "line": 1217,
+      "loc": 19,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "SpecifierSet.is_superset",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [
+        {
+          "name": "other",
+          "annotation": "SpecifierSet",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Return whether every version matching other also matches this set.",
+      "docstring": "Return whether every version matching other also matches this set.\n\n:raises ValueError:\n    If either set uses ``===`` specifiers, or the two sets were\n    given different ``prereleases`` arguments (unset on one side\n    counts as different).\n:raises TypeError:\n    If other is not a :class:`SpecifierSet`.\n\n>>> SpecifierSet(\">=3.12\").is_superset(SpecifierSet(\">=3.12,<3.13\"))\nTrue\n\n.. versionadded:: 26.3",
+      "file": "packaging/specifiers.py",
+      "line": 1237,
+      "loc": 17,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "SpecifierSet.is_disjoint",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [
+        {
+          "name": "other",
+          "annotation": "SpecifierSet",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Return whether this set and other share no matching versions.",
+      "docstring": "Return whether this set and other share no matching versions.\n\n:raises ValueError:\n    If either set uses ``===`` specifiers, or the two sets were\n    given different ``prereleases`` arguments (unset on one side\n    counts as different).\n:raises TypeError:\n    If other is not a :class:`SpecifierSet`.\n\n>>> SpecifierSet(\"<3.12\").is_disjoint(SpecifierSet(\">=3.12\"))\nTrue\n>>> SpecifierSet(\"<3.12\").is_disjoint(SpecifierSet(\">=3.11\"))\nFalse\n\n.. versionadded:: 26.3",
+      "file": "packaging/specifiers.py",
+      "line": 1255,
+      "loc": 19,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "SpecifierSet.contains",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [
+        {
+          "name": "item",
+          "annotation": "UnparsedVersion",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "installed",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Return whether or not the item is contained in this SpecifierSet.",
+      "docstring": "Return whether or not the item is contained in this SpecifierSet.\n\n:param item:\n    The item to check for, which can be a version string or a\n    :class:`~packaging.version.Version` instance.\n:param prereleases:\n    Whether or not to match prereleases with this SpecifierSet. If set to\n    ``None`` (the default), it will follow the recommendation from :pep:`440`\n    and match prereleases, as there are no other versions.\n:param installed:\n    Whether or not the item is installed. If set to ``True``, it will\n    accept prerelease versions even if the specifier does not allow them.\n\n>>> SpecifierSet(\">=1.0.0,!=1.0.1\").contains(\"1.2.3\")\nTrue\n>>> SpecifierSet(\">=1.0.0,!=1.0.1\").contains(Version(\"1.2.3\"))\nTrue\n>>> SpecifierSet(\">=1.0.0,!=1.0.1\").contains(\"1.0.1\")\nFalse\n>>> SpecifierSet(\">=1.0.0,!=1.0.1\").contains(\"1.3.0a1\")\nTrue\n>>> SpecifierSet(\">=1.0.0,!=1.0.1\", prereleases=False).contains(\"1.3.0a1\")\nFalse\n>>> SpecifierSet(\">=1.0.0,!=1.0.1\").contains(\"1.3.0a1\", prereleases=True)\nTrue\n\n.. versionchanged:: 26.0\n\n    With ``prereleases=None``, a prerelease now matches. A single\n    version has no alternatives, so the :pep:`440` rule to accept\n    prereleases when nothing else satisfies the specifiers applies.\n    Earlier versions rejected it. An unparsable version now returns\n    ``False`` instead of raising :exc:`~packaging.version.InvalidVersion`.",
+      "file": "packaging/specifiers.py",
+      "line": 1296,
+      "loc": 87,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "SpecifierSet.filter",
+      "module": "packaging.specifiers",
+      "kind": "method",
+      "params": [
+        {
+          "name": "iterable",
+          "annotation": "Iterable[Any]",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "key",
+          "annotation": "Callable[[Any], UnparsedVersion] | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "Iterator[Any]",
+      "summary": "Filter items in the given iterable, that match the specifiers in this set.",
+      "docstring": "Filter items in the given iterable, that match the specifiers in this set.\n\n:param iterable:\n    An iterable that can contain version strings and\n    :class:`~packaging.version.Version` instances. The items in the\n    iterable will be filtered according to the specifier.\n:param prereleases:\n    Whether or not to allow prereleases in the returned iterator. If set to\n    ``None`` (the default), it will follow the recommendation from :pep:`440`\n    and match prereleases if there are no other versions.\n:param key:\n    A callable that takes a single argument (an item from the iterable) and\n    returns a version string or :class:`~packaging.version.Version`\n    instance to be used for filtering.\n\n>>> list(SpecifierSet(\">=1.2.3\").filter([\"1.2\", \"1.3\", \"1.5a1\"]))\n['1.3']\n>>> list(SpecifierSet(\">=1.2.3\").filter([\"1.2\", \"1.3\", Version(\"1.4\")]))\n['1.3', <Version('1.4')>]\n>>> list(SpecifierSet(\">=1.2.3\").filter([\"1.2\", \"1.5a1\"]))\n['1.5a1']\n>>> list(SpecifierSet(\">=1.2.3\").filter([\"1.3\", \"1.5a1\"], prereleases=True))\n['1.3', '1.5a1']\n>>> list(SpecifierSet(\">=1.2.3\", prereleases=True).filter([\"1.3\", \"1.5a1\"]))\n['1.3', '1.5a1']\n>>> list(SpecifierSet(\">=1.2.3\").filter(\n... [{\"ver\": \"1.2\"}, {\"ver\": \"1.3\"}],\n... key=lambda x: x[\"ver\"]))\n[{'ver': '1.3'}]\n\nAn \"empty\" SpecifierSet will filter items based on the presence of prerelease\nversions in the set.\n\n>>> list(SpecifierSet(\"\").filter([\"1.3\", \"1.5a1\"]))\n['1.3']\n>>> list(SpecifierSet(\"\").filter([\"1.5a1\"]))\n['1.5a1']\n>>> list(SpecifierSet(\"\", prereleases=True).filter([\"1.3\", \"1.5a1\"]))\n['1.3', '1.5a1']\n>>> list(SpecifierSet(\"\").filter([\"1.3\", \"1.5a1\"], prereleases=True))\n['1.3', '1.5a1']\n\n.. versionchanged:: 26.0\n\n    Prerelease filtering now follows the PEP 440 recommendation of\n    yielding prereleases only when no final release is present.\n\n.. versionchanged:: 26.1\n\n    Added the ``key`` parameter.",
+      "file": "packaging/specifiers.py",
+      "line": 1400,
+      "loc": 84,
+      "n_overloads": 2,
+      "decorators": []
+    },
+    {
+      "qualname": "parse_tag",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "tag",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "validate_order",
+          "annotation": "bool",
+          "default": "False",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "limit",
+          "annotation": "int | None",
+          "default": "None",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "frozenset[Tag]",
+      "summary": "Parses the provided tag (e.g. `py3-none-any`) into a frozenset of :class:`Tag` instances.",
+      "docstring": "Parses the provided tag (e.g. `py3-none-any`) into a frozenset of\n:class:`Tag` instances.\n\nReturning a set is required due to the possibility that the tag is a\n`compressed tag set`_, e.g. ``\"py2.py3-none-any\"`` which supports both\nPython 2 and Python 3.\n\nIf **validate_order** is true, compressed tag set components are checked\nto be in sorted order as required by PEP 425.\n\nIf **limit** is not ``None``, the compressed tag set can generate at most\nthat many tags.\n\n:param str tag: The tag to parse, e.g. ``\"py3-none-any\"``.\n:param bool validate_order: Check whether compressed tag set components\n    are in sorted order.\n:param int | None limit: The maximum number of tags to parse.\n:raises UnsortedTagsError: If **validate_order** is true and any compressed tag\n    set component is not in sorted order.\n:raises InvalidTag: If the interpreter field is not an identifier; if the\n    interpreter, ABI, or platform field (or any member of a compressed tag\n    set) is empty; or if the tag does not have exactly three components.\n:raises TooManyTagsError: If **limit** is not ``None`` and the compressed tag\n    set would generate more than **limit** tags.\n:raises ValueError: If **limit** is negative.\n\n.. versionadded:: 26.1\n   The *validate_order* parameter.\n\n.. versionadded:: 26.3\n   Raises :class:`InvalidTag` when an interpreter component is not an\n   identifier, a tag component is empty, or a tag does not have exactly\n   three components.\n   Added the *limit* parameter. Raises :class:`TooManyTagsError` if the compressed\n   tag set would generate more than *limit* tags.",
+      "file": "packaging/tags.py",
+      "line": 234,
+      "loc": 78,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "cpython_tags",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "python_version",
+          "annotation": "PythonVersion | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "abis",
+          "annotation": "Iterable[str] | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "platforms",
+          "annotation": "Iterable[str] | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "warn",
+          "annotation": "bool",
+          "default": "False",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "Iterator[Tag]",
+      "summary": "Yields the tags for the CPython interpreter.",
+      "docstring": "Yields the tags for the CPython interpreter.\n\nThe specific tags generated are:\n\n- ``cp<python_version>-<abi>-<platform>``\n- ``cp<python_version>-<stable_abi>-<platform>``\n- ``cp<python_version>-none-<platform>``\n- ``cp<older version>-<stable_abi>-<platform>`` where \"older version\" is all older\n  minor versions down to Python 3.2 (when ``abi3`` was introduced)\n\nIf ``python_version`` only provides a major-only version then only\nuser-provided ABIs via ``abis`` and the ``none`` ABI will be used.\n\nThe ``stable_abi`` will be either ``abi3`` or ``abi3t`` if `abi` is a\nGIL-enabled ABI like `\"cp315\"` or a free-threaded ABI like `\"cp315t\"`,\nrespectively.\n\n:param Sequence python_version: A one- or two-item sequence representing the\n                             targeted Python version. Defaults to\n                             ``sys.version_info[:2]``.\n:param Iterable abis: Iterable of compatible ABIs. Defaults to the ABIs\n                      compatible with the current system.\n:param Iterable platforms: Iterable of compatible platforms. Defaults to the\n                           platforms compatible with the current system.\n:param bool warn: Whether warnings should be logged. Defaults to ``False``.\n\n.. versionadded:: 20.0",
+      "file": "packaging/tags.py",
+      "line": 397,
+      "loc": 79,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "generic_tags",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "interpreter",
+          "annotation": "str | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "abis",
+          "annotation": "Iterable[str] | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "platforms",
+          "annotation": "Iterable[str] | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "warn",
+          "annotation": "bool",
+          "default": "False",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "Iterator[Tag]",
+      "summary": "Yields the tags for an interpreter which requires no specialization.",
+      "docstring": "Yields the tags for an interpreter which requires no specialization.\n\nThis function should be used if one of the other interpreter-specific\nfunctions provided by this module is not appropriate (i.e. not calculating\ntags for a CPython interpreter).\n\nThe specific tags generated are:\n\n- ``<interpreter>-<abi>-<platform>``\n\nThe ``\"none\"`` ABI will be added if it was not explicitly provided.\n\n:param str interpreter: The name of the interpreter. Defaults to being\n                        calculated.\n:param Iterable abis: Iterable of compatible ABIs. Defaults to the ABIs\n                      compatible with the current system.\n:param Iterable platforms: Iterable of compatible platforms. Defaults to the\n                           platforms compatible with the current system.\n:param bool warn: Whether warnings should be logged. Defaults to ``False``.\n\n.. versionadded:: 20.0",
+      "file": "packaging/tags.py",
+      "line": 523,
+      "loc": 41,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "pure_python_tags",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "python_version",
+          "annotation": "PythonVersion | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "Iterator[Tag]",
+      "summary": "Yields the pure-Python tags compatible with ``python_version``.",
+      "docstring": "Yields the pure-Python tags compatible with ``python_version``.\n\nThe tags use the ``\"none\"`` ABI and ``\"any\"`` platform, so their\ngeneration does not depend on the running platform.\n\n.. versionadded:: 26.3\n\n:param Sequence python_version: A one- or two-item sequence representing the\n                             compatible version of Python. Defaults to\n                             ``sys.version_info[:2]``.\n:raises ValueError: If ``python_version`` is an empty sequence.",
+      "file": "packaging/tags.py",
+      "line": 581,
+      "loc": 22,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "compatible_tags",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "python_version",
+          "annotation": "PythonVersion | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "interpreter",
+          "annotation": "str | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "platforms",
+          "annotation": "Iterable[str] | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "Iterator[Tag]",
+      "summary": "Yields the tags for an interpreter compatible with the Python version specified by ``python_version``.",
+      "docstring": "Yields the tags for an interpreter compatible with the Python version\nspecified by ``python_version``.\n\nThe specific tags generated are:\n\n- ``py*-none-<platform>``\n- ``<interpreter>-none-any`` if ``interpreter`` is provided\n- ``py*-none-any``\n\n:param Sequence python_version: A one- or two-item sequence representing the\n                             compatible version of Python. Defaults to\n                             ``sys.version_info[:2]``.\n:param str interpreter: The name of the interpreter (if known), e.g.\n                        ``\"cp38\"``. Defaults to the current interpreter.\n:param Iterable platforms: Iterable of compatible platforms. Defaults to the\n                           platforms compatible with the current system.\n\n.. versionadded:: 20.0",
+      "file": "packaging/tags.py",
+      "line": 605,
+      "loc": 34,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "mac_platforms",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "version",
+          "annotation": "AppleVersion | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "arch",
+          "annotation": "str | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "Iterator[str]",
+      "summary": "Yields the :attr:`~Tag.platform` tags for macOS.",
+      "docstring": "Yields the :attr:`~Tag.platform` tags for macOS.\n\nThe `version` parameter is a two-item tuple specifying the macOS version to\ngenerate platform tags for. The `arch` parameter is the CPU architecture to\ngenerate platform tags for. Both parameters default to the appropriate value\nfor the current system.\n\n:param tuple version: A two-item tuple representing the version of macOS.\n                      Defaults to the current system's version.\n:param str arch: The CPU architecture. Defaults to the architecture of the\n                 current system, e.g. ``\"x86_64\"``.\n\n.. note::\n    Equivalent support for the other major platforms is purposefully not\n    provided:\n\n    - On Windows, platform compatibility is statically specified\n    - On Linux, code must be run on the system itself to determine\n      compatibility\n\n.. versionadded:: 20.0",
+      "file": "packaging/tags.py",
+      "line": 683,
+      "loc": 90,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "ios_platforms",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "version",
+          "annotation": "AppleVersion | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "multiarch",
+          "annotation": "str | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "Iterator[str]",
+      "summary": "Yields the :attr:`~Tag.platform` tags for iOS.",
+      "docstring": "Yields the :attr:`~Tag.platform` tags for iOS.\n\n:param tuple version: A two-item tuple representing the version of iOS.\n                      Defaults to the current system's version.\n:param str multiarch: The CPU architecture+ABI to be used. This should be in\n                      the format by ``sys.implementation._multiarch`` (e.g.,\n                      ``arm64_iphoneos`` or ``x86_64_iphonesimulator``).\n                      Defaults to the current system's multiarch value.\n\n.. note::\n    Behavior of this method is undefined if invoked on non-iOS platforms\n    without providing explicit version and multiarch arguments.\n\n.. versionadded:: 24.2",
+      "file": "packaging/tags.py",
+      "line": 775,
+      "loc": 62,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "android_platforms",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "api_level",
+          "annotation": "int | None",
+          "default": "None",
+          "kind": "positional"
+        },
+        {
+          "name": "abi",
+          "annotation": "str | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "returns": "Iterator[str]",
+      "summary": "Yields the :attr:`~Tag.platform` tags for Android. If this function is invoked on non-Android platforms, the ``api_level`` and ``abi`` arguments are required.",
+      "docstring": "Yields the :attr:`~Tag.platform` tags for Android. If this function is invoked on\nnon-Android platforms, the ``api_level`` and ``abi`` arguments are required.\n\n:param int api_level: The maximum `API level\n    <https://developer.android.com/tools/releases/platforms>`__ to return. Defaults\n    to the current system's version, as returned by ``platform.android_ver``.\n:param str abi: The `Android ABI <https://developer.android.com/ndk/guides/abis>`__,\n    e.g. ``arm64_v8a``. Defaults to the current system's ABI , as returned by\n    ``sysconfig.get_platform``. Hyphens and periods will be replaced with\n    underscores.\n\n.. versionadded:: 25.0",
+      "file": "packaging/tags.py",
+      "line": 839,
+      "loc": 37,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "platform_tags",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [],
+      "returns": "Iterator[str]",
+      "summary": "Yields the :attr:`~Tag.platform` tags for the running interpreter.",
+      "docstring": "Yields the :attr:`~Tag.platform` tags for the running interpreter.\n\n.. versionadded:: 21.1",
+      "file": "packaging/tags.py",
+      "line": 910,
+      "loc": 19,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "interpreter_name",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [],
+      "returns": "str",
+      "summary": "Returns the name of the running interpreter.",
+      "docstring": "Returns the name of the running interpreter.\n\nSome implementations have a reserved, two-letter abbreviation which will\nbe returned when appropriate.\n\nThis typically acts as the prefix to the :attr:`~Tag.interpreter` tag.\n\n.. versionadded:: 20.0",
+      "file": "packaging/tags.py",
+      "line": 931,
+      "loc": 13,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "interpreter_version",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "warn",
+          "annotation": "bool",
+          "default": "False",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "str",
+      "summary": "Returns the running interpreter's version.",
+      "docstring": "Returns the running interpreter's version.\n\nThis typically acts as the suffix to the :attr:`~Tag.interpreter` tag.\n\n:param bool warn: Whether warnings should be logged. Defaults to ``False``.\n\n.. versionadded:: 20.0",
+      "file": "packaging/tags.py",
+      "line": 946,
+      "loc": 12,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "interpreter_abi",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [],
+      "returns": "str",
+      "summary": "Returns the running interpreter's ABI tag.",
+      "docstring": "Returns the running interpreter's ABI tag.\n\nThis typically acts as the :attr:`~Tag.abi` tag of the most specific tag\nfor the running interpreter.",
+      "file": "packaging/tags.py",
+      "line": 964,
+      "loc": 10,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "sys_tags",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "warn",
+          "annotation": "bool",
+          "default": "False",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "Iterator[Tag]",
+      "summary": "Yields the sequence of tag triples that the running interpreter supports.",
+      "docstring": "Yields the sequence of tag triples that the running interpreter supports.\n\nThe iterable is ordered so that the best-matching tag is first in the\nsequence. The exact preferential order to tags is interpreter-specific, but\nin general the tag importance is in the order of:\n\n1. Interpreter\n2. Platform\n3. ABI\n\nThis order is due to the fact that an ABI is inherently tied to the\nplatform, but platform-specific code is not necessarily tied to the ABI. The\ninterpreter is the most important tag as it dictates basic support for any\nwheel.\n\nThe function returns an iterable in order to allow for the possible\nshort-circuiting of tag generation if the entire sequence is not necessary\nand tag calculation happens to be expensive.\n\n:param bool warn: Whether warnings should be logged. Defaults to ``False``.\n\n.. versionchanged:: 21.3\n    Added the `pp3-none-any` tag (:issue:`311`).\n.. versionchanged:: 26.1\n    Added the `abi3t` tag (:issue:`1099`).\n.. versionchanged:: 26.3\n    Native ``linux_*`` platform tags are now ordered before ``manylinux``\n    and ``musllinux`` tags (:issue:`160`).",
+      "file": "packaging/tags.py",
+      "line": 976,
+      "loc": 45,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "create_compatible_tags_selector",
+      "module": "packaging.tags",
+      "kind": "function",
+      "params": [
+        {
+          "name": "tags",
+          "annotation": "Iterable[Tag]",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "Callable[[Iterable[tuple[_T, AbstractSet[Tag]]]], Iterator[_T]]",
+      "summary": "Create a callable to select things compatible with supported tags.",
+      "docstring": "Create a callable to select things compatible with supported tags.\n\nThis function accepts an ordered sequence of tags, with the preferred\ntags first.\n\nThe returned callable accepts an iterable of tuples (thing, set[Tag]),\nand returns an iterator of things, with the things with the best\nmatching tags first.\n\nExample to select compatible wheel filenames:\n\n>>> from packaging import tags\n>>> from packaging.utils import parse_wheel_filename\n>>> selector = tags.create_compatible_tags_selector(tags.sys_tags())\n>>> filenames = [\"foo-1.0-py3-none-any.whl\", \"foo-1.0-py2-none-any.whl\"]\n>>> list(selector([\n...     (filename, parse_wheel_filename(filename)[-1]) for filename in filenames\n... ]))\n['foo-1.0-py3-none-any.whl']\n\n.. versionadded:: 26.1",
+      "file": "packaging/tags.py",
+      "line": 1023,
+      "loc": 44,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "Tag.interpreter",
+      "module": "packaging.tags",
+      "kind": "property",
+      "params": [],
+      "returns": "str",
+      "summary": "The interpreter name, e.g. ``\"py\"`` (see :attr:`INTERPRETER_SHORT_NAMES` for mapping well-known interpreter names to their short names).",
+      "docstring": "The interpreter name, e.g. ``\"py\"`` (see\n:attr:`INTERPRETER_SHORT_NAMES` for mapping well-known interpreter\nnames to their short names).",
+      "file": "packaging/tags.py",
+      "line": 159,
+      "loc": 7,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Tag.abi",
+      "module": "packaging.tags",
+      "kind": "property",
+      "params": [],
+      "returns": "str",
+      "summary": "The supported ABI.",
+      "docstring": "The supported ABI.",
+      "file": "packaging/tags.py",
+      "line": 168,
+      "loc": 5,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Tag.platform",
+      "module": "packaging.tags",
+      "kind": "property",
+      "params": [],
+      "returns": "str",
+      "summary": "The OS/platform.",
+      "docstring": "The OS/platform.",
+      "file": "packaging/tags.py",
+      "line": 175,
+      "loc": 5,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "canonicalize_name",
+      "module": "packaging.utils",
+      "kind": "function",
+      "params": [
+        {
+          "name": "name",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "validate",
+          "annotation": "bool",
+          "default": "False",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "NormalizedName",
+      "summary": "This function takes a valid Python package or extra name, and returns the normalized form of it.",
+      "docstring": "This function takes a valid Python package or extra name, and returns the\nnormalized form of it.\n\nThe return type is typed as :class:`NormalizedName`. This allows type\ncheckers to help require that a string has passed through this function\nbefore use.\n\nIf **validate** is true, then the function will check if **name** is a valid\ndistribution name before normalizing.\n\n:param str name: The name to normalize.\n:param bool validate: Check whether the name is a valid distribution name.\n:raises InvalidName: If **validate** is true and the name is not an\n    acceptable distribution name.\n\n>>> from packaging.utils import canonicalize_name\n>>> canonicalize_name(\"Django\")\n'django'\n>>> canonicalize_name(\"oslo.concurrency\")\n'oslo-concurrency'\n>>> canonicalize_name(\"requests\")\n'requests'\n\n.. versionadded:: 16.2\n\n.. versionchanged:: 20.4\n   The return type was changed to :class:`NormalizedName`.\n\n.. versionchanged:: 23.2\n   Added the *validate* keyword parameter.",
+      "file": "packaging/utils.py",
+      "line": 82,
+      "loc": 43,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "is_normalized_name",
+      "module": "packaging.utils",
+      "kind": "function",
+      "params": [
+        {
+          "name": "name",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "bool",
+      "summary": "Check if a name is a normalized project name (i.e. a valid name that :func:`canonicalize_name` would roundtrip to the same value).",
+      "docstring": "Check if a name is a normalized project name (i.e. a valid name that\n:func:`canonicalize_name` would roundtrip to the same value).\n\nThe roundtrip only characterizes normalized names for *valid* names. A name\nmust start and end with an ASCII letter or digit, which\n:func:`canonicalize_name` does not enforce: it leaves a leading or trailing\nhyphen in place, so such a name roundtrips without being normalized.\n\n:param str name: The name to check.\n\n>>> from packaging.utils import canonicalize_name, is_normalized_name\n>>> is_normalized_name(\"requests\")\nTrue\n>>> is_normalized_name(\"Django\")\nFalse\n>>> canonicalize_name(\"_not_legal\")\n'-not-legal'\n>>> is_normalized_name(\"-not-legal\")  # roundtrips, but not a valid name\nFalse\n\n.. versionadded:: 23.2",
+      "file": "packaging/utils.py",
+      "line": 127,
+      "loc": 25,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "canonicalize_version",
+      "module": "packaging.utils",
+      "kind": "function",
+      "params": [
+        {
+          "name": "version",
+          "annotation": "Version | str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "strip_trailing_zero",
+          "annotation": "bool",
+          "default": "True",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "str",
+      "summary": "Return a canonical form of a version as a string.",
+      "docstring": "Return a canonical form of a version as a string.\n\nThis function takes a string representing a package version (or a\n:class:`~packaging.version.Version` instance), and returns the\nnormalized form of it. By default, it strips trailing zeros from\nthe release segment.\n\n>>> from packaging.utils import canonicalize_version\n>>> canonicalize_version('1.0.1')\n'1.0.1'\n\nPer PEP 625, versions may have multiple canonical forms, differing\nonly by trailing zeros.\n\n>>> canonicalize_version('1.0.0')\n'1'\n>>> canonicalize_version('1.0.0', strip_trailing_zero=False)\n'1.0.0'\n\nInvalid versions are returned unaltered.\n\n>>> canonicalize_version('foo bar baz')\n'foo bar baz'\n\n>>> canonicalize_version('1.4.0.0.0')\n'1.4'\n\n.. versionadded:: 17.1\n\n.. versionchanged:: 21.0\n   The return type was narrowed to :class:`str`.\n\n.. versionchanged:: 22.0\n   Added the *strip_trailing_zero* keyword parameter.",
+      "file": "packaging/utils.py",
+      "line": 154,
+      "loc": 44,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "parse_wheel_filename",
+      "module": "packaging.utils",
+      "kind": "function",
+      "params": [
+        {
+          "name": "filename",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "validate_order",
+          "annotation": "bool",
+          "default": "False",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "tuple[NormalizedName, Version, BuildTag, frozenset[Tag]]",
+      "summary": "This function takes the filename of a wheel file, and parses it, returning a tuple of name, version, build number, and tags.",
+      "docstring": "This function takes the filename of a wheel file, and parses it,\nreturning a tuple of name, version, build number, and tags.\n\nThe name part of the tuple is normalized and typed as\n:class:`NormalizedName`. The version portion is an instance of\n:class:`~packaging.version.Version`. The build number is ``()`` if\nthere is no build number in the wheel filename, otherwise a\ntwo-item tuple of an integer for the leading digits and\na string for the rest of the build number. The tags portion is a\nfrozen set of :class:`~packaging.tags.Tag` instances (as the tag\nstring format allows multiple tags to be combined into a single\nstring).\n\nIf **validate_order** is true, compressed tag set components are\nchecked to be in sorted order as required by PEP 425.\n\n:param str filename: The name of the wheel file.\n:param bool validate_order: Check whether compressed tag set components\n    are in sorted order.\n:raises InvalidWheelFilename: If the filename in question\n    does not follow the :ref:`wheel specification\n    <pypug:binary-distribution-format>`.\n\n>>> from packaging.utils import parse_wheel_filename\n>>> from packaging.tags import Tag\n>>> from packaging.version import Version\n>>> name, ver, build, tags = parse_wheel_filename(\"foo-1.0-py3-none-any.whl\")\n>>> name\n'foo'\n>>> ver == Version('1.0')\nTrue\n>>> tags == {Tag(\"py3\", \"none\", \"any\")}\nTrue\n>>> not build\nTrue\n\n.. versionadded:: 20.9\n\n.. versionchanged:: 23.2\n   Raises :class:`InvalidWheelFilename` when the version component is invalid.\n\n.. versionadded:: 26.1\n   The *validate_order* parameter.\n\n.. versionchanged:: 26.3\n   Raises :class:`InvalidWheelFilename` when an interpreter component is\n   not an identifier, a tag set component is empty, or the project name is\n   empty.",
+      "file": "packaging/utils.py",
+      "line": 200,
+      "loc": 104,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "parse_sdist_filename",
+      "module": "packaging.utils",
+      "kind": "function",
+      "params": [
+        {
+          "name": "filename",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "tuple[NormalizedName, Version]",
+      "summary": "This function takes the filename of a sdist file (as specified in the `Source distribution format`_ documentation), and parses it, returning a tuple of the normalized name and version as represented by an instance of :class:`~packaging.version.Version`.",
+      "docstring": "This function takes the filename of a sdist file (as specified\nin the `Source distribution format`_ documentation), and parses\nit, returning a tuple of the normalized name and version as\nrepresented by an instance of :class:`~packaging.version.Version`.\n\n:param str filename: The name of the sdist file.\n:raises InvalidSdistFilename: If the filename does not end\n    with an sdist extension (``.zip`` or ``.tar.gz``), if it does not\n    contain a dash separating the name and the version of the distribution,\n    if the project name is empty, or if the version portion is not a valid\n    version.\n\n>>> from packaging.utils import parse_sdist_filename\n>>> from packaging.version import Version\n>>> name, ver = parse_sdist_filename(\"foo-1.0.tar.gz\")\n>>> name\n'foo'\n>>> ver == Version('1.0')\nTrue\n\n.. versionadded:: 20.9\n\n.. versionchanged:: 21.0\n   Added support for ``.zip`` source distributions.\n\n.. versionchanged:: 23.2\n   Raises :class:`InvalidSdistFilename` when the version component is invalid.\n\n.. versionchanged:: 26.3\n   Raises :class:`InvalidSdistFilename` on an empty project name.\n\n.. _Source distribution format: https://packaging.python.org/specifications/source-distribution-format/#source-distribution-file-name",
+      "file": "packaging/utils.py",
+      "line": 306,
+      "loc": 65,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "normalize_pre",
+      "module": "packaging.version",
+      "kind": "function",
+      "params": [
+        {
+          "name": "letter",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "str",
+      "summary": "Normalize the pre-release segment of a version string.",
+      "docstring": "Normalize the pre-release segment of a version string.\n\nReturns a lowercase version of the string if not a known pre-release\nidentifier.\n\n>>> normalize_pre('alpha')\n'a'\n>>> normalize_pre('BETA')\n'b'\n>>> normalize_pre('rc')\n'rc'\n\n:param letter:\n\n.. versionadded:: 26.1",
+      "file": "packaging/version.py",
+      "line": 84,
+      "loc": 19,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "parse",
+      "module": "packaging.version",
+      "kind": "function",
+      "params": [
+        {
+          "name": "version",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "returns": "Version",
+      "summary": "Parse the given version string.",
+      "docstring": "Parse the given version string.\n\nThis is identical to the :class:`Version` constructor.\n\n>>> parse('1.0.dev1')\n<Version('1.0.dev1')>\n\n:param version: The version string to parse.\n:raises InvalidVersion: When the version string is not a valid version.",
+      "file": "packaging/version.py",
+      "line": 105,
+      "loc": 12,
+      "n_overloads": 0,
+      "decorators": []
+    },
+    {
+      "qualname": "Version.from_parts",
+      "module": "packaging.version",
+      "kind": "classmethod",
+      "params": [
+        {
+          "name": "epoch",
+          "annotation": "int",
+          "default": "0",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "release",
+          "annotation": "tuple[int, ...]",
+          "default": null,
+          "kind": "keyword_only"
+        },
+        {
+          "name": "pre",
+          "annotation": "tuple[str, int] | None",
+          "default": "None",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "post",
+          "annotation": "int | None",
+          "default": "None",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "dev",
+          "annotation": "int | None",
+          "default": "None",
+          "kind": "keyword_only"
+        },
+        {
+          "name": "local",
+          "annotation": "str | None",
+          "default": "None",
+          "kind": "keyword_only"
+        }
+      ],
+      "returns": "Self",
+      "summary": "Return a new version composed of the various parts.",
+      "docstring": "Return a new version composed of the various parts.\n\nThis allows you to build a version without going though a string and\nrunning a regular expression. It normalizes pre-release strings. The\n``release=`` keyword argument is required.\n\n>>> Version.from_parts(release=(1,2,3))\n<Version('1.2.3')>\n>>> Version.from_parts(release=(0,1,0), pre=(\"b\", 1))\n<Version('0.1.0b1')>\n\n:param epoch:\n:param release: This version tuple is required\n\n.. versionadded:: 26.1",
+      "file": "packaging/version.py",
+      "line": 463,
+      "loc": 45,
+      "n_overloads": 0,
+      "decorators": [
+        "classmethod"
+      ]
+    },
+    {
+      "qualname": "Version.epoch",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "int",
+      "summary": "The epoch of the version.",
+      "docstring": "The epoch of the version.\n\n>>> Version(\"2.0.0\").epoch\n0\n>>> Version(\"1!2.0.0\").epoch\n1",
+      "file": "packaging/version.py",
+      "line": 903,
+      "loc": 9,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.release",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "tuple[int, ...]",
+      "summary": "The components of the \"release\" segment of the version.",
+      "docstring": "The components of the \"release\" segment of the version.\n\n>>> Version(\"1.2.3\").release\n(1, 2, 3)\n>>> Version(\"2.0.0\").release\n(2, 0, 0)\n>>> Version(\"1!2.0.0.post0\").release\n(2, 0, 0)\n\nIncludes trailing zeroes but not the epoch or any pre-release / development /\npost-release suffixes.",
+      "file": "packaging/version.py",
+      "line": 914,
+      "loc": 14,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.pre",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "tuple[Literal['a', 'b', 'rc'], int] | None",
+      "summary": "The pre-release segment of the version.",
+      "docstring": "The pre-release segment of the version.\n\n>>> print(Version(\"1.2.3\").pre)\nNone\n>>> Version(\"1.2.3a1\").pre\n('a', 1)\n>>> Version(\"1.2.3b1\").pre\n('b', 1)\n>>> Version(\"1.2.3rc1\").pre\n('rc', 1)",
+      "file": "packaging/version.py",
+      "line": 930,
+      "loc": 13,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.post",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "int | None",
+      "summary": "The post-release number of the version.",
+      "docstring": "The post-release number of the version.\n\n>>> print(Version(\"1.2.3\").post)\nNone\n>>> Version(\"1.2.3.post1\").post\n1",
+      "file": "packaging/version.py",
+      "line": 945,
+      "loc": 9,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.dev",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "int | None",
+      "summary": "The development number of the version.",
+      "docstring": "The development number of the version.\n\n>>> print(Version(\"1.2.3\").dev)\nNone\n>>> Version(\"1.2.3.dev1\").dev\n1",
+      "file": "packaging/version.py",
+      "line": 956,
+      "loc": 9,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.local",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "str | None",
+      "summary": "The local version segment of the version.",
+      "docstring": "The local version segment of the version.\n\n>>> print(Version(\"1.2.3\").local)\nNone\n>>> Version(\"1.2.3+abc\").local\n'abc'",
+      "file": "packaging/version.py",
+      "line": 967,
+      "loc": 12,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.public",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "str",
+      "summary": "The public portion of the version.",
+      "docstring": "The public portion of the version.\n\nThis returns a string. If you want a :class:`Version` again and care\nabout performance, use ``v.__replace__(local=None)`` instead.\n\n>>> Version(\"1.2.3\").public\n'1.2.3'\n>>> Version(\"1.2.3+abc\").public\n'1.2.3'\n>>> Version(\"1!1.2.3dev1+abc\").public\n'1!1.2.3.dev1'",
+      "file": "packaging/version.py",
+      "line": 981,
+      "loc": 14,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.base_version",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "str",
+      "summary": "The \"base version\" of the version.",
+      "docstring": "The \"base version\" of the version.\n\nThis returns a string. If you want a :class:`Version` again and care\nabout performance, use\n``v.__replace__(pre=None, post=None, dev=None, local=None)`` instead.\n\n>>> Version(\"1.2.3\").base_version\n'1.2.3'\n>>> Version(\"1.2.3+abc\").base_version\n'1.2.3'\n>>> Version(\"1!1.2.3dev1+abc\").base_version\n'1!1.2.3'\n\nThe \"base version\" is the public version of the project without any pre or post\nrelease markers.",
+      "file": "packaging/version.py",
+      "line": 997,
+      "loc": 19,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.is_prerelease",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "bool",
+      "summary": "Whether this version is a pre-release.",
+      "docstring": "Whether this version is a pre-release.\n\n>>> Version(\"1.2.3\").is_prerelease\nFalse\n>>> Version(\"1.2.3a1\").is_prerelease\nTrue\n>>> Version(\"1.2.3b1\").is_prerelease\nTrue\n>>> Version(\"1.2.3rc1\").is_prerelease\nTrue\n>>> Version(\"1.2.3dev1\").is_prerelease\nTrue",
+      "file": "packaging/version.py",
+      "line": 1018,
+      "loc": 15,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.is_postrelease",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "bool",
+      "summary": "Whether this version is a post-release.",
+      "docstring": "Whether this version is a post-release.\n\n>>> Version(\"1.2.3\").is_postrelease\nFalse\n>>> Version(\"1.2.3.post1\").is_postrelease\nTrue",
+      "file": "packaging/version.py",
+      "line": 1035,
+      "loc": 9,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.is_devrelease",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "bool",
+      "summary": "Whether this version is a development release.",
+      "docstring": "Whether this version is a development release.\n\n>>> Version(\"1.2.3\").is_devrelease\nFalse\n>>> Version(\"1.2.3.dev1\").is_devrelease\nTrue",
+      "file": "packaging/version.py",
+      "line": 1046,
+      "loc": 9,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.major",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "int",
+      "summary": "The first item of :attr:`release` or ``0`` if unavailable.",
+      "docstring": "The first item of :attr:`release` or ``0`` if unavailable.\n\n>>> Version(\"1.2.3\").major\n1\n\n.. versionadded:: 20.0",
+      "file": "packaging/version.py",
+      "line": 1057,
+      "loc": 9,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.minor",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "int",
+      "summary": "The second item of :attr:`release` or ``0`` if unavailable.",
+      "docstring": "The second item of :attr:`release` or ``0`` if unavailable.\n\n>>> Version(\"1.2.3\").minor\n2\n>>> Version(\"1\").minor\n0\n\n.. versionadded:: 20.0",
+      "file": "packaging/version.py",
+      "line": 1068,
+      "loc": 11,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    },
+    {
+      "qualname": "Version.micro",
+      "module": "packaging.version",
+      "kind": "property",
+      "params": [],
+      "returns": "int",
+      "summary": "The third item of :attr:`release` or ``0`` if unavailable.",
+      "docstring": "The third item of :attr:`release` or ``0`` if unavailable.\n\n>>> Version(\"1.2.3\").micro\n3\n>>> Version(\"1\").micro\n0\n\n.. versionadded:: 20.0",
+      "file": "packaging/version.py",
+      "line": 1081,
+      "loc": 11,
+      "n_overloads": 0,
+      "decorators": [
+        "property"
+      ]
+    }
+  ],
+  "classes": {
+    "DependencyGroupResolver": {
+      "module": "packaging.dependency_groups",
+      "params": [
+        {
+          "name": "dependency_groups",
+          "annotation": "Mapping[str, Sequence[str | Mapping[str, str]]]",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "summary": "A resolver for Dependency Group data."
+    },
+    "DirectUrl": {
+      "module": "packaging.direct_url",
+      "params": null,
+      "summary": "A class representing a direct URL."
+    },
+    "Marker": {
+      "module": "packaging.markers",
+      "params": [
+        {
+          "name": "marker",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "summary": "Represents a parsed dependency marker expression."
+    },
+    "RFC822Policy": {
+      "module": "packaging.metadata",
+      "params": null,
+      "summary": "This is :class:`email.policy.EmailPolicy`, but with a simple ``header_store_parse`` implementation that handles multi-line values, and some nice defaults."
+    },
+    "RFC822Message": {
+      "module": "packaging.metadata",
+      "params": [],
+      "summary": "This is :class:`email.message.EmailMessage` with two small changes: it defaults to our `RFC822Policy`, and it correctly writes unicode when being called with `bytes()`."
+    },
+    "Metadata": {
+      "module": "packaging.metadata",
+      "params": null,
+      "summary": "Representation of distribution metadata."
+    },
+    "PackageSdist": {
+      "module": "packaging.pylock",
+      "params": null,
+      "summary": "A source distribution for a package."
+    },
+    "PackageWheel": {
+      "module": "packaging.pylock",
+      "params": null,
+      "summary": "A wheel distribution for a package."
+    },
+    "Package": {
+      "module": "packaging.pylock",
+      "params": null,
+      "summary": "A package entry in a pylock file."
+    },
+    "Pylock": {
+      "module": "packaging.pylock",
+      "params": null,
+      "summary": "Represent a validated pylock file."
+    },
+    "VersionRange": {
+      "module": "packaging.ranges",
+      "params": null,
+      "summary": "A set of :class:`~packaging.version.Version` values accepted by a :class:`~packaging.specifiers.SpecifierSet`."
+    },
+    "BaseSpecifier": {
+      "module": "packaging.specifiers",
+      "params": null,
+      "summary": "Abstract base class for :class:`Specifier` and :class:`SpecifierSet`."
+    },
+    "Specifier": {
+      "module": "packaging.specifiers",
+      "params": [
+        {
+          "name": "spec",
+          "annotation": "str",
+          "default": "''",
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "summary": "This class abstracts handling of version specifiers."
+    },
+    "SpecifierSet": {
+      "module": "packaging.specifiers",
+      "params": [
+        {
+          "name": "specifiers",
+          "annotation": "str | Iterable[Specifier]",
+          "default": "''",
+          "kind": "positional"
+        },
+        {
+          "name": "prereleases",
+          "annotation": "bool | None",
+          "default": "None",
+          "kind": "positional"
+        }
+      ],
+      "summary": "This class abstracts handling of a set of version specifiers."
+    },
+    "Tag": {
+      "module": "packaging.tags",
+      "params": [
+        {
+          "name": "interpreter",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "abi",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        },
+        {
+          "name": "platform",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "summary": "A representation of the tag triple for a wheel."
+    },
+    "Version": {
+      "module": "packaging.version",
+      "params": [
+        {
+          "name": "version",
+          "annotation": "str",
+          "default": null,
+          "kind": "positional"
+        }
+      ],
+      "summary": "This class abstracts handling of a project's versions."
+    }
+  }
+}

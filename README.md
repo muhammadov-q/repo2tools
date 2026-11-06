@@ -14,9 +14,9 @@ Tool-Gym track of the "Agentic Reasoning, Tooling" project at the University of 
 | 242 exercises with known answers | Work |
 | Run a model with or without tools, and score it | Works |
 | Export the tools to ToolGym's catalog | Works; ToolGym's own checks accept all 21 tools |
-| `repo2tools.py <url>`: repo link in, generated tools out | Built and tested with a scripted LLM; first run with a real model is pending |
-| Trace collection (`traces.py`, `run_model.py`, `collect_reference_traces.py`) | Works for known-good solutions; model runs pending |
-| Repetition analysis (`analyze_traces.py`) | Works on known-good solutions; model runs pending |
+| `repo2tools.py <url>`: repo link in, generated tools out | Works on packaging and arrow, one tool per function; choosing the right tools is the weak point |
+| Trace collection (`traces.py`, `run_model.py`, `collect_reference_traces.py`) | Works for known-good solutions and model runs |
+| Repetition analysis (`analyze_traces.py`) | Works; token counts match the server exactly |
 | Context compression in a real run | Only simulated so far |
 
 ## Results so far
@@ -39,6 +39,30 @@ The same 20 long tasks with tools of different sizes (thinking off):
 | All 23 together | 1 | 16 of 20 |
 
 These are first results: one small model, one run, and 20 long tasks of one kind.
+
+Generated tools, 6 November 2026. Qwen3-Coder-30B writes the tools, and Qwen3-8B uses them on the 222 short exercises:
+
+| Tool set | Tools | Passed |
+| --- | --- | --- |
+| Hand-made (run again; same score as in October) | 21 | 94% (209) |
+| No tools (October run) | 0 | 60% (133) |
+| Generated, `--max-tools 60` (the LLM picked 39, 29 accepted) | 29 | 55% (123) |
+| Generated, `--max-tools 30` (22 accepted) | 22 | 44% (98) |
+
+- **Where a fitting tool exists, generated tools match hand-made ones:** 74 vs 72 of 82 exercises. These six exercise kinds were chosen after seeing the results.
+- **The main gap is choosing tools:** on the other 140 exercises it's 49 vs 137. The LLM skipped most `Version` tools, and the library has no public function to compare two versions, because that is done with operators.
+- **A correct tool can still be misused:** `check_specifier_set_unsatisfiable` passes every check, but the model copies its `true` when asked whether a constraint *can* be satisfied (0 of 20).
+- **The comparison favours the hand-made tools:** they were written together with these exercises.
+
+Traces of real runs, Qwen3-8B. All numbers are in `out/traces/analysis/repetition.md`:
+
+| Long tasks (20) | Runs with a tool call | Passed | Calls | Exact repeats |
+| --- | --- | --- | --- | --- |
+| The model decides | 6 | 0 | 49 | 4 |
+| First request must call a tool | 20 | 0 | 106 | 5 |
+| Every request must call a tool | 20 | 2 | 502 | 250 |
+
+Forcing gets more calls, but not better ones: one run called `evaluate_marker` 38 times with the same arguments. These traces need filtering before anyone trains on them.
 
 ## Quick start
 
@@ -66,7 +90,7 @@ uv run python repo2tools.py https://github.com/pypa/packaging --commit c1d2a9d \
     --base-url http://127.0.0.1:18000/v1 --model qwen3-8b
 ```
 
-It clones the repo at a recorded commit, finds the package (`src/` layout or top level), and scrapes its public API. Then, for up to `--max-tools` functions, an LLM writes a test and the code, one tool per library function. Each tool must pass these checks, with errors going back to the LLM for a few repair rounds (`--repair-rounds`):
+It clones the repo at a recorded commit, finds the package (`src/` layout or top level), and scrapes its public API. An LLM picks up to `--max-tools` functions, naming each by its full path, which must be in the API. Then it writes a test and the code, one tool per library function. Each tool must pass these checks, with errors going back to the LLM for a few repair rounds (`--repair-rounds`):
 
 | Check | What it means |
 | --- | --- |
@@ -78,7 +102,7 @@ It clones the repo at a recorded commit, finds the package (`src/` layout or top
 
 The result goes to `toolsets/generated/<repo>-<model>/` (one file per tool, `server.py`, `run_server.sh`, `manifest.json`) and `out/generated/<repo>-<model>/` (`report.md`, `api.json`, and `llm_log.jsonl` with every LLM request). First version: pure-Python libraries, one tool per function.
 
-**Limits of the checks.** The same model writes the tool and the direct call it is compared with, in separate requests, so the two can share a misunderstanding of the library. The check also sees only what the sample inputs reach: a tool that drops a requirement's extras passes if no sample has extras. A real score needs exercises with known answers.
+**Limits of the checks.** The same model writes the tool and the direct call it is compared with, in separate requests, so the two can share a misunderstanding of the library. The check also sees only what the sample inputs reach: a tool that drops a requirement's extras passes if no sample has extras. And passing says nothing about whether a model can use the tool, or whether the right functions were chosen. A real score needs exercises with known answers.
 
 **Untrusted code.** Repo code and generated code run only in their own environment under `.cache/envs/`:
 
@@ -120,6 +144,7 @@ No GPU or API key needed. The LLM and the endpoint are scripted.
 | Path | What it does |
 | --- | --- |
 | `repo2tools.py` | Repo link to checked tools; see above. |
+| `toolsets/generated/` | Generated tool sets, one file per tool. Not reviewed by a person. |
 | `tool_worker.py` | Checks one generated tool. It runs inside the tool set's environment and sandbox. |
 | `traces.py` | The trace format. |
 | `collect_reference_traces.py`, `analyze_traces.py` | Known-good solutions as traces; what repeats and what compression would save. |
@@ -135,8 +160,8 @@ No GPU or API key needed. The LLM and the endpoint are scripted.
 | `make_handover.py`, `handover/README.md` | Build a self-contained zip of the exercises and tools for Alex's benchmark. |
 | `toolsets/pypa_packaging/toolgym_types.py`, `export_toolgym_catalog.py` | Write the tools into a ToolGym checkout as a catalog server. This repo contains no ToolGym code. |
 | `analyze_catalog_chains.py`, `check_exercise_edges.py` | Summarise ToolGym's chain listings, and check that the links the exercises need are in ToolGym's graph. |
-| `cluster/` | How to serve a model on UBELIX, with the Slurm job script. |
-| `out/` | Results: `baseline/` (ToolGym's catalog today), `packaging/` (API, exercises, tool check), `packaging_toolgym/` (ToolGym's view of our tools), `runs/` (model runs). |
+| `cluster/` | How to serve a model on UBELIX, with the Slurm job scripts. |
+| `out/` | Results: `baseline/` (ToolGym's catalog today), `packaging/` (API, exercises, tool check), `packaging_toolgym/` (ToolGym's view of our tools), `runs/` (model runs), `traces/` (full traces and their analysis), `generated/` (reports and LLM logs of generated tool sets). |
 
 ## Rebuild from source
 

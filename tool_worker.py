@@ -50,7 +50,8 @@ FORBIDDEN_NAMES = {"__import__", "breakpoint", "compile", "eval", "exec", "globa
 SAFE_BUILTINS = ("abs", "bool", "bytes", "dict", "float", "frozenset", "int", "len", "list", "max", "min",
                  "repr", "set", "sorted", "str", "sum", "tuple")
 DIRECT_CALL_NODES = (ast.Expression, ast.Call, ast.Attribute, ast.Name, ast.Load, ast.Constant, ast.keyword,
-                     ast.List, ast.Tuple, ast.Dict, ast.Set, ast.Subscript, ast.UnaryOp, ast.USub)
+                     ast.List, ast.Tuple, ast.Dict, ast.Set, ast.Subscript, ast.UnaryOp, ast.USub, ast.Not, ast.IfExp,
+                     ast.BoolOp, ast.And, ast.Or, ast.Compare, ast.Is, ast.IsNot, ast.Eq, ast.NotEq)
 SAMPLE_SECONDS = 5
 # errors that mean the direct call itself is written wrongly, not that a sample is invalid
 BROKEN_CALL_ERRORS = (NameError, AttributeError, ImportError, SyntaxError)
@@ -65,7 +66,7 @@ def direct_call_problem(expression: str, parameters: list[str], target: str) -> 
     names, attributes = set(), set()
     for node in ast.walk(tree):
         if not isinstance(node, DIRECT_CALL_NODES):
-            return f"direct_call may not use {type(node).__name__}: only calls, attributes, names and constants"
+            return f"direct_call may not use {type(node).__name__}: only calls, attributes, names, constants and simple conditions"
         if isinstance(node, ast.Name):
             if node.id.startswith("__"):
                 return f"direct_call may not use {node.id}"

@@ -34,8 +34,19 @@ export OPENAI_API_KEY=<contents of ~/.vllm_api_key on the cluster>
 # the endpoint is now http://127.0.0.1:18000/v1
 ```
 
+## A code model for writing tools
+
+`repo2tools.py` gets better code from a code model. `serve_qwen3_coder.sbatch` serves Qwen3-Coder-30B on one H100. Download it first, as above, with `hf download Qwen/Qwen3-Coder-30B-A3B-Instruct`. It needs about 57 GB of scratch space. A good setup is two jobs and two tunnels: Qwen3-Coder writes the tools, and Qwen3-8B uses them.
+
+```sh
+ssh -N -L 18000:<RTX 4090 node>:8000 -L 18001:<H100 node>:8000 <your UBELIX login>
+```
+
+Cancel jobs when you finish: `scancel <job id>`.
+
 ## Good to know
 
 - `sbatch` refuses `--mem` without `--nodes`.
+- One H100 allows at most 16 CPUs and 92,160 MB of RAM, so `--mem=96G` is refused.
 - `VLLM_USE_FLASHINFER_SAMPLER=0` is needed: FlashInfer's sampler compiles itself on first use and needs `nvcc`, which the GPU nodes don't have.
 - All H100s can be busy while RTX 4090s are free. On a 4090, Qwen3-8B leaves about 3.1 GiB for the KV cache: 22,672 tokens, or about 1.4 full-length requests at once.

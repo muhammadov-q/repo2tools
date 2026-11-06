@@ -220,9 +220,9 @@ def repeated_arguments(m: Measured, tokenizer) -> dict:
 
 def flows(earlier: dict, later: dict) -> bool:
     """Whether a later call uses an earlier call's output, whole or a meaningful part of it."""
-    whole = canonical(earlier["output"])
     arguments = list(later["arguments"].values())
-    if any(canonical(v) == whole for v in arguments):
+    # a boolean or number that equals a flag is a coincidence, not data flow (as in ToolGym's type links)
+    if isinstance(earlier["output"], (str, list, dict)) and any(canonical(v) == canonical(earlier["output"]) for v in arguments):
         return True
     parts = {canonical(v) for v in all_values(earlier["output"]) if isinstance(v, (str, list, dict)) and v not in ("", [], {})}
     return any(canonical(v) in parts for argument in arguments for v in all_values(argument))
@@ -302,6 +302,16 @@ def retrieved(m: Measured, k: int) -> set[str]:
     used = {c["name"] for c in m.calls if c["name"] in m.tool_names}
     extra = [n for n in m.tool_names if n not in used]
     return used | set(extra[: max(0, k - len(used))])
+
+
+def exact_repeats(m: Measured) -> int:
+    """Calls with the same tool and arguments as an earlier call of the same run: the model going in circles."""
+    seen, repeats = set(), 0
+    for call in m.calls:
+        key = (call["name"], canonical(call["arguments"]))
+        repeats += key in seen
+        seen.add(key)
+    return repeats
 
 
 def analyze(all_measured: list[Measured], tokenizer) -> dict:
@@ -385,7 +395,8 @@ def analyze(all_measured: list[Measured], tokenizer) -> dict:
             calls += saved
         sequence_rows.append({**row, "calls_saved": calls, "tokens_after": total, "final_after": final})
     return {"traces": len(all_measured), "requests": sum(len(m.message_counts) for m in all_measured),
-            "calls": sum(len(m.calls) for m in all_measured), "completion_tokens": sum(sum(m.completions) for m in all_measured),
+            "calls": sum(len(m.calls) for m in all_measured), "exact_repeated_calls": sum(exact_repeats(m) for m in all_measured),
+            "completion_tokens": sum(sum(m.completions) for m in all_measured),
             "ideas": {k: {"all_requests": v[0], "final_context": v[1]} for k, v in ideas.items()},
             "parts": dict(parts), "first_time": first_time, "resent": resent, "arguments": dict(arguments),
             "repeated_argument_names": by_name.most_common(5), "sequences": sequence_rows, "used_tools": used_tools, "offered_tools": offered_tools,
@@ -404,6 +415,8 @@ def markdown(name: str, result: dict) -> str:
     total = result["first_time"] + result["resent"]
     if total:
         lines += [f"**Sent before:** {result['resent']:,} of {total:,} prompt tokens ({result['resent'] / total:.0%}) were already sent in an earlier request of the same run.", ""]
+    if result["exact_repeated_calls"]:
+        lines += [f"**Repeated calls:** {result['exact_repeated_calls']} of {result['calls']} calls had the same tool and arguments as an earlier call of the same run.", ""]
     if result["offered_tools"]:
         lines += [f"**Tools:** each run used {result['used_tools'] / result['traces']:.1f} of the {result['offered_tools'] / result['traces']:.0f} tools offered, on average.", ""]
     lines += ["### What the prompts consist of", "", "| Part | Tokens, all requests | Share |", "| --- | --- | --- |"]
@@ -452,7 +465,8 @@ def main() -> None:
                 continue
             if len(m.calls) < args.min_calls:
                 continue
-            label = "known-good" if trace["source"] == "reference" else f"{trace.get('model')}, {trace.get('meta', {}).get('tool_choice', 'auto')}"
+            label = "known-good" if trace["source"] == "reference" else \
+                f"{trace.get('model')}, tools: {trace.get('tool_set')}, tool choice: {trace.get('meta', {}).get('tool_choice', 'auto')}"
             groups[f"{label}, {trace.get('horizon')} tasks"].append(m)
     results = {name: analyze(group, tokenizer) for name, group in sorted(groups.items())}
     text = "# What repeats in the traces\n\n" \
