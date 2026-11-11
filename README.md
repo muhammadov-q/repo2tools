@@ -5,11 +5,9 @@
 `repo2tools` takes the URL of a Python library, has an LLM write one tool per library function, and accepts a tool only if running it gives the same result as calling the library directly. It then works out which tools can be chained, again by running them, and measures what a model does with the tools: how often it solves tasks with known answers, and what a run costs in tokens.
 
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/pipeline-dark.png">
-    <img src="docs/pipeline-light.png" alt="The three stages. Synthesize: repository URL, static API scan, an LLM proposes tools and writes a test and the tool in separate requests, checks run in a sandbox with up to three repair rounds. Chain: an LLM proposes types, the types are verified by running the tools, ToolGym builds chains and synthetic traces. Measure: a model solves exercises with and without the tools, every request is saved as a trace, and the traces are analyzed for repetition." width="100%">
-  </picture>
+  <img src="docs/architecture.png" alt="Architecture of repo2tools. Top: a repository is scanned statically, an LLM generator turns public functions into candidate tools, and a sandbox verifier runs each tool on sample inputs and compares it with a direct library call; errors go back to the generator for up to three repair rounds, and accepted tools form the verified MCP tool set. Bottom: an LLM proposes types for the tools, a pairwise parameter check and an output-to-consumer check keep only the types that hold when the tools are run, ToolGym samples and validates tool chains into synthetic traces, an LLM agent solves 242 exercises with and without the tools, and both kinds of traces go to the trace analysis." width="100%">
 </p>
+<p align="center"><sub><b>Figure 1.</b> Overview. <i>Top:</i> tool synthesis. An LLM writes each tool, and a sandboxed verifier accepts it only if it agrees with the library on sample inputs. <i>Bottom:</i> the types an LLM proposes are kept only where the tools, when run, accept each other's values (T<sup>kept</sup>); the typed tools feed ToolGym's chain sampling and an agent evaluation, and both produce traces for analysis.</sub></p>
 
 Research prototype from the Tool-Gym track of the project *Agentic Reasoning, Tooling* at the University of Bern.
 Author: Kobiljon Muhammadov. Supervisor: Roman Macháček.
@@ -59,6 +57,7 @@ Also included: 21 reference tools over [pypa/packaging](https://github.com/pypa/
     <img src="docs/results-light.png" alt="Left: share of 222 exercises solved by Qwen3-8B. Hand-made tools 94 percent, no tools 60 percent, 29 generated tools 55 percent, 22 generated tools 44 percent. Right: composition of prompt tokens. On short tasks the tool list is 95 percent of all prompt tokens, on long tasks 69 percent, and on long ToolGym chains with only 6 tools offered it is 39 percent while tool outputs are 48 percent." width="100%">
   </picture>
 </p>
+<p align="center"><sub><b>Figure 2.</b> <i>Left:</i> exercises solved by Qwen3-8B with each tool set. <i>Right:</i> where the prompt tokens of a run go.</sub></p>
 
 All numbers are first results: small models, one run per setting, one library. Each one can be rebuilt from the files in `out/`.
 
@@ -306,7 +305,7 @@ No GPU or API key needed. The LLM and the endpoint are scripted.
 | `make_handover.py`, `handover/README.md` | Build a self-contained zip of the exercises and tools for Alex's benchmark. |
 | `toolsets/pypa_packaging/toolgym_types.py`, `export_toolgym_catalog.py` | Write the tools into a ToolGym checkout as a catalog server. This repo contains no ToolGym code. |
 | `analyze_catalog_chains.py`, `check_exercise_edges.py` | Summarise ToolGym's chain listings, and check that the links the exercises need are in ToolGym's graph. |
-| `docs/` | The README figures and the script that draws them from the result files. |
+| `docs/` | The README figures, and `make_figures.py`, which draws them (the results figure from the result files). |
 | `cluster/` | How to serve a model on UBELIX, with the Slurm job scripts. |
 | `out/` | Results: `baseline/` (ToolGym's catalog today), `packaging/` (API, exercises, tool check), `packaging_toolgym/` (ToolGym's view of our tools), `runs/` (model runs), `traces/` (full traces and their analysis), `generated/` (reports and LLM logs of generated tool sets), `toolgym_runs/` (summaries of ToolGym pipeline runs). |
 
@@ -336,7 +335,7 @@ python3 -I check_exercise_edges.py out/packaging_toolgym/chains_packaging.txt ou
     ../tool-gym/gym/tools/mcp_servers/catalog/kobiljon_pypa_packaging_tools/mcp_server.json
 ```
 
-The figures at the top are drawn from the result files by `uv run --with matplotlib python docs/make_figures.py`.
+The figures are drawn by `uv run --with matplotlib python docs/make_figures.py`; the results figure reads its numbers from the result files.
 
 ## Related work
 
