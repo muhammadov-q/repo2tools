@@ -52,10 +52,7 @@ Also included: 21 reference tools over [pypa/packaging](https://github.com/pypa/
 ## Results at a glance
 
 <p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/results-dark.png">
-    <img src="docs/results-light.png" alt="Left: share of 222 exercises solved by Qwen3-8B. Hand-made tools 94 percent, no tools 60 percent, 29 generated tools 55 percent, 22 generated tools 44 percent. Right: composition of prompt tokens. On short tasks the tool list is 95 percent of all prompt tokens, on long tasks 69 percent, and on long ToolGym chains with only 6 tools offered it is 39 percent while tool outputs are 48 percent." width="100%">
-  </picture>
+  <img src="docs/results.png" alt="Left: share of 222 exercises solved by Qwen3-8B. Hand-made tools 94 percent, no tools 60 percent, 29 generated tools 55 percent, 22 generated tools 44 percent. Right: composition of prompt tokens. On short tasks the tool list is 95 percent of all prompt tokens, on long tasks 69 percent, and on long ToolGym chains with only 6 tools offered it is 39 percent while tool outputs are 48 percent." width="100%">
 </p>
 <p align="center"><sub><b>Figure 2.</b> <i>Left:</i> exercises solved by Qwen3-8B with each tool set. <i>Right:</i> where the prompt tokens of a run go.</sub></p>
 

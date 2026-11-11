@@ -1,9 +1,9 @@
-"""Draw the README figures, in a light and a dark version each.
+"""Draw the README figures, on a white background like figures in a paper.
 
     uv run --with matplotlib python docs/make_figures.py
 
 architecture.png  the system, drawn like a paper's architecture figure
-results-*.png     (a) exercises solved per tool set, from out/runs/;
+results.png         (a) exercises solved per tool set, from out/runs/;
                 (b) what the prompt tokens of a run consist of, from out/traces/analysis/repetition.json
 
 All numbers are read from result files in this repository, so the figures can be rebuilt.
@@ -24,8 +24,6 @@ DOCS = ROOT / "docs"
 THEMES = {
     "light": {"surface": "#ffffff", "ink": "#0b0b0b", "muted": "#52514e", "line": "#c9c8c2", "neutral": "#f3f2ee",
               "series": ["#2a78d6", "#eb6834", "#1baf7a", "#eda100"]},
-    "dark": {"surface": "#0d1117", "ink": "#f0efec", "muted": "#c3c2b7", "line": "#4a4a46", "neutral": "#1c2128",
-             "series": ["#3987e5", "#d95926", "#199e70", "#c98500"]},
 }
 plt.rcParams["font.family"] = ["Helvetica Neue", "Helvetica", "Arial", "DejaVu Sans"]
 
@@ -297,6 +295,5 @@ def results(theme: dict, path: pathlib.Path) -> None:
 
 if __name__ == "__main__":
     architecture(DOCS / "architecture.png")
-    for name, theme in THEMES.items():
-        results(theme, DOCS / f"results-{name}.png")
+    results(THEMES["light"], DOCS / "results.png")
     print("wrote", ", ".join(p.name for p in sorted(DOCS.glob("*.png"))))
