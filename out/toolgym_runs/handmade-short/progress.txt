@@ -1,0 +1,16 @@
+Run: handmade-short-20261111-195613-5542
+Dir: results/gym/repo2tools/handmade-short-20261111-195613-5542/
+Status: finished
+Entries: 15 in 7.9min (1.9/min)
+
+Stage funnel:
+  sig: 40 done
+  template: 40 done
+  plausibility: 22 done / 18 dropped
+  prompt: 19 done / 3 dropped / 5 retries
+  validation: 19 done
+  realization: 16 done / 3 dropped / 2 retries
+  post_validation: 16 done
+  distractor: 16 done
+  nl_answer: 16 done
+  apertus: 15 done / 1 dropped

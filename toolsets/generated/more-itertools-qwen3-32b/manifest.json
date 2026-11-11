@@ -1,0 +1,3072 @@
+{
+ "url": "https://github.com/more-itertools/more-itertools",
+ "commit": "ceafee8ce96f4bc1eb74c528bc247c91d648a0bb",
+ "package": "more_itertools",
+ "model": "qwen3-32b",
+ "thinking": false,
+ "set": "more-itertools-qwen3-32b",
+ "toolset": "toolsets/generated/more-itertools-qwen3-32b",
+ "sandbox": "macOS sandbox-exec: no network, home folder unreadable, one scratch folder writable",
+ "dependencies": [],
+ "dropped_proposals": 0,
+ "tools": [
+  {
+   "name": "chunked",
+   "wraps": "more_itertools.more.chunked",
+   "description": "Break *iterable* into lists of length *n*.\n\n    Parameters:\n        iterable (array): The iterable to be broken into chunks.\n        n (integer): The size of each chunk.\n        strict (boolean, optional): If True, raises ValueError if the iterable length is not divisible by n.\n\n    Example:\n        chunked([1, 2, 3, 4, 5, 6], 3) -> [[1, 2, 3], [4, 5, 6]]\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.chunked(iterable, n, strict)",
+   "samples": [
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "n": 3
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+     ],
+     "n": 3
+    },
+    {
+     "iterable": [],
+     "n": 2
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "n": 1
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "n": 2,
+     "strict": true
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "n": 2,
+     "strict": true
+    }
+   ]
+  },
+  {
+   "name": "last",
+   "wraps": "more_itertools.more.last",
+   "description": "Return the last item of *iterable*, or *default* if *iterable* is empty.\n    \n    iterable: An iterable (e.g., list, tuple, string) from which the last item is to be retrieved.\n    default: The value to return if the iterable is empty. If not provided, a ValueError is raised.\n    \n    Example:\n        >>> last([0, 1, 2, 3])\n        3\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.last(iterable, default)",
+   "samples": [
+    {
+     "iterable": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "default": null
+    },
+    {
+     "iterable": [],
+     "default": "some default"
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ],
+     "default": null
+    },
+    {
+     "iterable": [],
+     "default": null
+    },
+    {
+     "iterable": [
+      10
+     ],
+     "default": "fallback"
+    },
+    {
+     "iterable": "hello",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "distinct_permutations",
+   "wraps": "more_itertools.more.distinct_permutations",
+   "description": "Yield successive distinct permutations of the elements in *iterable*.\n\n    iterable: An iterable containing elements for which distinct permutations are to be generated.\n    r: Length of the permutations to generate. If not provided, permutations of the full length of the iterable are generated.\n\n    Example:\n    >>> sorted(distinct_permutations([1, 0, 1]))\n    [(0, 1, 1), (1, 0, 1), (1, 1, 0)]\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.distinct_permutations(iterable, r)",
+   "samples": [
+    {
+     "iterable": [
+      1,
+      0,
+      1
+     ],
+     "r": null
+    },
+    {
+     "iterable": [
+      1,
+      0,
+      1
+     ],
+     "r": 2
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "r": 3
+    },
+    {
+     "iterable": [
+      "a",
+      "a",
+      "b"
+     ],
+     "r": 2
+    },
+    {
+     "iterable": [
+      1,
+      true,
+      "1"
+     ],
+     "r": 3
+    },
+    {
+     "iterable": [],
+     "r": 1
+    }
+   ]
+  },
+  {
+   "name": "windowed",
+   "wraps": "more_itertools.more.windowed",
+   "description": "Return a sliding window of width *n* over the given iterable.\n\n    seq: The iterable to slide the window over.\n    n: The width of the sliding window.\n    fill_value: The value to use for missing elements when the window is larger than the iterable.\n    step: The number of positions to advance the window at each step.\n\n    Example:\n    windowed([1, 2, 3, 4, 5], 3) -> [(1, 2, 3), (2, 3, 4), (3, 4, 5)]\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.windowed(seq, n, fill_value, step)",
+   "samples": [
+    {
+     "seq": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "n": 3
+    },
+    {
+     "seq": [
+      1,
+      2,
+      3
+     ],
+     "n": 4,
+     "fill_value": "X"
+    },
+    {
+     "seq": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "n": 3,
+     "fill_value": "!",
+     "step": 2
+    },
+    {
+     "seq": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "n": 3
+    },
+    {
+     "seq": [],
+     "n": 2
+    },
+    {
+     "seq": [
+      1,
+      2,
+      3
+     ],
+     "n": 0
+    }
+   ]
+  },
+  {
+   "name": "split_into",
+   "wraps": "more_itertools.more.split_into",
+   "description": "\n    Yield a list of sequential items from *iterable* of length 'n' for each\n    integer 'n' in *sizes*.\n\n    Parameters:\n    - iterable (array): An iterable from which sequential items will be split according to the sizes provided.\n    - sizes (array): A list of integers or None values specifying the size of each group. If None is encountered, the remaining items are returned as a single group.\n\n    Example:\n    >>> split_into([1,2,3,4,5,6], [1,2,3])\n    [[1], [2, 3], [4, 5, 6]]\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.split_into(iterable, sizes)",
+   "samples": [
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "sizes": [
+      1,
+      2,
+      3
+     ]
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ],
+     "sizes": [
+      2,
+      3
+     ]
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "sizes": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      0
+     ],
+     "sizes": [
+      2,
+      3,
+      null
+     ]
+    },
+    {
+     "iterable": [],
+     "sizes": [
+      1,
+      2
+     ]
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "sizes": [
+      null
+     ]
+    }
+   ]
+  },
+  {
+   "name": "repeat_each",
+   "wraps": "more_itertools.more.repeat_each",
+   "description": "Repeat each element in *iterable* *n* times. iterable: an iterable of elements. n: number of times to repeat each element.",
+   "verified": true,
+   "direct_call": "more_itertools.more.repeat_each(iterable, n)",
+   "samples": [
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C"
+     ],
+     "n": 3
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "n": 1
+    },
+    {
+     "iterable": [
+      "X"
+     ],
+     "n": 5
+    },
+    {
+     "iterable": []
+    },
+    {
+     "iterable": "ABC"
+    },
+    {
+     "iterable": "invalid",
+     "n": "not an integer"
+    }
+   ]
+  },
+  {
+   "name": "distribute",
+   "wraps": "more_itertools.more.distribute",
+   "description": "Distribute the items from *iterable* among *n* smaller iterables.\n\n        >>> group_1, group_2 = distribute(2, [1, 2, 3, 4, 5, 6])\n        >>> list(group_1)\n        [1, 3, 5]\n        >>> list(group_2)\n        [2, 4, 6]\n\n    If the length of *iterable* is not evenly divisible by *n*, then the\n    length of the returned iterables will not be identical:\n\n        >>> children = distribute(3, [1, 2, 3, 4, 5, 6, 7])\n        >>> [list(c) for c in children]\n        [[1, 4, 7], [2, 5], [3, 6]]\n\n    If the length of *iterable* is smaller than *n*, then the last returned\n    iterables will be empty:\n\n        >>> children = distribute(5, [1, 2, 3])\n        >>> [list(c) for c in children]\n        [[1], [2], [3], [], []]\n\n    This function uses :func:`itertools.tee` and may require significant\n    storage.\n\n    If you need the order items in the smaller iterables to match the\n    original iterable, see :func:`divide`.\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.distribute(n, iterable)",
+   "samples": [
+    {
+     "n": 2,
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "n": 3,
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    },
+    {
+     "n": 5,
+     "iterable": [
+      1,
+      2,
+      3
+     ]
+    },
+    {
+     "n": 0,
+     "iterable": [
+      1,
+      2,
+      3
+     ]
+    },
+    {
+     "n": 2,
+     "iterable": []
+    },
+    {
+     "n": 1,
+     "iterable": [
+      10,
+      20,
+      30
+     ]
+    }
+   ]
+  },
+  {
+   "name": "sort_together",
+   "wraps": "more_itertools.more.sort_together",
+   "description": "\n    Return the input iterables sorted together, with key_list as the priority for sorting.\n    \n    Parameters:\n    - iterables (List[List[Any]]): A list of iterables to be sorted together. Each iterable represents a column of data.\n    - key_list (List[int], optional): A list of indices specifying which iterables to use as the key for sorting. Defaults to [0].\n    - key_function (callable, optional): A function to compute the sort key from the elements of the iterables. If provided, it is called with the elements from the iterables specified in key_list.\n    - reverse (bool, optional): If true, the sorted result is in descending order. Defaults to false.\n    - strict (bool, optional): If true, a ValueError is raised if the iterables have different lengths. Defaults to false.\n    \n    Example:\n    >>> sort_together([(4, 3, 2, 1), ('a', 'b', 'c', 'd')])\n    [[1, 2, 3, 4], ['d', 'c', 'b', 'a']]\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.sort_together(iterables, key_list, key_function, reverse, strict)",
+   "samples": [
+    {
+     "iterables": [
+      [
+       4,
+       3,
+       2,
+       1
+      ],
+      [
+       "a",
+       "b",
+       "c",
+       "d"
+      ]
+     ],
+     "key_list": [
+      0
+     ],
+     "key_function": null,
+     "reverse": false,
+     "strict": false
+    },
+    {
+     "iterables": [
+      [
+       3,
+       1,
+       2
+      ],
+      [
+       0,
+       1,
+       0
+      ],
+      [
+       "c",
+       "b",
+       "a"
+      ]
+     ],
+     "key_list": [
+      1,
+      2
+     ],
+     "key_function": null,
+     "reverse": false,
+     "strict": false
+    },
+    {
+     "iterables": [
+      [
+       "a",
+       "b",
+       "c"
+      ],
+      [
+       1,
+       2,
+       3
+      ],
+      [
+       5,
+       2,
+       1
+      ]
+     ],
+     "key_list": [
+      1,
+      2
+     ],
+     "key_function": {
+      "lambda": "lambda length, width: length * width"
+     },
+     "reverse": false,
+     "strict": false
+    },
+    {
+     "iterables": [
+      [
+       1,
+       2,
+       3
+      ],
+      [
+       "c",
+       "b",
+       "a"
+      ]
+     ],
+     "key_list": [
+      0
+     ],
+     "key_function": null,
+     "reverse": true,
+     "strict": false
+    },
+    {
+     "iterables": [
+      [
+       1,
+       2
+      ],
+      [
+       "a",
+       "b",
+       "c"
+      ]
+     ],
+     "key_list": [
+      0
+     ],
+     "key_function": null,
+     "reverse": false,
+     "strict": true
+    },
+    {
+     "iterables": [],
+     "key_list": [
+      0
+     ],
+     "key_function": null,
+     "reverse": false,
+     "strict": false
+    }
+   ]
+  },
+  {
+   "name": "divide",
+   "wraps": "more_itertools.more.divide",
+   "description": "Divide the elements from *iterable* into *n* parts, maintaining order. \n    n: the number of parts to divide the iterable into. \n    iterable: the iterable to be divided into parts. \n    Example: divide(2, [1, 2, 3, 4, 5, 6]) -> [[1, 2, 3], [4, 5, 6]]\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.divide(n, iterable)",
+   "samples": [
+    {
+     "n": 2,
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+     ]
+    },
+    {
+     "n": 3,
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ]
+    },
+    {
+     "n": 5,
+     "iterable": [
+      1,
+      2,
+      3
+     ]
+    },
+    {
+     "n": 1,
+     "iterable": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "n": 4,
+     "iterable": []
+    },
+    {
+     "n": 0,
+     "iterable": [
+      1,
+      2,
+      3
+     ]
+    }
+   ]
+  },
+  {
+   "name": "difference",
+   "wraps": "more_itertools.more.difference",
+   "description": "\n    This function is the inverse of itertools.accumulate. By default it will compute the first difference of *iterable*.\n\n    Parameters:\n    - iterable (array): An iterable of elements to compute the difference for.\n    - func (object, optional): A function to apply for computing the difference. Defaults to operator.sub.\n    - initial (number, optional): An optional initial value to use for the first element. If provided, the first element is skipped in the computation.\n\n    Example:\n    >>> from itertools import accumulate\n    >>> iterable = accumulate([0, 1, 2, 3, 4])  # produces 0, 1, 3, 6, 10\n    >>> difference(iterable)\n    [0, 1, 2, 3, 4]\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.difference(iterable, func, initial=initial)",
+   "samples": [
+    {
+     "iterable": [
+      0,
+      1,
+      3,
+      6,
+      10
+     ],
+     "func": "operator.sub",
+     "initial": null
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      6,
+      24,
+      120
+     ],
+     "func": "lambda x, y: x // y",
+     "initial": null
+    },
+    {
+     "iterable": [
+      10,
+      11,
+      13,
+      16
+     ],
+     "func": "operator.sub",
+     "initial": 10
+    },
+    {
+     "iterable": [
+      5
+     ],
+     "func": "operator.sub",
+     "initial": null
+    },
+    {
+     "iterable": [],
+     "func": "operator.sub",
+     "initial": null
+    },
+    {
+     "iterable": [
+      10,
+      20,
+      30
+     ],
+     "func": "lambda x, y: x + y",
+     "initial": 5
+    }
+   ]
+  },
+  {
+   "name": "circular_shifts",
+   "wraps": "more_itertools.more.circular_shifts",
+   "description": "Yield the circular shifts of *iterable*. iterable: the input list. steps: number of places to rotate left (positive) or right (negative), defaults to 1. Example: circular_shifts([0, 1, 2, 3]) -> [(0, 1, 2, 3), (1, 2, 3, 0), (2, 3, 0, 1), (3, 0, 1, 2)]",
+   "verified": true,
+   "direct_call": "more_itertools.more.circular_shifts(iterable, steps)",
+   "samples": [
+    {
+     "iterable": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "steps": 1
+    },
+    {
+     "iterable": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "steps": 2
+    },
+    {
+     "iterable": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "steps": -1
+    },
+    {
+     "iterable": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "steps": 0
+    },
+    {
+     "iterable": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "steps": 4
+    },
+    {
+     "iterable": [
+      0,
+      1,
+      2,
+      3
+     ],
+     "steps": -2
+    }
+   ]
+  },
+  {
+   "name": "partitions",
+   "wraps": "more_itertools.more.partitions",
+   "description": "Return all possible order-preserving partitions of *iterable*.\n\n    iterable: An iterable (e.g., list, string) to partition into all possible order-preserving sublists.\n    Example: partitions('abc') -> [['abc'], ['a', 'bc'], ['ab', 'c'], ['a', 'b', 'c']]\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.partitions(iterable)",
+   "samples": [
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ]
+    },
+    {
+     "iterable": [
+      1,
+      2
+     ]
+    },
+    {
+     "iterable": []
+    },
+    {
+     "iterable": [
+      "x"
+     ]
+    },
+    {
+     "iterable": "abc"
+    },
+    {
+     "iterable": null
+    }
+   ]
+  },
+  {
+   "name": "distinct_combinations",
+   "wraps": "more_itertools.more.distinct_combinations",
+   "description": "Yield the distinct combinations of *r* items taken from *iterable*.\n\n    iterable: An iterable from which combinations are to be generated.\n    r: The number of items to choose for each combination.\n\n    Example:\n    distinct_combinations([0, 0, 1], 2) -> [(0, 0), (0, 1)]\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.distinct_combinations(iterable, r)",
+   "samples": [
+    {
+     "iterable": [
+      0,
+      0,
+      1
+     ],
+     "r": 2
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ],
+     "r": 1
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "r": 3
+    },
+    {
+     "iterable": [],
+     "r": 0
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "r": 0
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "r": -1
+    }
+   ]
+  },
+  {
+   "name": "all_unique",
+   "wraps": "more_itertools.more.all_unique",
+   "description": "Returns True if all the elements of *iterable* are unique (no two elements are equal).\n    \n    iterable: An iterable containing elements to check for uniqueness.\n    key: A function to apply to each element before checking for uniqueness. Defaults to None.\n    \n    Example:\n    all_unique('ABCB') -> False\n    all_unique('ABCb', str.lower) -> False\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.all_unique(iterable, key)",
+   "samples": [
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C",
+      "D"
+     ],
+     "key": null
+    },
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C",
+      "A"
+     ],
+     "key": null
+    },
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C",
+      "b"
+     ],
+     "key": "str.lower"
+    },
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C",
+      "b"
+     ],
+     "key": null
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "key": null
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      1
+     ],
+     "key": null
+    }
+   ]
+  },
+  {
+   "name": "combination_index",
+   "wraps": "more_itertools.more.combination_index",
+   "description": "Equivalent to ``list(combinations(iterable, r)).index(element)``\n\n    The subsequences of *iterable* that are of length *r* can be ordered\n    lexicographically. :func:`combination_index` computes the index of the\n    first *element*, without computing the previous combinations.\n\n        >>> combination_index(['a', 'd', 'f'], ['a', 'b', 'c', 'd', 'e', 'f', 'g'])\n        10\n\n    ``ValueError`` will be raised if the given *element* isn't one of the\n    combinations of *iterable*.\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.combination_index(tuple(element), iterable)",
+   "samples": [
+    {
+     "element": [
+      "a",
+      "d",
+      "f"
+     ],
+     "iterable": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e",
+      "f",
+      "g"
+     ]
+    },
+    {
+     "element": [
+      "b",
+      "c"
+     ],
+     "iterable": [
+      "a",
+      "b",
+      "c",
+      "d"
+     ]
+    },
+    {
+     "element": [],
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ]
+    },
+    {
+     "element": [
+      "x",
+      "y"
+     ],
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ]
+    },
+    {
+     "element": [
+      "a",
+      "a"
+     ],
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ]
+    },
+    {
+     "element": [
+      "a",
+      "b",
+      "c",
+      "d"
+     ],
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "combination_with_replacement_index",
+   "wraps": "more_itertools.more.combination_with_replacement_index",
+   "description": "Equivalent to\n    ``list(combinations_with_replacement(iterable, r)).index(element)``\n\n    The subsequences with repetition of *iterable* that are of length *r* can\n    be ordered lexicographically. :func:`combination_with_replacement_index`\n    computes the index of the first *element*, without computing the previous\n    combinations with replacement.\n\n        >>> combination_with_replacement_index('adf', 'abcdefg')\n        20\n\n    ``ValueError`` will be raised if the given *element* isn't one of the\n    combinations with replacement of *iterable*.\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.combination_with_replacement_index(element, iterable)",
+   "samples": [
+    {
+     "element": "adf",
+     "iterable": "abcdefg"
+    },
+    {
+     "element": "aaa",
+     "iterable": "abc"
+    },
+    {
+     "element": "ccc",
+     "iterable": "abc"
+    },
+    {
+     "element": "xyz",
+     "iterable": "abc"
+    },
+    {
+     "element": "ab",
+     "iterable": "abc"
+    },
+    {
+     "element": "zzz",
+     "iterable": "xyz"
+    }
+   ]
+  },
+  {
+   "name": "permutation_index",
+   "wraps": "more_itertools.more.permutation_index",
+   "description": "Equivalent to ``list(permutations(iterable, r)).index(element)``\n\n    The subsequences of *iterable* that are of length *r* where order is\n    important can be ordered lexicographically. :func:`permutation_index`\n    computes the index of the first *element* directly, without computing\n    the previous permutations.\n\n        >>> permutation_index([1, 3, 2], range(5))\n        19\n\n    ``ValueError`` will be raised if the given *element* isn't one of the\n    permutations of *iterable*.\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.permutation_index(element, iterable)",
+   "samples": [
+    {
+     "element": [
+      1,
+      3,
+      2
+     ],
+     "iterable": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "element": [
+      0,
+      1,
+      2
+     ],
+     "iterable": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "element": [
+      2,
+      1,
+      0
+     ],
+     "iterable": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "element": [
+      1,
+      0
+     ],
+     "iterable": [
+      0,
+      1
+     ]
+    },
+    {
+     "element": [
+      1,
+      2,
+      3
+     ],
+     "iterable": [
+      1,
+      2,
+      3
+     ]
+    },
+    {
+     "element": [
+      1,
+      4,
+      2
+     ],
+     "iterable": [
+      0,
+      1,
+      2,
+      3
+     ]
+    }
+   ]
+  },
+  {
+   "name": "chunked_even",
+   "wraps": "more_itertools.more.chunked_even",
+   "description": "Break *iterable* into lists of approximately length *n*.\n    Items are distributed such the lengths of the lists differ by at most\n    1 item.\n\n    Parameters:\n        iterable (array): The iterable to be split into chunks.\n        n (integer): The approximate size of each chunk. The actual chunk sizes will differ by at most one.\n\n    Example:\n        >>> iterable = [1, 2, 3, 4, 5, 6, 7]\n        >>> n = 3\n        >>> chunked_even(iterable, n)\n        [[1, 2, 3], [4, 5], [6, 7]]\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.chunked_even(iterable, n)",
+   "samples": [
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "n": 3
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "n": 2
+    },
+    {
+     "iterable": [],
+     "n": 5
+    },
+    {
+     "iterable": [
+      1
+     ],
+     "n": 1
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ],
+     "n": 4
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+     ],
+     "n": -1
+    }
+   ]
+  },
+  {
+   "name": "duplicates_everseen",
+   "wraps": "more_itertools.more.duplicates_everseen",
+   "description": "Yield duplicate elements after their first appearance.\n    \n    iterable: An iterable collection of elements to check for duplicates.\n    key: A string representing a function to extract a comparison key from each element. If not provided, the elements themselves are compared.\n    \n    Example:\n    >>> list(duplicates_everseen('mississippi'))\n    ['s', 'i', 's', 's', 'i', 'p', 'i']\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.duplicates_everseen(iterable, key)",
+   "samples": [
+    {
+     "iterable": [
+      "m",
+      "i",
+      "s",
+      "s",
+      "i",
+      "s",
+      "s",
+      "i",
+      "p",
+      "p",
+      "i"
+     ],
+     "key": null
+    },
+    {
+     "iterable": [
+      "A",
+      "a",
+      "a",
+      "B",
+      "b",
+      "b",
+      "C",
+      "c",
+      "c",
+      "A",
+      "a",
+      "a"
+     ],
+     "key": {
+      "function": "str.lower"
+     }
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      2,
+      1,
+      3,
+      4
+     ],
+     "key": null
+    },
+    {
+     "iterable": [
+      {
+       "id": 1
+      },
+      {
+       "id": 2
+      },
+      {
+       "id": 1
+      },
+      {
+       "id": 3
+      },
+      {
+       "id": 2
+      }
+     ],
+     "key": {
+      "function": "lambda x: x['id']"
+     }
+    },
+    {
+     "iterable": [],
+     "key": null
+    },
+    {
+     "iterable": "invalid",
+     "key": {
+      "function": "lambda x: x.upper() if isinstance(x, str) else x"
+     }
+    }
+   ]
+  },
+  {
+   "name": "duplicates_justseen",
+   "wraps": "more_itertools.more.duplicates_justseen",
+   "description": "Yields serially-duplicate elements after their first appearance.\n    \n    iterable: An iterable sequence of elements to check for serial duplicates.\n    key: A function to extract a comparison key from each element. Defaults to None, meaning elements are compared directly.\n    \n    Example:\n    >>> list(duplicates_justseen('mississippi'))\n    ['s', 's', 'p']\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.duplicates_justseen(iterable, key)",
+   "samples": [
+    {
+     "iterable": [
+      "m",
+      "i",
+      "s",
+      "s",
+      "i",
+      "s",
+      "s",
+      "i",
+      "p",
+      "p",
+      "i"
+     ],
+     "key": null
+    },
+    {
+     "iterable": [
+      "A",
+      "a",
+      "a",
+      "B",
+      "b",
+      "b",
+      "C",
+      "c",
+      "c",
+      "A",
+      "a",
+      "a"
+     ],
+     "key": "str.lower"
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      2,
+      3,
+      3,
+      3,
+      4
+     ],
+     "key": null
+    },
+    {
+     "iterable": [
+      "a",
+      "a",
+      "a",
+      "a"
+     ],
+     "key": null
+    },
+    {
+     "iterable": [],
+     "key": null
+    },
+    {
+     "iterable": "invalid",
+     "key": "str.upper"
+    }
+   ]
+  },
+  {
+   "name": "join_mappings",
+   "wraps": "more_itertools.more.join_mappings",
+   "description": "\n    Joins multiple mappings together using their common keys.\n\n    Parameters:\n    - field_to_map: A dictionary where keys are field names and values are mappings (dictionaries) to be joined.\n\n    Example:\n    >>> user_scores = {'elliot': 50, 'claris': 60}\n    >>> user_times = {'elliot': 30, 'claris': 40}\n    >>> join_mappings({'score': user_scores, 'time': user_times})\n    {'elliot': {'score': 50, 'time': 30}, 'claris': {'score': 60, 'time': 40}}\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.join_mappings(**field_to_map)",
+   "samples": [
+    {
+     "field_to_map": {
+      "score": {
+       "elliot": 50,
+       "claris": 60
+      },
+      "time": {
+       "elliot": 30,
+       "claris": 40
+      }
+     }
+    },
+    {
+     "field_to_map": {
+      "name": {
+       "a": "Alice",
+       "b": "Bob"
+      },
+      "age": {
+       "a": 25,
+       "b": 30
+      }
+     }
+    },
+    {
+     "field_to_map": {
+      "x": {
+       "1": 10,
+       "2": 20
+      },
+      "y": {
+       "1": 100,
+       "2": 200
+      }
+     }
+    },
+    {
+     "field_to_map": {
+      "a": {
+       "key1": "value1"
+      },
+      "b": {
+       "key1": "value2"
+      }
+     }
+    },
+    {
+     "field_to_map": {
+      "a": {}
+     }
+    },
+    {
+     "field_to_map": {
+      "a": {
+       "key1": "value1"
+      },
+      "b": {
+       "key2": "value2"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "name": "nth_prime",
+   "wraps": "more_itertools.more.nth_prime",
+   "description": "Return the nth prime (counting from 0). n: the index of the prime number to return. approximate: if True, returns an approximate prime number close to the nth prime.\n\n    >>> nth_prime(0)\n    2\n    >>> nth_prime(100)\n    547\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.nth_prime(n, approximate=approximate)",
+   "samples": [
+    {
+     "n": 0,
+     "approximate": false
+    },
+    {
+     "n": 100,
+     "approximate": false
+    },
+    {
+     "n": 200000000,
+     "approximate": true
+    },
+    {
+     "n": 10,
+     "approximate": true
+    },
+    {
+     "n": -1,
+     "approximate": false
+    },
+    {
+     "n": 1000000,
+     "approximate": true
+    }
+   ]
+  },
+  {
+   "name": "argmin",
+   "wraps": "more_itertools.more.argmin",
+   "description": "\n    Index of the first occurrence of a minimum value in an iterable.\n\n    Parameters:\n    - iterable (list): An iterable (e.g., list, string, or other sequence) to search for the minimum value.\n    - key_function (callable, optional): A function to compute a value for each element in the iterable for comparison. If not provided, the elements themselves are compared.\n\n    Returns:\n    - int: The index of the first occurrence of the minimum value.\n\n    Example:\n    >>> argmin([3, 2, 1, 0, 4, 2, 1, 0])\n    3\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.argmin(iterable, key=key_function)",
+   "samples": [
+    {
+     "iterable": [
+      3,
+      2,
+      1,
+      0,
+      4,
+      2,
+      1,
+      0
+     ],
+     "key_function": null
+    },
+    {
+     "iterable": "efghabcdijkl",
+     "key_function": null
+    },
+    {
+     "iterable": [
+      35,
+      30,
+      10,
+      9,
+      1
+     ],
+     "key_function": "lambda x: x**2 - 20*x + 150"
+    },
+    {
+     "iterable": [],
+     "key_function": null
+    },
+    {
+     "iterable": [
+      5,
+      5,
+      5,
+      5
+     ],
+     "key_function": null
+    },
+    {
+     "iterable": "invalid",
+     "key_function": "lambda x: x.upper() if isinstance(x, str) else x"
+    }
+   ]
+  },
+  {
+   "name": "extract",
+   "wraps": "more_itertools.more.extract",
+   "description": "Yield values at the specified indices.\n\n    iterable: The iterable from which to extract values.\n    indices: The indices to extract from the iterable.\n    monotonic: If true, indices are consumed lazily and must be non-decreasing. If false, indices are consumed immediately and must be finite.\n\n    Example:\n\n        >>> data = 'abcdefghijklmnopqrstuvwxyz'\n        >>> extract(data, [7, 4, 11, 11, 14])\n        ['h', 'e', 'l', 'l', 'o']\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.extract(iterable, indices, monotonic=monotonic)",
+   "samples": [
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e"
+     ],
+     "indices": [
+      0,
+      2,
+      4
+     ],
+     "monotonic": false
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e"
+     ],
+     "indices": [
+      4,
+      3,
+      2,
+      1,
+      0
+     ],
+     "monotonic": false
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e"
+     ],
+     "indices": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ],
+     "monotonic": true
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e"
+     ],
+     "indices": [
+      5
+     ],
+     "monotonic": false
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e"
+     ],
+     "indices": [
+      -1
+     ],
+     "monotonic": false
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c",
+      "d",
+      "e"
+     ],
+     "indices": [
+      0,
+      2,
+      4
+     ],
+     "monotonic": true
+    }
+   ]
+  },
+  {
+   "name": "concurrent_tee",
+   "wraps": "more_itertools.more.concurrent_tee",
+   "description": "Variant of itertools.tee() but with guaranteed threading semantics.\n\n    Takes a non-threadsafe iterator as an input and creates concurrent\n    tee objects for other threads to have reliable independent copies of\n    the data stream.\n\n    The new iterators are only thread-safe if consumed within a single thread.\n    To share just one of the new iterators across multiple threads, wrap it\n    with :func:`serialize`.\n\n    Parameters:\n    - iterable (object): An iterable object to be split into multiple independent iterators.\n    - n (int, optional): Number of independent iterators to create from the input iterable.\n\n    Example:\n    >>> from itertools import count\n    >>> a, b = concurrent_tee(count(), 2)\n    >>> next(a)\n    0\n    >>> next(b)\n    0\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.more.concurrent_tee(iterable, n)",
+   "samples": [
+    {
+     "iterable": "[0, 1, 2, 3, 4]",
+     "n": 2
+    },
+    {
+     "iterable": "range(5)",
+     "n": 3
+    },
+    {
+     "iterable": "['a', 'b', 'c']",
+     "n": 1
+    },
+    {
+     "iterable": "iter([10, 20, 30])",
+     "n": 0
+    },
+    {
+     "iterable": "iter([])",
+     "n": 2
+    },
+    {
+     "iterable": "None",
+     "n": 2
+    }
+   ]
+  },
+  {
+   "name": "subfactorial",
+   "wraps": "more_itertools.more.subfactorial",
+   "description": "Number of permutations of *n* elements with no fixed points. n: an integer >= 0, e.g. n=3 -> 2.",
+   "verified": true,
+   "direct_call": "more_itertools.more.subfactorial(n)",
+   "samples": [
+    {
+     "n": 0
+    },
+    {
+     "n": 1
+    },
+    {
+     "n": 4
+    },
+    {
+     "n": 10
+    },
+    {
+     "n": -1
+    }
+   ]
+  },
+  {
+   "name": "take",
+   "wraps": "more_itertools.recipes.take",
+   "description": "Return first *n* items of the *iterable* as a list.\n\n        >>> take(3, range(10))\n        [0, 1, 2]\n\n    If there are fewer than *n* items in the iterable, all of them are\n    returned.\n\n        >>> take(10, range(3))\n        [0, 1, 2]\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.take(n, iterable)",
+   "samples": [
+    {
+     "n": 3,
+     "iterable": [
+      0,
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "n": 5,
+     "iterable": [
+      0,
+      1,
+      2
+     ]
+    },
+    {
+     "n": 0,
+     "iterable": [
+      1,
+      2,
+      3
+     ]
+    },
+    {
+     "n": 2,
+     "iterable": []
+    },
+    {
+     "n": -1,
+     "iterable": [
+      1,
+      2,
+      3
+     ]
+    },
+    {
+     "n": 2,
+     "iterable": "abc"
+    }
+   ]
+  },
+  {
+   "name": "consume",
+   "wraps": "more_itertools.recipes.consume",
+   "description": "Advance *iterator* by *n* steps. If *n* is ``None``, consume it entirely.\n\n    Efficiently exhausts an iterator without returning values. Defaults to\n    consuming the whole iterator, but an optional second argument may be\n    provided to limit consumption.\n\n        >>> i = (x for x in range(10))\n        >>> next(i)\n        0\n        >>> consume(i, 3)\n        >>> next(i)\n        4\n        >>> consume(i)\n        >>> next(i)\n        Traceback (most recent call last):\n          File \"<stdin>\", line 1, in <module>\n        StopIteration\n\n    If the iterator has fewer items remaining than the provided limit, the\n    whole iterator will be consumed.\n\n        >>> i = (x for x in range(3))\n        >>> consume(i, 5)\n        >>> next(i)\n        Traceback (most recent call last):\n          File \"<stdin>\", line 1, in <module>\n        StopIteration\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.consume(iterator, n)",
+   "samples": [
+    {
+     "iterator": "(x for x in range(10))",
+     "n": 3
+    },
+    {
+     "iterator": "(x for x in range(5))",
+     "n": 5
+    },
+    {
+     "iterator": "(x for x in range(3))",
+     "n": 10
+    },
+    {
+     "iterator": "(x for x in range(100))",
+     "n": null
+    },
+    {
+     "iterator": "iter([])",
+     "n": 2
+    },
+    {
+     "iterator": "123",
+     "n": 1
+    }
+   ]
+  },
+  {
+   "name": "ncycles",
+   "wraps": "more_itertools.recipes.ncycles",
+   "description": "Returns the sequence elements *n* times.\n\n    iterable: an iterable sequence of elements to be repeated\n    n: the number of times to repeat the elements of the iterable\n    Example: ncycles([\"a\", \"b\"], 3) -> ['a', 'b', 'a', 'b', 'a', 'b']\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.ncycles(iterable, n)",
+   "samples": [
+    {
+     "iterable": [
+      "a",
+      "b"
+     ],
+     "n": 3
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "n": 2
+    },
+    {
+     "iterable": [],
+     "n": 5
+    },
+    {
+     "iterable": [
+      "x"
+     ],
+     "n": 0
+    },
+    {
+     "iterable": [
+      "a",
+      "b"
+     ],
+     "n": -1
+    },
+    {
+     "iterable": "hello",
+     "n": 2
+    }
+   ]
+  },
+  {
+   "name": "pairwise",
+   "wraps": "more_itertools.recipes.pairwise",
+   "description": "Generate consecutive overlapping pairs from an iterable. iterable: a list or string of elements, e.g. \"abc\" -> [(\"a\", \"b\"), (\"b\", \"c\")].",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.pairwise(iterable)",
+   "samples": [
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ]
+    },
+    {
+     "iterable": []
+    },
+    {
+     "iterable": [
+      5
+     ]
+    },
+    {
+     "iterable": [
+      true,
+      false,
+      true
+     ]
+    },
+    {
+     "iterable": "abc"
+    }
+   ]
+  },
+  {
+   "name": "grouper",
+   "wraps": "more_itertools.recipes.grouper",
+   "description": "\n    Group elements from *iterable* into fixed-length groups of length *n*.\n\n    Parameters:\n    - iterable: An iterable to be grouped into fixed-length chunks.\n    - n: The size of each group.\n    - incomplete: How to handle incomplete groups. Options are 'fill', 'ignore', or 'strict'.\n    - fill_value: The value to use for filling incomplete groups when 'incomplete' is 'fill'.\n\n    Example:\n    >>> list(grouper('ABCDEF', 3))\n    [('A', 'B', 'C'), ('D', 'E', 'F')]\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.grouper(iterable, n, incomplete=incomplete, fillvalue=fill_value)",
+   "samples": [
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F"
+     ],
+     "n": 3
+    },
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+     ],
+     "n": 3,
+     "incomplete": "fill",
+     "fill_value": "x"
+    },
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+     ],
+     "n": 3,
+     "incomplete": "ignore"
+    },
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E",
+      "F",
+      "G"
+     ],
+     "n": 3,
+     "incomplete": "strict"
+    },
+    {
+     "iterable": [],
+     "n": 2
+    },
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C"
+     ],
+     "n": 0
+    }
+   ]
+  },
+  {
+   "name": "unique_justseen",
+   "wraps": "more_itertools.recipes.unique_justseen",
+   "description": "Yields elements in order, ignoring serial duplicates.\n    \n    iterable: An iterable sequence of elements to process.\n    key: A function to apply to each element to determine uniqueness; if not provided, elements are compared directly.\n    \n    Example:\n    >>> list(unique_justseen('AAAABBBCCDAABBB'))\n    ['A', 'B', 'C', 'D', 'A', 'B']\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.unique_justseen(iterable, key)",
+   "samples": [
+    {
+     "iterable": [
+      "A",
+      "A",
+      "A",
+      "A",
+      "B",
+      "B",
+      "B",
+      "C",
+      "C",
+      "D",
+      "A",
+      "A",
+      "B"
+     ],
+     "key": null
+    },
+    {
+     "iterable": [
+      "A",
+      "B",
+      "B",
+      "C",
+      "c",
+      "A",
+      "D"
+     ],
+     "key": {
+      "function": "str.lower"
+     }
+    },
+    {
+     "iterable": [
+      1,
+      1,
+      2,
+      2,
+      3,
+      3,
+      1,
+      1
+     ],
+     "key": null
+    },
+    {
+     "iterable": [
+      "X",
+      "X",
+      "Y",
+      "Y",
+      "Z",
+      "Z"
+     ],
+     "key": {
+      "function": "lambda x: x.upper()"
+     }
+    },
+    {
+     "iterable": [],
+     "key": null
+    },
+    {
+     "iterable": "invalid",
+     "key": {
+      "function": "lambda x: x.upper() if x else None"
+     }
+    }
+   ]
+  },
+  {
+   "name": "random_permutation",
+   "wraps": "more_itertools.recipes.random_permutation",
+   "description": "Return a random *r* length permutation of the elements in *iterable*.\n\n    If *r* is not specified or is ``None``, then *r* defaults to the length of\n    *iterable*.\n\n        >>> random_permutation(range(5))  # doctest:+SKIP\n        [3, 4, 0, 1, 2]\n\n    This is equivalent to taking a random selection from\n    ``itertools.permutations(iterable, r)``.\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.random_permutation(iterable, r)",
+   "samples": [
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "r": 3
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ],
+     "r": 2
+    },
+    {
+     "iterable": [
+      10
+     ],
+     "r": 1
+    },
+    {
+     "iterable": [],
+     "r": 0
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "r": 5
+    },
+    {
+     "iterable": "abc",
+     "r": 3
+    }
+   ]
+  },
+  {
+   "name": "random_combination_with_replacement",
+   "wraps": "more_itertools.recipes.random_combination_with_replacement",
+   "description": "Return a random *r* length subsequence of elements in *iterable*,\n    allowing individual elements to be repeated.\n\n        >>> random_combination_with_replacement(range(3), 5) # doctest:+SKIP\n        (0, 0, 1, 2, 2)\n\n    Parameters:\n        iterable (array): An iterable of elements to choose from for the random combination.\n        r (integer): The length of the random combination to generate.\n\n    Returns:\n        Tuple[Any, ...]: A tuple of *r* randomly selected elements from *iterable*, allowing repetition.\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.random_combination_with_replacement(iterable, r)",
+   "samples": [
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "r": 5
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ],
+     "r": 3
+    },
+    {
+     "iterable": [
+      0
+     ],
+     "r": 10
+    },
+    {
+     "iterable": [],
+     "r": 2
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "r": 0
+    },
+    {
+     "iterable": "abc",
+     "r": 4
+    }
+   ]
+  },
+  {
+   "name": "prepend",
+   "wraps": "more_itertools.recipes.prepend",
+   "description": "Yield *value*, followed by the elements in *iterable*.\n\n        >>> value = '0'\n        >>> iterable = ['1', '2', '3']\n        >>> list(prepend(value, iterable))\n        ['0', '1', '2', '3']\n\n    To prepend multiple values, see :func:`itertools.chain`\n    or :func:`value_chain`.\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.prepend(value, iterable)",
+   "samples": [
+    {
+     "value": "0",
+     "iterable": [
+      "1",
+      "2",
+      "3"
+     ]
+    },
+    {
+     "value": 10,
+     "iterable": [
+      20,
+      30,
+      40
+     ]
+    },
+    {
+     "value": "a",
+     "iterable": []
+    },
+    {
+     "value": null,
+     "iterable": [
+      true,
+      false
+     ]
+    },
+    {
+     "value": "x",
+     "iterable": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "value": "invalid",
+     "iterable": "not an iterable"
+    }
+   ]
+  },
+  {
+   "name": "sliding_window",
+   "wraps": "more_itertools.recipes.sliding_window",
+   "description": "Return a sliding window of width *n* over *iterable*.\n\n        >>> list(sliding_window(range(6), 4))\n        [(0, 1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5)]\n\n    If *iterable* has fewer than *n* items, then nothing is yielded:\n\n        >>> list(sliding_window(range(3), 4))\n        []\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.sliding_window(iterable, n)",
+   "samples": [
+    {
+     "iterable": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "n": 4
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "n": 4
+    },
+    {
+     "iterable": [],
+     "n": 2
+    },
+    {
+     "iterable": [
+      10,
+      20,
+      30,
+      40
+     ],
+     "n": 1
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "n": 2
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "n": 0
+    }
+   ]
+  },
+  {
+   "name": "triplewise",
+   "wraps": "more_itertools.recipes.triplewise",
+   "description": "Return overlapping triplets from *iterable*.\n\n    iterable: An iterable sequence from which overlapping triplets will be generated.\n    Example: 'ABCDE' -> [('A', 'B', 'C'), ('B', 'C', 'D'), ('C', 'D', 'E')]\n\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.triplewise(iterable)",
+   "samples": [
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+     ]
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "iterable": []
+    },
+    {
+     "iterable": [
+      "X"
+     ]
+    },
+    {
+     "iterable": [
+      "X",
+      "Y"
+     ]
+    },
+    {
+     "iterable": "ABC"
+    }
+   ]
+  },
+  {
+   "name": "subslices",
+   "wraps": "more_itertools.recipes.subslices",
+   "description": "Return all contiguous non-empty subslices of *iterable*.\n\n    iterable: An iterable (e.g., list, string) from which to generate all contiguous non-empty subslices.\n    Example: subslices('ABC') -> [['A'], ['A', 'B'], ['A', 'B', 'C'], ['B'], ['B', 'C'], ['C']]\n\n    >>> list(subslices('ABC'))\n    [['A'], ['A', 'B'], ['A', 'B', 'C'], ['B'], ['B', 'C'], ['C']]\n    ",
+   "verified": true,
+   "direct_call": "list(more_itertools.recipes.subslices(iterable))",
+   "samples": [
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C"
+     ]
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "iterable": []
+    },
+    {
+     "iterable": [
+      "X"
+     ]
+    },
+    {
+     "iterable": "Hello"
+    },
+    {
+     "iterable": 12345
+    }
+   ]
+  },
+  {
+   "name": "transpose_matrix",
+   "wraps": "more_itertools.recipes.transpose",
+   "description": "Swap the rows and columns of the input matrix. matrix: a list of lists representing the matrix, e.g. [[1, 2, 3], [11, 22, 33]] -> [(1, 11), (2, 22), (3, 33)].",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.transpose(matrix)",
+   "samples": [
+    {
+     "matrix": [
+      [
+       1,
+       2,
+       3
+      ],
+      [
+       11,
+       22,
+       33
+      ]
+     ]
+    },
+    {
+     "matrix": [
+      [
+       10,
+       20
+      ],
+      [
+       30,
+       40
+      ],
+      [
+       50,
+       60
+      ]
+     ]
+    },
+    {
+     "matrix": []
+    },
+    {
+     "matrix": [
+      [
+       1
+      ]
+     ]
+    },
+    {
+     "matrix": [
+      [
+       1,
+       2
+      ],
+      [
+       3
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "name": "reshape_matrix",
+   "wraps": "more_itertools.recipes.reshape",
+   "description": "Change the shape of a *matrix*.\n\n    matrix: a nested list representing the input matrix, e.g. [[0, 1], [2, 3], [4, 5]]\n    shape: the desired shape of the output matrix. If an integer, it is the number of columns. If a list, it is the new shape.\n    Returns: a reshaped matrix as a list, e.g. [[0, 1, 2], [3, 4, 5]].\n\n    Example:\n    reshape_matrix([[0, 1], [2, 3], [4, 5]], 3) -> [[0, 1, 2], [3, 4, 5]]\n    ",
+   "verified": true,
+   "direct_call": "list(more_itertools.recipes.reshape(matrix, shape))",
+   "samples": [
+    {
+     "matrix": [
+      [
+       0,
+       1
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       4,
+       5
+      ]
+     ],
+     "shape": [
+      3
+     ]
+    },
+    {
+     "matrix": [
+      [
+       0,
+       1
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       4,
+       5
+      ]
+     ],
+     "shape": [
+      2,
+      3
+     ]
+    },
+    {
+     "matrix": [
+      [
+       0,
+       1
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       4,
+       5
+      ]
+     ],
+     "shape": [
+      2,
+      1,
+      3,
+      1
+     ]
+    },
+    {
+     "matrix": [
+      [
+       0,
+       1,
+       2
+      ],
+      [
+       3,
+       4,
+       5
+      ]
+     ],
+     "shape": [
+      3,
+      2
+     ]
+    },
+    {
+     "matrix": [
+      [
+       0,
+       1
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       4,
+       5
+      ]
+     ],
+     "shape": [
+      6
+     ]
+    },
+    {
+     "matrix": [
+      [
+       0,
+       1
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       4,
+       5
+      ]
+     ],
+     "shape": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+     ]
+    }
+   ]
+  },
+  {
+   "name": "matrix_multiply",
+   "wraps": "more_itertools.recipes.matmul",
+   "description": "Multiply two matrices. m1: the first matrix as a list of lists. m2: the second matrix as a list of lists.\n    Example: matrix_multiply([[7, 5], [3, 5]], [[2, 5], [7, 9]]) -> [[49, 80], [41, 60]]\n    The caller should ensure that the dimensions of the input matrices are compatible with each other.\n    Supports all numeric types: int, float, complex, Decimal, Fraction.",
+   "verified": true,
+   "direct_call": "list(more_itertools.recipes.matmul(m1, m2))",
+   "samples": [
+    {
+     "m1": [
+      [
+       7,
+       5
+      ],
+      [
+       3,
+       5
+      ]
+     ],
+     "m2": [
+      [
+       2,
+       5
+      ],
+      [
+       7,
+       9
+      ]
+     ]
+    },
+    {
+     "m1": [
+      [
+       1,
+       2,
+       3
+      ],
+      [
+       4,
+       5,
+       6
+      ]
+     ],
+     "m2": [
+      [
+       7,
+       8
+      ],
+      [
+       9,
+       10
+      ],
+      [
+       11,
+       12
+      ]
+     ]
+    },
+    {
+     "m1": [
+      [
+       1
+      ]
+     ],
+     "m2": [
+      [
+       2
+      ]
+     ]
+    },
+    {
+     "m1": [
+      [
+       1,
+       0
+      ],
+      [
+       0,
+       1
+      ]
+     ],
+     "m2": [
+      [
+       1,
+       2
+      ],
+      [
+       3,
+       4
+      ]
+     ]
+    },
+    {
+     "m1": [
+      [
+       1,
+       2
+      ],
+      [
+       3,
+       4
+      ]
+     ],
+     "m2": [
+      [
+       5,
+       6
+      ]
+     ]
+    },
+    {
+     "m1": [
+      [
+       1,
+       2,
+       3
+      ],
+      [
+       4,
+       5,
+       6
+      ]
+     ],
+     "m2": [
+      [
+       7,
+       8
+      ],
+      [
+       9,
+       10
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "name": "prime_factors",
+   "wraps": "more_itertools.recipes.factor",
+   "description": "Yield the prime factors of n. n: an integer >= 2, e.g. 360 -> [2, 2, 2, 3, 3, 5].",
+   "verified": true,
+   "direct_call": "list(more_itertools.recipes.factor(n))",
+   "samples": [
+    {
+     "n": 360
+    },
+    {
+     "n": 1
+    },
+    {
+     "n": 13
+    },
+    {
+     "n": 1000000007
+    },
+    {
+     "n": 0
+    },
+    {
+     "n": -12
+    }
+   ]
+  },
+  {
+   "name": "is_prime",
+   "wraps": "more_itertools.recipes.is_prime",
+   "description": "Return ``True`` if *n* is prime and ``False`` otherwise.\n\n    Parameters:\n    - n (int): The number to check for primality.\n\n    Example:\n        >>> is_prime(37)\n        True\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.is_prime(n)",
+   "samples": [
+    {
+     "n": 37
+    },
+    {
+     "n": 39
+    },
+    {
+     "n": 18446744073709551557
+    },
+    {
+     "n": 1000000007
+    },
+    {
+     "n": 0
+    },
+    {
+     "n": -13
+    }
+   ]
+  },
+  {
+   "name": "running_mean",
+   "wraps": "more_itertools.recipes.running_mean",
+   "description": "Cumulative mean of values seen so far or values in a sliding window.\n\n    Parameters:\n        iterable (array): An iterable of numeric values (e.g., int, float) to calculate the running mean from.\n        maxlen (integer, optional): The maximum size of the sliding window. If None, the window is unbounded (cumulative mean).\n\n    For example:\n        >>> running_mean([40, 30, 50, 46, 39, 44])\n        [40.0, 35.0, 40.0, 41.5, 41.0, 41.5]\n\n        >>> running_mean([40, 30, 50, 46, 39, 44], maxlen=3)\n        [40.0, 35.0, 40.0, 42.0, 45.0, 43.0]\n\n    Supports numeric types such as int, float. No extra effort is made to reduce round-off errors for float inputs.\n    So the results may be slightly different from `statistics.mean`.\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.running_mean(iterable, maxlen=maxlen)",
+   "samples": [
+    {
+     "iterable": [
+      40,
+      30,
+      50,
+      46,
+      39,
+      44
+     ],
+     "maxlen": null
+    },
+    {
+     "iterable": [
+      40,
+      30,
+      50,
+      46,
+      39,
+      44
+     ],
+     "maxlen": 3
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "maxlen": 1
+    },
+    {
+     "iterable": [
+      100
+     ],
+     "maxlen": 5
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3
+     ],
+     "maxlen": 0
+    },
+    {
+     "iterable": "not an iterable",
+     "maxlen": 2
+    }
+   ]
+  },
+  {
+   "name": "running_median",
+   "wraps": "more_itertools.recipes.running_median",
+   "description": "Cumulative median of values seen so far or values in a sliding window.\n\n    iterable: An iterable of numeric values (e.g., int, float) to calculate the running median for.\n    maxlen: The maximum size of the sliding window. If None, the window is unbounded (cumulative median).\n\n    For example:\n\n        >>> list(running_median([5.0, 9.0, 4.0, 12.0, 8.0, 9.0]))\n        [5.0, 7.0, 5.0, 7.0, 8.0, 8.5]\n        >>> list(running_median([5.0, 9.0, 4.0, 12.0, 8.0, 9.0], maxlen=3))\n        [5.0, 7.0, 5.0, 9.0, 8.0, 9.0]\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.running_median(iterable, maxlen=maxlen)",
+   "samples": [
+    {
+     "iterable": [
+      5.0,
+      9.0,
+      4.0,
+      12.0,
+      8.0,
+      9.0
+     ],
+     "maxlen": null
+    },
+    {
+     "iterable": [
+      5.0,
+      9.0,
+      4.0,
+      12.0,
+      8.0,
+      9.0
+     ],
+     "maxlen": 3
+    },
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4,
+      5
+     ],
+     "maxlen": 1
+    },
+    {
+     "iterable": [
+      100
+     ],
+     "maxlen": null
+    },
+    {
+     "iterable": [],
+     "maxlen": 5
+    },
+    {
+     "iterable": [
+      5.0,
+      9.0,
+      4.0,
+      12.0,
+      8.0,
+      9.0
+     ],
+     "maxlen": 0
+    }
+   ]
+  },
+  {
+   "name": "running_min",
+   "wraps": "more_itertools.recipes.running_min",
+   "description": "Smallest of values seen so far or values in a sliding window. iterable: an iterable of numeric values. maxlen: optional maximum size of the sliding window. For example: [4, 3, 7, 0, 8, 1, 6, 2, 9, 5] with maxlen=3 -> [4, 3, 3, 0, 0, 0, 1, 1, 2, 2].",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.running_min(iterable, maxlen=maxlen)",
+   "samples": [
+    {
+     "iterable": [
+      4,
+      3,
+      7,
+      0,
+      8,
+      1,
+      6,
+      2,
+      9,
+      5
+     ],
+     "maxlen": null
+    },
+    {
+     "iterable": [
+      4,
+      3,
+      7,
+      0,
+      8,
+      1,
+      6,
+      2,
+      9,
+      5
+     ],
+     "maxlen": 3
+    },
+    {
+     "iterable": [
+      10,
+      5,
+      2,
+      8,
+      1,
+      7
+     ],
+     "maxlen": 2
+    },
+    {
+     "iterable": [
+      1
+     ],
+     "maxlen": 1
+    },
+    {
+     "iterable": [],
+     "maxlen": 3
+    },
+    {
+     "iterable": [
+      4,
+      3,
+      7,
+      0,
+      8,
+      1,
+      6,
+      2,
+      9,
+      5
+     ],
+     "maxlen": 0
+    }
+   ]
+  },
+  {
+   "name": "random_derangement",
+   "wraps": "more_itertools.recipes.random_derangement",
+   "description": "Return a random derangement of elements in the iterable.\n\n    A derangement is a permutation with no fixed points (i.e., no element appears in its original position).\n\n    Parameters:\n    iterable (Iterable[Any]): An iterable of elements to be deranged.\n\n    Example:\n    random_derangement([1, 2, 3]) -> [2, 3, 1] (example output, actual result may vary)\n\n    ",
+   "verified": false,
+   "direct_call": "more_itertools.recipes.random_derangement(iterable)",
+   "samples": [
+    {
+     "iterable": [
+      1,
+      2,
+      3,
+      4
+     ]
+    },
+    {
+     "iterable": [
+      "a",
+      "b",
+      "c"
+     ]
+    },
+    {
+     "iterable": []
+    },
+    {
+     "iterable": [
+      1
+     ]
+    },
+    {
+     "iterable": [
+      10,
+      20,
+      30,
+      40,
+      50
+     ]
+    }
+   ]
+  },
+  {
+   "name": "polynomial_derivative",
+   "wraps": "more_itertools.recipes.polynomial_derivative",
+   "description": "Compute the first derivative of a polynomial.\n\n    Evaluate the derivative of ``x\u00b3 - 4 x\u00b2 - 17 x + 60``:\n\n    >>> coefficients = [1, -4, -17, 60]\n    >>> derivative_coefficients = polynomial_derivative(coefficients)\n    >>> derivative_coefficients\n    [3, -8, -17]\n\n    Note that polynomial coefficients are specified in descending power order.\n\n    Supports all numeric types: int, float, complex, Decimal, Fraction.\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.polynomial_derivative(coefficients)",
+   "samples": [
+    {
+     "coefficients": [
+      1,
+      -4,
+      -17,
+      60
+     ]
+    },
+    {
+     "coefficients": [
+      2,
+      0,
+      -3,
+      5
+     ]
+    },
+    {
+     "coefficients": [
+      5
+     ]
+    },
+    {
+     "coefficients": [
+      3,
+      2,
+      1
+     ]
+    },
+    {
+     "coefficients": [
+      1,
+      1,
+      1,
+      1,
+      1
+     ]
+    },
+    {
+     "coefficients": [
+      "not a number"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "evaluate_polynomial",
+   "wraps": "more_itertools.recipes.polynomial_eval",
+   "description": "Evaluate a polynomial at a specific value.\n\n    coefficients: A list of coefficients in descending order of powers of the polynomial (e.g., [1, -4, -17, 60] for x^3 - 4x^2 - 17x + 60)\n    x: The value at which to evaluate the polynomial\n\n    Example:\n    coefficients = [1, -4, -17, 60]\n    x = 2.5\n    evaluate_polynomial(coefficients, x) -> 8.125\n    ",
+   "verified": true,
+   "direct_call": "more_itertools.recipes.polynomial_eval(coefficients, x)",
+   "samples": [
+    {
+     "coefficients": [
+      1,
+      -4,
+      -17,
+      60
+     ],
+     "x": 2.5
+    },
+    {
+     "coefficients": [
+      1,
+      0,
+      -4
+     ],
+     "x": 2
+    },
+    {
+     "coefficients": [
+      1
+     ],
+     "x": 5
+    },
+    {
+     "coefficients": [
+      0,
+      0,
+      0
+     ],
+     "x": 10
+    },
+    {
+     "coefficients": [
+      1,
+      2,
+      3,
+      4
+     ],
+     "x": -1
+    },
+    {
+     "coefficients": "not a list",
+     "x": 2
+    }
+   ]
+  },
+  {
+   "name": "index_of_values",
+   "wraps": "more_itertools.recipes.iter_index",
+   "description": "Yield the index of each occurrence of *value* in *iterable*, starting from *start* (inclusive) and ending before *stop* (exclusive).\n    \n    Parameters:\n    - iterable (list | str): The iterable to search for the value.\n    - value (object): The value to find in the iterable.\n    - start (int, optional): The index to start searching from (inclusive).\n    - stop (int, optional): The index to stop searching at (exclusive).\n    \n    Example:\n    >>> index_of_values('AABCADEAF', 'A')\n    [0, 1, 4, 7]\n    ",
+   "verified": true,
+   "direct_call": "list(more_itertools.recipes.iter_index(iterable, value, start, stop))",
+   "samples": [
+    {
+     "iterable": [
+      "A",
+      "A",
+      "B",
+      "C",
+      "A",
+      "D",
+      "E",
+      "A",
+      "F"
+     ],
+     "value": "A",
+     "start": 0,
+     "stop": null
+    },
+    {
+     "iterable": [
+      "A",
+      "A",
+      "B",
+      "C",
+      "A",
+      "D",
+      "E",
+      "A",
+      "F"
+     ],
+     "value": "A",
+     "start": 1,
+     "stop": 7
+    },
+    {
+     "iterable": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "A",
+      "B",
+      "C",
+      "D"
+     ],
+     "value": [
+      "A",
+      "B"
+     ],
+     "start": 0,
+     "stop": null
+    },
+    {
+     "iterable": [
+      [
+       0,
+       1
+      ],
+      [
+       2,
+       3
+      ],
+      [
+       0,
+       1
+      ],
+      [
+       2,
+       3
+      ]
+     ],
+     "value": [
+      0,
+      1
+     ],
+     "start": 0,
+     "stop": null
+    },
+    {
+     "iterable": [
+      0,
+      1,
+      2,
+      3,
+      0,
+      1,
+      2,
+      3
+     ],
+     "value": [
+      0,
+      1
+     ],
+     "start": 0,
+     "stop": null
+    },
+    {
+     "iterable": "AABCADEAF",
+     "value": "AB",
+     "start": 0,
+     "stop": null
+    }
+   ]
+  }
+ ]
+}

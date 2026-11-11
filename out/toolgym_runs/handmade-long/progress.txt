@@ -1,0 +1,16 @@
+Run: handmade-long-20261111-195613-ea9f
+Dir: results/gym/repo2tools/handmade-long-20261111-195613-ea9f/
+Status: finished
+Entries: 8 in 6.8min (1.2/min)
+
+Stage funnel:
+  sig: 20 done
+  template: 20 done
+  plausibility: 13 done / 7 dropped
+  prompt: 13 done / 3 retries
+  validation: 13 done
+  realization: 10 done / 3 dropped / 9 retries
+  post_validation: 10 done
+  distractor: 10 done
+  nl_answer: 10 done
+  apertus: 8 done / 2 dropped

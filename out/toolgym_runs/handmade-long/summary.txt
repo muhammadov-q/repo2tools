@@ -1,0 +1,8 @@
+T001 uuid=a7da0ece passed=False steps=10 distractors=3 answer_chars=68 apertus_tools=11
+T002 uuid=a9834d67 passed=False steps=10 distractors=3 answer_chars=43 apertus_tools=11
+T003 uuid=0d4d363b passed=False steps=10 distractors=3 answer_chars=45 apertus_tools=9
+T004 uuid=6566d262 passed=False steps=10 distractors=3 answer_chars=38 apertus_tools=11
+T005 uuid=e96ab350 passed=False steps=10 distractors=3 answer_chars=445 apertus_tools=11
+T006 uuid=b62290da passed=False steps=10 distractors=3 answer_chars=40 apertus_tools=12
+T007 uuid=d424b21c passed=False steps=10 distractors=3 answer_chars=96 apertus_tools=10
+T008 uuid=f725cade passed=False steps=10 distractors=3 answer_chars=62 apertus_tools=10

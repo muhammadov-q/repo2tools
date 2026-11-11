@@ -1,0 +1,3286 @@
+{
+ "mcp_server": {
+  "name": "repo2tools_more_itertools_qwen3_32b",
+  "repo": "repo2tools/more-itertools-qwen3-32b",
+  "tools": [
+   {
+    "mcp_spec": {
+     "name": "chunked",
+     "description": "Break *iterable* into lists of length *n*.\n\n    Parameters:\n        iterable (array): The iterable to be broken into chunks.\n        n (integer): The size of each chunk.\n        strict (boolean, optional): If True, raises ValueError if the iterable length is not divisible by n.\n\n    Example:\n        chunked([1, 2, 3, 4, 5, 6], 3) -> [[1, 2, 3], [4, 5, 6]]\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "n": {
+        "title": "N",
+        "type": "integer"
+       },
+       "strict": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": false,
+        "title": "Strict"
+       }
+      },
+      "required": [
+       "iterable",
+       "n"
+      ],
+      "title": "chunkedArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "ChunkedIterable",
+      "n": "ChunkedN",
+      "strict": "ChunkedStrict"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "last",
+     "description": "Return the last item of *iterable*, or *default* if *iterable* is empty.\n    \n    iterable: An iterable (e.g., list, tuple, string) from which the last item is to be retrieved.\n    default: The value to return if the iterable is empty. If not provided, a ValueError is raised.\n    \n    Example:\n        >>> last([0, 1, 2, 3])\n        3\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "anyOf": [
+         {
+          "items": {},
+          "type": "array"
+         },
+         {
+          "type": "string"
+         }
+        ],
+        "title": "Iterable"
+       },
+       "default": {
+        "anyOf": [
+         {},
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Default"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "lastArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "LastIterable",
+      "default": "LastDefault"
+     },
+     "output_type": "string"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "distinct_permutations",
+     "description": "Yield successive distinct permutations of the elements in *iterable*.\n\n    iterable: An iterable containing elements for which distinct permutations are to be generated.\n    r: Length of the permutations to generate. If not provided, permutations of the full length of the iterable are generated.\n\n    Example:\n    >>> sorted(distinct_permutations([1, 0, 1]))\n    [(0, 1, 1), (1, 0, 1), (1, 1, 0)]\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "r": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "R"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "distinct_permutationsArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "DistinctPermutationsIterable",
+      "r": "DistinctPermutationsR"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "windowed",
+     "description": "Return a sliding window of width *n* over the given iterable.\n\n    seq: The iterable to slide the window over.\n    n: The width of the sliding window.\n    fill_value: The value to use for missing elements when the window is larger than the iterable.\n    step: The number of positions to advance the window at each step.\n\n    Example:\n    windowed([1, 2, 3, 4, 5], 3) -> [(1, 2, 3), (2, 3, 4), (3, 4, 5)]\n    ",
+     "inputSchema": {
+      "properties": {
+       "seq": {
+        "items": {},
+        "title": "Seq",
+        "type": "array"
+       },
+       "n": {
+        "title": "N",
+        "type": "integer"
+       },
+       "fill_value": {
+        "anyOf": [
+         {},
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Fill Value"
+       },
+       "step": {
+        "default": 1,
+        "title": "Step",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "seq",
+       "n"
+      ],
+      "title": "windowedArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "seq": "WindowedSeq",
+      "n": "WindowedN",
+      "fill_value": "WindowedFillValue",
+      "step": "WindowedStep"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "split_into",
+     "description": "\n    Yield a list of sequential items from *iterable* of length 'n' for each\n    integer 'n' in *sizes*.\n\n    Parameters:\n    - iterable (array): An iterable from which sequential items will be split according to the sizes provided.\n    - sizes (array): A list of integers or None values specifying the size of each group. If None is encountered, the remaining items are returned as a single group.\n\n    Example:\n    >>> split_into([1,2,3,4,5,6], [1,2,3])\n    [[1], [2, 3], [4, 5, 6]]\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "sizes": {
+        "items": {
+         "anyOf": [
+          {
+           "type": "integer"
+          },
+          {
+           "type": "null"
+          }
+         ]
+        },
+        "title": "Sizes",
+        "type": "array"
+       }
+      },
+      "required": [
+       "iterable",
+       "sizes"
+      ],
+      "title": "split_intoArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "SplitIntoIterable",
+      "sizes": "SplitIntoSizes"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "repeat_each",
+     "description": "Repeat each element in *iterable* *n* times. iterable: an iterable of elements. n: number of times to repeat each element.",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "n": {
+        "default": 2,
+        "title": "N",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "repeat_eachArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "RepeatEachIterable",
+      "n": "RepeatEachN"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "distribute",
+     "description": "Distribute the items from *iterable* among *n* smaller iterables.\n\n        >>> group_1, group_2 = distribute(2, [1, 2, 3, 4, 5, 6])\n        >>> list(group_1)\n        [1, 3, 5]\n        >>> list(group_2)\n        [2, 4, 6]\n\n    If the length of *iterable* is not evenly divisible by *n*, then the\n    length of the returned iterables will not be identical:\n\n        >>> children = distribute(3, [1, 2, 3, 4, 5, 6, 7])\n        >>> [list(c) for c in children]\n        [[1, 4, 7], [2, 5], [3, 6]]\n\n    If the length of *iterable* is smaller than *n*, then the last returned\n    iterables will be empty:\n\n        >>> children = distribute(5, [1, 2, 3])\n        >>> [list(c) for c in children]\n        [[1], [2], [3], [], []]\n\n    This function uses :func:`itertools.tee` and may require significant\n    storage.\n\n    If you need the order items in the smaller iterables to match the\n    original iterable, see :func:`divide`.\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "n": {
+        "title": "N",
+        "type": "integer"
+       },
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "n",
+       "iterable"
+      ],
+      "title": "distributeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "n": "DistributeN",
+      "iterable": "DistributeIterable"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "sort_together",
+     "description": "\n    Return the input iterables sorted together, with key_list as the priority for sorting.\n    \n    Parameters:\n    - iterables (List[List[Any]]): A list of iterables to be sorted together. Each iterable represents a column of data.\n    - key_list (List[int], optional): A list of indices specifying which iterables to use as the key for sorting. Defaults to [0].\n    - key_function (callable, optional): A function to compute the sort key from the elements of the iterables. If provided, it is called with the elements from the iterables specified in key_list.\n    - reverse (bool, optional): If true, the sorted result is in descending order. Defaults to false.\n    - strict (bool, optional): If true, a ValueError is raised if the iterables have different lengths. Defaults to false.\n    \n    Example:\n    >>> sort_together([(4, 3, 2, 1), ('a', 'b', 'c', 'd')])\n    [[1, 2, 3, 4], ['d', 'c', 'b', 'a']]\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterables": {
+        "items": {
+         "items": {},
+         "type": "array"
+        },
+        "title": "Iterables",
+        "type": "array"
+       },
+       "key_list": {
+        "anyOf": [
+         {
+          "items": {
+           "type": "integer"
+          },
+          "type": "array"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Key List"
+       },
+       "reverse": {
+        "default": false,
+        "title": "Reverse",
+        "type": "boolean"
+       },
+       "strict": {
+        "default": false,
+        "title": "Strict",
+        "type": "boolean"
+       }
+      },
+      "required": [
+       "iterables"
+      ],
+      "title": "sort_togetherArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterables": "ListArray",
+      "key_list": "SortTogetherKeyList",
+      "reverse": "SortTogetherReverse",
+      "strict": "SortTogetherStrict"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "divide",
+     "description": "Divide the elements from *iterable* into *n* parts, maintaining order. \n    n: the number of parts to divide the iterable into. \n    iterable: the iterable to be divided into parts. \n    Example: divide(2, [1, 2, 3, 4, 5, 6]) -> [[1, 2, 3], [4, 5, 6]]\n    ",
+     "inputSchema": {
+      "properties": {
+       "n": {
+        "title": "N",
+        "type": "integer"
+       },
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "n",
+       "iterable"
+      ],
+      "title": "divideArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "n": "DivideN",
+      "iterable": "DivideIterable"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "difference",
+     "description": "\n    This function is the inverse of itertools.accumulate. By default it will compute the first difference of *iterable*.\n\n    Parameters:\n    - iterable (array): An iterable of elements to compute the difference for.\n    - func (object, optional): A function to apply for computing the difference. Defaults to operator.sub.\n    - initial (number, optional): An optional initial value to use for the first element. If provided, the first element is skipped in the computation.\n\n    Example:\n    >>> from itertools import accumulate\n    >>> iterable = accumulate([0, 1, 2, 3, 4])  # produces 0, 1, 3, 6, 10\n    >>> difference(iterable)\n    [0, 1, 2, 3, 4]\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "func": {
+        "anyOf": [
+         {},
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Func"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "differenceArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "DifferenceIterable",
+      "func": "DifferenceFunc"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "circular_shifts",
+     "description": "Yield the circular shifts of *iterable*. iterable: the input list. steps: number of places to rotate left (positive) or right (negative), defaults to 1. Example: circular_shifts([0, 1, 2, 3]) -> [(0, 1, 2, 3), (1, 2, 3, 0), (2, 3, 0, 1), (3, 0, 1, 2)]",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "steps": {
+        "default": 1,
+        "title": "Steps",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "circular_shiftsArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "CircularShiftsIterable",
+      "steps": "CircularShiftsSteps"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "partitions",
+     "description": "Return all possible order-preserving partitions of *iterable*.\n\n    iterable: An iterable (e.g., list, string) to partition into all possible order-preserving sublists.\n    Example: partitions('abc') -> [['abc'], ['a', 'bc'], ['ab', 'c'], ['a', 'b', 'c']]\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "partitionsArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "PartitionsIterable"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "distinct_combinations",
+     "description": "Yield the distinct combinations of *r* items taken from *iterable*.\n\n    iterable: An iterable from which combinations are to be generated.\n    r: The number of items to choose for each combination.\n\n    Example:\n    distinct_combinations([0, 0, 1], 2) -> [(0, 0), (0, 1)]\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "r": {
+        "title": "R",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "iterable",
+       "r"
+      ],
+      "title": "distinct_combinationsArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "DistinctCombinationsIterable",
+      "r": "DistinctCombinationsR"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "all_unique",
+     "description": "Returns True if all the elements of *iterable* are unique (no two elements are equal).\n    \n    iterable: An iterable containing elements to check for uniqueness.\n    key: A function to apply to each element before checking for uniqueness. Defaults to None.\n    \n    Example:\n    all_unique('ABCB') -> False\n    all_unique('ABCb', str.lower) -> False\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "all_uniqueArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "AllUniqueIterable"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "combination_index",
+     "description": "Equivalent to ``list(combinations(iterable, r)).index(element)``\n\n    The subsequences of *iterable* that are of length *r* can be ordered\n    lexicographically. :func:`combination_index` computes the index of the\n    first *element*, without computing the previous combinations.\n\n        >>> combination_index(['a', 'd', 'f'], ['a', 'b', 'c', 'd', 'e', 'f', 'g'])\n        10\n\n    ``ValueError`` will be raised if the given *element* isn't one of the\n    combinations of *iterable*.\n    ",
+     "inputSchema": {
+      "properties": {
+       "element": {
+        "items": {},
+        "title": "Element",
+        "type": "array"
+       },
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "element",
+       "iterable"
+      ],
+      "title": "combination_indexArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "element": "CombinationIndexElement",
+      "iterable": "CombinationIndexIterable"
+     },
+     "output_type": "integer"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "combination_with_replacement_index",
+     "description": "Equivalent to\n    ``list(combinations_with_replacement(iterable, r)).index(element)``\n\n    The subsequences with repetition of *iterable* that are of length *r* can\n    be ordered lexicographically. :func:`combination_with_replacement_index`\n    computes the index of the first *element*, without computing the previous\n    combinations with replacement.\n\n        >>> combination_with_replacement_index('adf', 'abcdefg')\n        20\n\n    ``ValueError`` will be raised if the given *element* isn't one of the\n    combinations with replacement of *iterable*.\n    ",
+     "inputSchema": {
+      "properties": {
+       "element": {
+        "title": "Element",
+        "type": "string"
+       },
+       "iterable": {
+        "title": "Iterable",
+        "type": "string"
+       }
+      },
+      "required": [
+       "element",
+       "iterable"
+      ],
+      "title": "combination_with_replacement_indexArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "element": "CombinationWithReplacementIndexElement",
+      "iterable": "CombinationWithReplacementIndexIterable"
+     },
+     "output_type": "integer"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "permutation_index",
+     "description": "Equivalent to ``list(permutations(iterable, r)).index(element)``\n\n    The subsequences of *iterable* that are of length *r* where order is\n    important can be ordered lexicographically. :func:`permutation_index`\n    computes the index of the first *element* directly, without computing\n    the previous permutations.\n\n        >>> permutation_index([1, 3, 2], range(5))\n        19\n\n    ``ValueError`` will be raised if the given *element* isn't one of the\n    permutations of *iterable*.\n    ",
+     "inputSchema": {
+      "properties": {
+       "element": {
+        "items": {},
+        "title": "Element",
+        "type": "array"
+       },
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "element",
+       "iterable"
+      ],
+      "title": "permutation_indexArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "element": "PermutationIndexElement",
+      "iterable": "PermutationIndexIterable"
+     },
+     "output_type": "integer"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "chunked_even",
+     "description": "Break *iterable* into lists of approximately length *n*.\n    Items are distributed such the lengths of the lists differ by at most\n    1 item.\n\n    Parameters:\n        iterable (array): The iterable to be split into chunks.\n        n (integer): The approximate size of each chunk. The actual chunk sizes will differ by at most one.\n\n    Example:\n        >>> iterable = [1, 2, 3, 4, 5, 6, 7]\n        >>> n = 3\n        >>> chunked_even(iterable, n)\n        [[1, 2, 3], [4, 5], [6, 7]]\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "n": {
+        "title": "N",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "iterable",
+       "n"
+      ],
+      "title": "chunked_evenArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "ChunkedEvenIterable",
+      "n": "ChunkedEvenN"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "duplicates_everseen",
+     "description": "Yield duplicate elements after their first appearance.\n    \n    iterable: An iterable collection of elements to check for duplicates.\n    key: A string representing a function to extract a comparison key from each element. If not provided, the elements themselves are compared.\n    \n    Example:\n    >>> list(duplicates_everseen('mississippi'))\n    ['s', 'i', 's', 's', 'i', 'p', 'i']\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "duplicates_everseenArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "DuplicatesEverseenIterable"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "duplicates_justseen",
+     "description": "Yields serially-duplicate elements after their first appearance.\n    \n    iterable: An iterable sequence of elements to check for serial duplicates.\n    key: A function to extract a comparison key from each element. Defaults to None, meaning elements are compared directly.\n    \n    Example:\n    >>> list(duplicates_justseen('mississippi'))\n    ['s', 's', 'p']\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "duplicates_justseenArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "DuplicatesJustseenIterable"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "join_mappings",
+     "description": "\n    Joins multiple mappings together using their common keys.\n\n    Parameters:\n    - field_to_map: A dictionary where keys are field names and values are mappings (dictionaries) to be joined.\n\n    Example:\n    >>> user_scores = {'elliot': 50, 'claris': 60}\n    >>> user_times = {'elliot': 30, 'claris': 40}\n    >>> join_mappings({'score': user_scores, 'time': user_times})\n    {'elliot': {'score': 50, 'time': 30}, 'claris': {'score': 60, 'time': 40}}\n    ",
+     "inputSchema": {
+      "properties": {
+       "field_to_map": {
+        "additionalProperties": {
+         "additionalProperties": true,
+         "type": "object"
+        },
+        "title": "Field To Map",
+        "type": "object"
+       }
+      },
+      "required": [
+       "field_to_map"
+      ],
+      "title": "join_mappingsArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "field_to_map": "JoinMappingsFieldToMap"
+     },
+     "output_type": "object"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "nth_prime",
+     "description": "Return the nth prime (counting from 0). n: the index of the prime number to return. approximate: if True, returns an approximate prime number close to the nth prime.\n\n    >>> nth_prime(0)\n    2\n    >>> nth_prime(100)\n    547\n    ",
+     "inputSchema": {
+      "properties": {
+       "n": {
+        "title": "N",
+        "type": "integer"
+       },
+       "approximate": {
+        "default": false,
+        "title": "Approximate",
+        "type": "boolean"
+       }
+      },
+      "required": [
+       "n"
+      ],
+      "title": "nth_primeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "n": "NthPrimeN",
+      "approximate": "NthPrimeApproximate"
+     },
+     "output_type": "integer"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "argmin",
+     "description": "\n    Index of the first occurrence of a minimum value in an iterable.\n\n    Parameters:\n    - iterable (list): An iterable (e.g., list, string, or other sequence) to search for the minimum value.\n    - key_function (callable, optional): A function to compute a value for each element in the iterable for comparison. If not provided, the elements themselves are compared.\n\n    Returns:\n    - int: The index of the first occurrence of the minimum value.\n\n    Example:\n    >>> argmin([3, 2, 1, 0, 4, 2, 1, 0])\n    3\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "argminArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "ArgminIterable"
+     },
+     "output_type": "integer"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "extract",
+     "description": "Yield values at the specified indices.\n\n    iterable: The iterable from which to extract values.\n    indices: The indices to extract from the iterable.\n    monotonic: If true, indices are consumed lazily and must be non-decreasing. If false, indices are consumed immediately and must be finite.\n\n    Example:\n\n        >>> data = 'abcdefghijklmnopqrstuvwxyz'\n        >>> extract(data, [7, 4, 11, 11, 14])\n        ['h', 'e', 'l', 'l', 'o']\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "indices": {
+        "items": {
+         "type": "integer"
+        },
+        "title": "Indices",
+        "type": "array"
+       },
+       "monotonic": {
+        "default": false,
+        "title": "Monotonic",
+        "type": "boolean"
+       }
+      },
+      "required": [
+       "iterable",
+       "indices"
+      ],
+      "title": "extractArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "ExtractIterable",
+      "indices": "ExtractIndices",
+      "monotonic": "ExtractMonotonic"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "concurrent_tee",
+     "description": "Variant of itertools.tee() but with guaranteed threading semantics.\n\n    Takes a non-threadsafe iterator as an input and creates concurrent\n    tee objects for other threads to have reliable independent copies of\n    the data stream.\n\n    The new iterators are only thread-safe if consumed within a single thread.\n    To share just one of the new iterators across multiple threads, wrap it\n    with :func:`serialize`.\n\n    Parameters:\n    - iterable (object): An iterable object to be split into multiple independent iterators.\n    - n (int, optional): Number of independent iterators to create from the input iterable.\n\n    Example:\n    >>> from itertools import count\n    >>> a, b = concurrent_tee(count(), 2)\n    >>> next(a)\n    0\n    >>> next(b)\n    0\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "title": "Iterable"
+       },
+       "n": {
+        "default": 2,
+        "title": "N",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "concurrent_teeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "ConcurrentTeeIterable",
+      "n": "ConcurrentTeeN"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "subfactorial",
+     "description": "Number of permutations of *n* elements with no fixed points. n: an integer >= 0, e.g. n=3 -> 2.",
+     "inputSchema": {
+      "properties": {
+       "n": {
+        "title": "N",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "n"
+      ],
+      "title": "subfactorialArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "n": "SubfactorialN"
+     },
+     "output_type": "integer"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "take",
+     "description": "Return first *n* items of the *iterable* as a list.\n\n        >>> take(3, range(10))\n        [0, 1, 2]\n\n    If there are fewer than *n* items in the iterable, all of them are\n    returned.\n\n        >>> take(10, range(3))\n        [0, 1, 2]\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "n": {
+        "title": "N",
+        "type": "integer"
+       },
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "n",
+       "iterable"
+      ],
+      "title": "takeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "n": "TakeN",
+      "iterable": "TakeIterable"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "consume",
+     "description": "Advance *iterator* by *n* steps. If *n* is ``None``, consume it entirely.\n\n    Efficiently exhausts an iterator without returning values. Defaults to\n    consuming the whole iterator, but an optional second argument may be\n    provided to limit consumption.\n\n        >>> i = (x for x in range(10))\n        >>> next(i)\n        0\n        >>> consume(i, 3)\n        >>> next(i)\n        4\n        >>> consume(i)\n        >>> next(i)\n        Traceback (most recent call last):\n          File \"<stdin>\", line 1, in <module>\n        StopIteration\n\n    If the iterator has fewer items remaining than the provided limit, the\n    whole iterator will be consumed.\n\n        >>> i = (x for x in range(3))\n        >>> consume(i, 5)\n        >>> next(i)\n        Traceback (most recent call last):\n          File \"<stdin>\", line 1, in <module>\n        StopIteration\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterator": {
+        "title": "Iterator"
+       },
+       "n": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "N"
+       }
+      },
+      "required": [
+       "iterator"
+      ],
+      "title": "consumeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterator": "ConsumeIterator",
+      "n": "ConsumeN"
+     },
+     "output_type": "string"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "ncycles",
+     "description": "Returns the sequence elements *n* times.\n\n    iterable: an iterable sequence of elements to be repeated\n    n: the number of times to repeat the elements of the iterable\n    Example: ncycles([\"a\", \"b\"], 3) -> ['a', 'b', 'a', 'b', 'a', 'b']\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "n": {
+        "title": "N",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "iterable",
+       "n"
+      ],
+      "title": "ncyclesArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "NcyclesIterable",
+      "n": "NcyclesN"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "pairwise",
+     "description": "Generate consecutive overlapping pairs from an iterable. iterable: a list or string of elements, e.g. \"abc\" -> [(\"a\", \"b\"), (\"b\", \"c\")].",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "anyOf": [
+         {
+          "items": {},
+          "type": "array"
+         },
+         {
+          "type": "string"
+         }
+        ],
+        "title": "Iterable"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "pairwiseArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "PairwiseIterable"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "grouper",
+     "description": "\n    Group elements from *iterable* into fixed-length groups of length *n*.\n\n    Parameters:\n    - iterable: An iterable to be grouped into fixed-length chunks.\n    - n: The size of each group.\n    - incomplete: How to handle incomplete groups. Options are 'fill', 'ignore', or 'strict'.\n    - fill_value: The value to use for filling incomplete groups when 'incomplete' is 'fill'.\n\n    Example:\n    >>> list(grouper('ABCDEF', 3))\n    [('A', 'B', 'C'), ('D', 'E', 'F')]\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "n": {
+        "title": "N",
+        "type": "integer"
+       },
+       "incomplete": {
+        "default": "fill",
+        "title": "Incomplete",
+        "type": "string"
+       },
+       "fill_value": {
+        "default": null,
+        "title": "Fill Value"
+       }
+      },
+      "required": [
+       "iterable",
+       "n"
+      ],
+      "title": "grouperArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "GrouperIterable",
+      "n": "GrouperN",
+      "incomplete": "GrouperIncomplete",
+      "fill_value": "GrouperFillValue"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "unique_justseen",
+     "description": "Yields elements in order, ignoring serial duplicates.\n    \n    iterable: An iterable sequence of elements to process.\n    key: A function to apply to each element to determine uniqueness; if not provided, elements are compared directly.\n    \n    Example:\n    >>> list(unique_justseen('AAAABBBCCDAABBB'))\n    ['A', 'B', 'C', 'D', 'A', 'B']\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "unique_justseenArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "UniqueJustseenIterable"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "random_permutation",
+     "description": "Return a random *r* length permutation of the elements in *iterable*.\n\n    If *r* is not specified or is ``None``, then *r* defaults to the length of\n    *iterable*.\n\n        >>> random_permutation(range(5))  # doctest:+SKIP\n        [3, 4, 0, 1, 2]\n\n    This is equivalent to taking a random selection from\n    ``itertools.permutations(iterable, r)``.\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "r": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "R"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "random_permutationArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "RandomPermutationIterable",
+      "r": "RandomPermutationR"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "random_combination_with_replacement",
+     "description": "Return a random *r* length subsequence of elements in *iterable*,\n    allowing individual elements to be repeated.\n\n        >>> random_combination_with_replacement(range(3), 5) # doctest:+SKIP\n        (0, 0, 1, 2, 2)\n\n    Parameters:\n        iterable (array): An iterable of elements to choose from for the random combination.\n        r (integer): The length of the random combination to generate.\n\n    Returns:\n        Tuple[Any, ...]: A tuple of *r* randomly selected elements from *iterable*, allowing repetition.\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "r": {
+        "title": "R",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "iterable",
+       "r"
+      ],
+      "title": "random_combination_with_replacementArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "RandomCombinationWithReplacementIterable",
+      "r": "RandomCombinationWithReplacementR"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "prepend",
+     "description": "Yield *value*, followed by the elements in *iterable*.\n\n        >>> value = '0'\n        >>> iterable = ['1', '2', '3']\n        >>> list(prepend(value, iterable))\n        ['0', '1', '2', '3']\n\n    To prepend multiple values, see :func:`itertools.chain`\n    or :func:`value_chain`.\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "value": {
+        "title": "Value"
+       },
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "value",
+       "iterable"
+      ],
+      "title": "prependArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "value": "PrependValue",
+      "iterable": "PrependIterable"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "sliding_window",
+     "description": "Return a sliding window of width *n* over *iterable*.\n\n        >>> list(sliding_window(range(6), 4))\n        [(0, 1, 2, 3), (1, 2, 3, 4), (2, 3, 4, 5)]\n\n    If *iterable* has fewer than *n* items, then nothing is yielded:\n\n        >>> list(sliding_window(range(3), 4))\n        []\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       },
+       "n": {
+        "title": "N",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "iterable",
+       "n"
+      ],
+      "title": "sliding_windowArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "SlidingWindowIterable",
+      "n": "SlidingWindowN"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "triplewise",
+     "description": "Return overlapping triplets from *iterable*.\n\n    iterable: An iterable sequence from which overlapping triplets will be generated.\n    Example: 'ABCDE' -> [('A', 'B', 'C'), ('B', 'C', 'D'), ('C', 'D', 'E')]\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "triplewiseArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "TriplewiseIterable"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "subslices",
+     "description": "Return all contiguous non-empty subslices of *iterable*.\n\n    iterable: An iterable (e.g., list, string) from which to generate all contiguous non-empty subslices.\n    Example: subslices('ABC') -> [['A'], ['A', 'B'], ['A', 'B', 'C'], ['B'], ['B', 'C'], ['C']]\n\n    >>> list(subslices('ABC'))\n    [['A'], ['A', 'B'], ['A', 'B', 'C'], ['B'], ['B', 'C'], ['C']]\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "anyOf": [
+         {
+          "items": {},
+          "type": "array"
+         },
+         {
+          "type": "string"
+         }
+        ],
+        "title": "Iterable"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "subslicesArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "SubslicesIterable"
+     },
+     "output_type": "ListArray"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "transpose_matrix",
+     "description": "Swap the rows and columns of the input matrix. matrix: a list of lists representing the matrix, e.g. [[1, 2, 3], [11, 22, 33]] -> [(1, 11), (2, 22), (3, 33)].",
+     "inputSchema": {
+      "properties": {
+       "matrix": {
+        "items": {
+         "items": {},
+         "type": "array"
+        },
+        "title": "Matrix",
+        "type": "array"
+       }
+      },
+      "required": [
+       "matrix"
+      ],
+      "title": "transpose_matrixArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "matrix": "Matrix"
+     },
+     "output_type": "Matrix"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "reshape_matrix",
+     "description": "Change the shape of a *matrix*.\n\n    matrix: a nested list representing the input matrix, e.g. [[0, 1], [2, 3], [4, 5]]\n    shape: the desired shape of the output matrix. If an integer, it is the number of columns. If a list, it is the new shape.\n    Returns: a reshaped matrix as a list, e.g. [[0, 1, 2], [3, 4, 5]].\n\n    Example:\n    reshape_matrix([[0, 1], [2, 3], [4, 5]], 3) -> [[0, 1, 2], [3, 4, 5]]\n    ",
+     "inputSchema": {
+      "properties": {
+       "matrix": {
+        "items": {
+         "items": {},
+         "type": "array"
+        },
+        "title": "Matrix",
+        "type": "array"
+       },
+       "shape": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "items": {
+           "type": "integer"
+          },
+          "type": "array"
+         }
+        ],
+        "title": "Shape"
+       }
+      },
+      "required": [
+       "matrix",
+       "shape"
+      ],
+      "title": "reshape_matrixArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "matrix": "Matrix",
+      "shape": "ReshapeMatrixShape"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "matrix_multiply",
+     "description": "Multiply two matrices. m1: the first matrix as a list of lists. m2: the second matrix as a list of lists.\n    Example: matrix_multiply([[7, 5], [3, 5]], [[2, 5], [7, 9]]) -> [[49, 80], [41, 60]]\n    The caller should ensure that the dimensions of the input matrices are compatible with each other.\n    Supports all numeric types: int, float, complex, Decimal, Fraction.",
+     "inputSchema": {
+      "properties": {
+       "m1": {
+        "items": {
+         "items": {},
+         "type": "array"
+        },
+        "title": "M1",
+        "type": "array"
+       },
+       "m2": {
+        "items": {
+         "items": {},
+         "type": "array"
+        },
+        "title": "M2",
+        "type": "array"
+       }
+      },
+      "required": [
+       "m1",
+       "m2"
+      ],
+      "title": "matrix_multiplyArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "m1": "MatrixMultiplyM1",
+      "m2": "MatrixMultiplyM2"
+     },
+     "output_type": "Matrix"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "prime_factors",
+     "description": "Yield the prime factors of n. n: an integer >= 2, e.g. 360 -> [2, 2, 2, 3, 3, 5].",
+     "inputSchema": {
+      "properties": {
+       "n": {
+        "title": "N",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "n"
+      ],
+      "title": "prime_factorsArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "n": "PrimeFactorsN"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "is_prime",
+     "description": "Return ``True`` if *n* is prime and ``False`` otherwise.\n\n    Parameters:\n    - n (int): The number to check for primality.\n\n    Example:\n        >>> is_prime(37)\n        True\n    ",
+     "inputSchema": {
+      "properties": {
+       "n": {
+        "title": "N",
+        "type": "integer"
+       }
+      },
+      "required": [
+       "n"
+      ],
+      "title": "is_primeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "n": "IsPrimeN"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "running_mean",
+     "description": "Cumulative mean of values seen so far or values in a sliding window.\n\n    Parameters:\n        iterable (array): An iterable of numeric values (e.g., int, float) to calculate the running mean from.\n        maxlen (integer, optional): The maximum size of the sliding window. If None, the window is unbounded (cumulative mean).\n\n    For example:\n        >>> running_mean([40, 30, 50, 46, 39, 44])\n        [40.0, 35.0, 40.0, 41.5, 41.0, 41.5]\n\n        >>> running_mean([40, 30, 50, 46, 39, 44], maxlen=3)\n        [40.0, 35.0, 40.0, 42.0, 45.0, 43.0]\n\n    Supports numeric types such as int, float. No extra effort is made to reduce round-off errors for float inputs.\n    So the results may be slightly different from `statistics.mean`.\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {
+         "anyOf": [
+          {
+           "type": "integer"
+          },
+          {
+           "type": "number"
+          }
+         ]
+        },
+        "title": "Iterable",
+        "type": "array"
+       },
+       "maxlen": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Maxlen"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "running_meanArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "RunningMeanIterable",
+      "maxlen": "RunningMeanMaxlen"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "running_median",
+     "description": "Cumulative median of values seen so far or values in a sliding window.\n\n    iterable: An iterable of numeric values (e.g., int, float) to calculate the running median for.\n    maxlen: The maximum size of the sliding window. If None, the window is unbounded (cumulative median).\n\n    For example:\n\n        >>> list(running_median([5.0, 9.0, 4.0, 12.0, 8.0, 9.0]))\n        [5.0, 7.0, 5.0, 7.0, 8.0, 8.5]\n        >>> list(running_median([5.0, 9.0, 4.0, 12.0, 8.0, 9.0], maxlen=3))\n        [5.0, 7.0, 5.0, 9.0, 8.0, 9.0]\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {
+         "anyOf": [
+          {
+           "type": "integer"
+          },
+          {
+           "type": "number"
+          }
+         ]
+        },
+        "title": "Iterable",
+        "type": "array"
+       },
+       "maxlen": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Maxlen"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "running_medianArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "RunningMedianIterable",
+      "maxlen": "RunningMedianMaxlen"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "running_min",
+     "description": "Smallest of values seen so far or values in a sliding window. iterable: an iterable of numeric values. maxlen: optional maximum size of the sliding window. For example: [4, 3, 7, 0, 8, 1, 6, 2, 9, 5] with maxlen=3 -> [4, 3, 3, 0, 0, 0, 1, 1, 2, 2].",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {
+         "anyOf": [
+          {
+           "type": "integer"
+          },
+          {
+           "type": "number"
+          }
+         ]
+        },
+        "title": "Iterable",
+        "type": "array"
+       },
+       "maxlen": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Maxlen"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "running_minArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "RunningMinIterable",
+      "maxlen": "RunningMinMaxlen"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "random_derangement",
+     "description": "Return a random derangement of elements in the iterable.\n\n    A derangement is a permutation with no fixed points (i.e., no element appears in its original position).\n\n    Parameters:\n    iterable (Iterable[Any]): An iterable of elements to be deranged.\n\n    Example:\n    random_derangement([1, 2, 3]) -> [2, 3, 1] (example output, actual result may vary)\n\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "items": {},
+        "title": "Iterable",
+        "type": "array"
+       }
+      },
+      "required": [
+       "iterable"
+      ],
+      "title": "random_derangementArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "RandomDerangementIterable"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "polynomial_derivative",
+     "description": "Compute the first derivative of a polynomial.\n\n    Evaluate the derivative of ``x\u00b3 - 4 x\u00b2 - 17 x + 60``:\n\n    >>> coefficients = [1, -4, -17, 60]\n    >>> derivative_coefficients = polynomial_derivative(coefficients)\n    >>> derivative_coefficients\n    [3, -8, -17]\n\n    Note that polynomial coefficients are specified in descending power order.\n\n    Supports all numeric types: int, float, complex, Decimal, Fraction.\n    ",
+     "inputSchema": {
+      "properties": {
+       "coefficients": {
+        "items": {},
+        "title": "Coefficients",
+        "type": "array"
+       }
+      },
+      "required": [
+       "coefficients"
+      ],
+      "title": "polynomial_derivativeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "coefficients": "PolynomialDerivativeCoefficients"
+     },
+     "output_type": "array"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "evaluate_polynomial",
+     "description": "Evaluate a polynomial at a specific value.\n\n    coefficients: A list of coefficients in descending order of powers of the polynomial (e.g., [1, -4, -17, 60] for x^3 - 4x^2 - 17x + 60)\n    x: The value at which to evaluate the polynomial\n\n    Example:\n    coefficients = [1, -4, -17, 60]\n    x = 2.5\n    evaluate_polynomial(coefficients, x) -> 8.125\n    ",
+     "inputSchema": {
+      "properties": {
+       "coefficients": {
+        "items": {
+         "anyOf": [
+          {
+           "type": "integer"
+          },
+          {
+           "type": "number"
+          }
+         ]
+        },
+        "title": "Coefficients",
+        "type": "array"
+       },
+       "x": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "number"
+         }
+        ],
+        "title": "X"
+       }
+      },
+      "required": [
+       "coefficients",
+       "x"
+      ],
+      "title": "evaluate_polynomialArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "coefficients": "EvaluatePolynomialCoefficients",
+      "x": "EvaluatePolynomialX"
+     },
+     "output_type": "number"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "index_of_values",
+     "description": "Yield the index of each occurrence of *value* in *iterable*, starting from *start* (inclusive) and ending before *stop* (exclusive).\n    \n    Parameters:\n    - iterable (list | str): The iterable to search for the value.\n    - value (object): The value to find in the iterable.\n    - start (int, optional): The index to start searching from (inclusive).\n    - stop (int, optional): The index to stop searching at (exclusive).\n    \n    Example:\n    >>> index_of_values('AABCADEAF', 'A')\n    [0, 1, 4, 7]\n    ",
+     "inputSchema": {
+      "properties": {
+       "iterable": {
+        "anyOf": [
+         {
+          "items": {},
+          "type": "array"
+         },
+         {
+          "type": "string"
+         }
+        ],
+        "title": "Iterable"
+       },
+       "value": {
+        "title": "Value"
+       },
+       "start": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Start"
+       },
+       "stop": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Stop"
+       }
+      },
+      "required": [
+       "iterable",
+       "value"
+      ],
+      "title": "index_of_valuesArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "iterable": "IndexOfValuesIterable",
+      "value": "IndexOfValuesValue",
+      "start": "IndexOfValuesStart",
+      "stop": "IndexOfValuesStop"
+     },
+     "output_type": "array"
+    }
+   }
+  ]
+ },
+ "types": {
+  "pools": {
+   "ListArray": [
+    [
+     [
+      4,
+      3,
+      2,
+      1
+     ],
+     [
+      "a",
+      "b",
+      "c",
+      "d"
+     ]
+    ],
+    [
+     [
+      3,
+      1,
+      2
+     ],
+     [
+      0,
+      1,
+      0
+     ],
+     [
+      "c",
+      "b",
+      "a"
+     ]
+    ],
+    [
+     [
+      1,
+      2,
+      3
+     ],
+     [
+      "c",
+      "b",
+      "a"
+     ]
+    ],
+    []
+   ],
+   "Matrix": [
+    [
+     [
+      1,
+      2,
+      3
+     ],
+     [
+      11,
+      22,
+      33
+     ]
+    ],
+    [
+     [
+      10,
+      20
+     ],
+     [
+      30,
+      40
+     ],
+     [
+      50,
+      60
+     ]
+    ],
+    [],
+    [
+     [
+      1
+     ]
+    ],
+    [
+     [
+      0,
+      1
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      4,
+      5
+     ]
+    ],
+    [
+     [
+      0,
+      1,
+      2
+     ],
+     [
+      3,
+      4,
+      5
+     ]
+    ]
+   ],
+   "ChunkedIterable": [
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8
+    ],
+    [],
+    [
+     1,
+     2,
+     3
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "ChunkedN": [
+    3,
+    2,
+    1
+   ],
+   "ChunkedStrict": [
+    false,
+    true
+   ],
+   "LastIterable": [
+    [
+     0,
+     1,
+     2,
+     3
+    ],
+    [],
+    [
+     "a",
+     "b",
+     "c"
+    ],
+    [
+     10
+    ],
+    "hello"
+   ],
+   "LastDefault": [
+    "some default",
+    "fallback"
+   ],
+   "DistinctPermutationsIterable": [
+    [
+     1,
+     0,
+     1
+    ],
+    [
+     1,
+     2,
+     3
+    ],
+    [
+     "a",
+     "a",
+     "b"
+    ],
+    [
+     1,
+     true,
+     "1"
+    ],
+    []
+   ],
+   "DistinctPermutationsR": [
+    2,
+    3,
+    1
+   ],
+   "WindowedSeq": [
+    [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    [
+     1,
+     2,
+     3
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    []
+   ],
+   "WindowedN": [
+    3,
+    4,
+    2
+   ],
+   "WindowedFillValue": [
+    "X",
+    "!"
+   ],
+   "WindowedStep": [
+    2
+   ],
+   "SplitIntoIterable": [
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     0
+    ],
+    [],
+    [
+     1,
+     2,
+     3
+    ]
+   ],
+   "SplitIntoSizes": [
+    [
+     1,
+     2,
+     3
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     2,
+     3,
+     null
+    ],
+    [
+     1,
+     2
+    ],
+    [
+     null
+    ]
+   ],
+   "RepeatEachIterable": [
+    [
+     "A",
+     "B",
+     "C"
+    ],
+    [
+     1,
+     2,
+     3
+    ],
+    [
+     "X"
+    ],
+    [],
+    "ABC"
+   ],
+   "RepeatEachN": [
+    3,
+    1,
+    5
+   ],
+   "DistributeN": [
+    2,
+    3,
+    5,
+    1
+   ],
+   "DistributeIterable": [
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    [
+     1,
+     2,
+     3
+    ],
+    [],
+    [
+     10,
+     20,
+     30
+    ]
+   ],
+   "SortTogetherKeyList": [
+    [
+     0
+    ],
+    [
+     1,
+     2
+    ]
+   ],
+   "SortTogetherReverse": [
+    false,
+    true
+   ],
+   "SortTogetherStrict": [
+    false,
+    true
+   ],
+   "DivideN": [
+    2,
+    3,
+    5,
+    1,
+    4
+   ],
+   "DivideIterable": [
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    [
+     1,
+     2,
+     3
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    []
+   ],
+   "DifferenceIterable": [
+    [
+     5
+    ],
+    []
+   ],
+   "DifferenceFunc": [
+    "operator.sub"
+   ],
+   "CircularShiftsIterable": [
+    [
+     0,
+     1,
+     2,
+     3
+    ]
+   ],
+   "CircularShiftsSteps": [
+    1,
+    2,
+    -1,
+    4,
+    -2
+   ],
+   "PartitionsIterable": [
+    [
+     "a",
+     "b",
+     "c"
+    ],
+    [
+     1,
+     2
+    ],
+    [],
+    [
+     "x"
+    ],
+    "abc"
+   ],
+   "DistinctCombinationsIterable": [
+    [
+     0,
+     0,
+     1
+    ],
+    [
+     "a",
+     "b",
+     "c"
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    [],
+    [
+     1,
+     2,
+     3
+    ]
+   ],
+   "DistinctCombinationsR": [
+    2,
+    1,
+    3,
+    0
+   ],
+   "AllUniqueIterable": [
+    [
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    [
+     "A",
+     "B",
+     "C",
+     "A"
+    ],
+    [
+     "A",
+     "B",
+     "C",
+     "b"
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     1,
+     2,
+     3,
+     1
+    ]
+   ],
+   "CombinationIndexElement": [
+    [
+     "a",
+     "d",
+     "f"
+    ],
+    [
+     "b",
+     "c"
+    ],
+    []
+   ],
+   "CombinationIndexIterable": [
+    [
+     "a",
+     "b",
+     "c",
+     "d",
+     "e",
+     "f",
+     "g"
+    ],
+    [
+     "a",
+     "b",
+     "c",
+     "d"
+    ],
+    [
+     "a",
+     "b",
+     "c"
+    ]
+   ],
+   "CombinationWithReplacementIndexElement": [
+    "adf",
+    "aaa",
+    "ccc",
+    "ab",
+    "zzz"
+   ],
+   "CombinationWithReplacementIndexIterable": [
+    "abcdefg",
+    "abc",
+    "xyz"
+   ],
+   "PermutationIndexElement": [
+    [
+     1,
+     3,
+     2
+    ],
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     2,
+     1,
+     0
+    ],
+    [
+     1,
+     0
+    ],
+    [
+     1,
+     2,
+     3
+    ]
+   ],
+   "PermutationIndexIterable": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     0,
+     1
+    ],
+    [
+     1,
+     2,
+     3
+    ]
+   ],
+   "ChunkedEvenIterable": [
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    [],
+    [
+     1
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10
+    ]
+   ],
+   "ChunkedEvenN": [
+    3,
+    2,
+    5,
+    1,
+    4
+   ],
+   "DuplicatesEverseenIterable": [
+    [
+     "m",
+     "i",
+     "s",
+     "s",
+     "i",
+     "s",
+     "s",
+     "i",
+     "p",
+     "p",
+     "i"
+    ],
+    [
+     1,
+     2,
+     3,
+     2,
+     1,
+     3,
+     4
+    ],
+    []
+   ],
+   "DuplicatesJustseenIterable": [
+    [
+     "m",
+     "i",
+     "s",
+     "s",
+     "i",
+     "s",
+     "s",
+     "i",
+     "p",
+     "p",
+     "i"
+    ],
+    [
+     1,
+     2,
+     2,
+     3,
+     3,
+     3,
+     4
+    ],
+    [
+     "a",
+     "a",
+     "a",
+     "a"
+    ],
+    []
+   ],
+   "JoinMappingsFieldToMap": [
+    {
+     "score": {
+      "elliot": 50,
+      "claris": 60
+     },
+     "time": {
+      "elliot": 30,
+      "claris": 40
+     }
+    },
+    {
+     "name": {
+      "a": "Alice",
+      "b": "Bob"
+     },
+     "age": {
+      "a": 25,
+      "b": 30
+     }
+    },
+    {
+     "x": {
+      "1": 10,
+      "2": 20
+     },
+     "y": {
+      "1": 100,
+      "2": 200
+     }
+    },
+    {
+     "a": {
+      "key1": "value1"
+     },
+     "b": {
+      "key1": "value2"
+     }
+    },
+    {
+     "a": {}
+    },
+    {
+     "a": {
+      "key1": "value1"
+     },
+     "b": {
+      "key2": "value2"
+     }
+    }
+   ],
+   "NthPrimeN": [
+    0,
+    100,
+    200000000,
+    10,
+    1000000
+   ],
+   "NthPrimeApproximate": [
+    false,
+    true
+   ],
+   "ArgminIterable": [
+    [
+     3,
+     2,
+     1,
+     0,
+     4,
+     2,
+     1,
+     0
+    ],
+    "efghabcdijkl",
+    [
+     5,
+     5,
+     5,
+     5
+    ]
+   ],
+   "ExtractIterable": [
+    [
+     "a",
+     "b",
+     "c",
+     "d",
+     "e"
+    ]
+   ],
+   "ExtractIndices": [
+    [
+     0,
+     2,
+     4
+    ],
+    [
+     4,
+     3,
+     2,
+     1,
+     0
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "ExtractMonotonic": [
+    false,
+    true
+   ],
+   "ConcurrentTeeIterable": [
+    "[0, 1, 2, 3, 4]",
+    "range(5)",
+    "['a', 'b', 'c']",
+    "iter([10, 20, 30])",
+    "iter([])",
+    "None"
+   ],
+   "ConcurrentTeeN": [
+    2,
+    3,
+    1,
+    0
+   ],
+   "SubfactorialN": [
+    0,
+    1,
+    4,
+    10
+   ],
+   "TakeN": [
+    3,
+    5,
+    0,
+    2
+   ],
+   "TakeIterable": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     0,
+     1,
+     2
+    ],
+    [
+     1,
+     2,
+     3
+    ],
+    [],
+    "abc"
+   ],
+   "ConsumeIterator": [
+    "(x for x in range(10))",
+    "(x for x in range(5))",
+    "(x for x in range(3))",
+    "(x for x in range(100))",
+    "iter([])",
+    "123"
+   ],
+   "ConsumeN": [
+    3,
+    5,
+    10,
+    2,
+    1
+   ],
+   "NcyclesIterable": [
+    [
+     "a",
+     "b"
+    ],
+    [
+     1,
+     2,
+     3
+    ],
+    [],
+    [
+     "x"
+    ],
+    "hello"
+   ],
+   "NcyclesN": [
+    3,
+    2,
+    5,
+    0,
+    -1
+   ],
+   "PairwiseIterable": [
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     "a",
+     "b",
+     "c"
+    ],
+    [],
+    [
+     5
+    ],
+    [
+     true,
+     false,
+     true
+    ],
+    "abc"
+   ],
+   "GrouperIterable": [
+    [
+     "A",
+     "B",
+     "C",
+     "D",
+     "E",
+     "F"
+    ],
+    [
+     "A",
+     "B",
+     "C",
+     "D",
+     "E",
+     "F",
+     "G"
+    ],
+    [],
+    [
+     "A",
+     "B",
+     "C"
+    ]
+   ],
+   "GrouperN": [
+    3,
+    2,
+    0
+   ],
+   "GrouperIncomplete": [
+    "fill",
+    "ignore"
+   ],
+   "GrouperFillValue": [
+    "x"
+   ],
+   "UniqueJustseenIterable": [
+    [
+     "A",
+     "A",
+     "A",
+     "A",
+     "B",
+     "B",
+     "B",
+     "C",
+     "C",
+     "D",
+     "A",
+     "A",
+     "B"
+    ],
+    [
+     1,
+     1,
+     2,
+     2,
+     3,
+     3,
+     1,
+     1
+    ],
+    []
+   ],
+   "RandomPermutationIterable": [
+    [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    [
+     "a",
+     "b",
+     "c"
+    ],
+    [
+     10
+    ],
+    [],
+    "abc"
+   ],
+   "RandomPermutationR": [
+    3,
+    2,
+    1,
+    0
+   ],
+   "RandomCombinationWithReplacementIterable": [
+    [
+     1,
+     2,
+     3
+    ],
+    [
+     "a",
+     "b",
+     "c"
+    ],
+    [
+     0
+    ],
+    "abc"
+   ],
+   "RandomCombinationWithReplacementR": [
+    5,
+    3,
+    10,
+    0,
+    4
+   ],
+   "PrependValue": [
+    "0",
+    10,
+    "a",
+    "x",
+    "invalid"
+   ],
+   "PrependIterable": [
+    [
+     "1",
+     "2",
+     "3"
+    ],
+    [
+     20,
+     30,
+     40
+    ],
+    [],
+    [
+     true,
+     false
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    "not an iterable"
+   ],
+   "SlidingWindowIterable": [
+    [
+     0,
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    [
+     1,
+     2,
+     3
+    ],
+    [],
+    [
+     10,
+     20,
+     30,
+     40
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5
+    ]
+   ],
+   "SlidingWindowN": [
+    4,
+    2,
+    1
+   ],
+   "TriplewiseIterable": [
+    [
+     "A",
+     "B",
+     "C",
+     "D",
+     "E"
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    [],
+    [
+     "X"
+    ],
+    [
+     "X",
+     "Y"
+    ],
+    "ABC"
+   ],
+   "SubslicesIterable": [
+    [
+     "A",
+     "B",
+     "C"
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    [],
+    [
+     "X"
+    ],
+    "Hello"
+   ],
+   "ReshapeMatrixShape": [
+    [
+     3
+    ],
+    [
+     2,
+     3
+    ],
+    [
+     2,
+     1,
+     3,
+     1
+    ],
+    [
+     3,
+     2
+    ],
+    [
+     6
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ]
+   ],
+   "MatrixMultiplyM1": [
+    [
+     [
+      7,
+      5
+     ],
+     [
+      3,
+      5
+     ]
+    ],
+    [
+     [
+      1,
+      2,
+      3
+     ],
+     [
+      4,
+      5,
+      6
+     ]
+    ],
+    [
+     [
+      1
+     ]
+    ],
+    [
+     [
+      1,
+      0
+     ],
+     [
+      0,
+      1
+     ]
+    ]
+   ],
+   "MatrixMultiplyM2": [
+    [
+     [
+      2,
+      5
+     ],
+     [
+      7,
+      9
+     ]
+    ],
+    [
+     [
+      7,
+      8
+     ],
+     [
+      9,
+      10
+     ],
+     [
+      11,
+      12
+     ]
+    ],
+    [
+     [
+      2
+     ]
+    ],
+    [
+     [
+      1,
+      2
+     ],
+     [
+      3,
+      4
+     ]
+    ]
+   ],
+   "PrimeFactorsN": [
+    360,
+    1,
+    13,
+    1000000007,
+    0,
+    -12
+   ],
+   "IsPrimeN": [
+    37,
+    39,
+    18446744073709551557,
+    1000000007,
+    0,
+    -13
+   ],
+   "RunningMeanIterable": [
+    [
+     40,
+     30,
+     50,
+     46,
+     39,
+     44
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    [
+     100
+    ]
+   ],
+   "RunningMeanMaxlen": [
+    3,
+    1,
+    5
+   ],
+   "RunningMedianIterable": [
+    [
+     5.0,
+     9.0,
+     4.0,
+     12.0,
+     8.0,
+     9.0
+    ],
+    [
+     1,
+     2,
+     3,
+     4,
+     5
+    ],
+    [
+     100
+    ],
+    []
+   ],
+   "RunningMedianMaxlen": [
+    3,
+    1,
+    5
+   ],
+   "RunningMinIterable": [
+    [
+     4,
+     3,
+     7,
+     0,
+     8,
+     1,
+     6,
+     2,
+     9,
+     5
+    ],
+    [
+     10,
+     5,
+     2,
+     8,
+     1,
+     7
+    ],
+    [
+     1
+    ],
+    []
+   ],
+   "RunningMinMaxlen": [
+    3,
+    2,
+    1
+   ],
+   "RandomDerangementIterable": [
+    [
+     1,
+     2,
+     3,
+     4
+    ],
+    [
+     "a",
+     "b",
+     "c"
+    ],
+    [],
+    [
+     10,
+     20,
+     30,
+     40,
+     50
+    ]
+   ],
+   "PolynomialDerivativeCoefficients": [
+    [
+     1,
+     -4,
+     -17,
+     60
+    ],
+    [
+     2,
+     0,
+     -3,
+     5
+    ],
+    [
+     5
+    ],
+    [
+     3,
+     2,
+     1
+    ],
+    [
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    [
+     "not a number"
+    ]
+   ],
+   "EvaluatePolynomialCoefficients": [
+    [
+     1,
+     -4,
+     -17,
+     60
+    ],
+    [
+     1,
+     0,
+     -4
+    ],
+    [
+     1
+    ],
+    [
+     0,
+     0,
+     0
+    ],
+    [
+     1,
+     2,
+     3,
+     4
+    ]
+   ],
+   "EvaluatePolynomialX": [
+    2.5,
+    2,
+    5,
+    10,
+    -1
+   ],
+   "IndexOfValuesIterable": [
+    [
+     "A",
+     "A",
+     "B",
+     "C",
+     "A",
+     "D",
+     "E",
+     "A",
+     "F"
+    ],
+    [
+     "A",
+     "B",
+     "C",
+     "D",
+     "A",
+     "B",
+     "C",
+     "D"
+    ],
+    [
+     [
+      0,
+      1
+     ],
+     [
+      2,
+      3
+     ],
+     [
+      0,
+      1
+     ],
+     [
+      2,
+      3
+     ]
+    ],
+    [
+     0,
+     1,
+     2,
+     3,
+     0,
+     1,
+     2,
+     3
+    ],
+    "AABCADEAF"
+   ],
+   "IndexOfValuesValue": [
+    "A",
+    [
+     "A",
+     "B"
+    ],
+    [
+     0,
+     1
+    ],
+    "AB"
+   ],
+   "IndexOfValuesStart": [
+    0,
+    1
+   ],
+   "IndexOfValuesStop": [
+    7
+   ]
+  },
+  "lists": {},
+  "objects": {}
+ }
+}

@@ -1,0 +1,12 @@
+T001 uuid=b57b289a passed=False steps=8 distractors=3 answer_chars=259 apertus_tools=6
+T002 uuid=70a3674b passed=False steps=8 distractors=3 answer_chars=61 apertus_tools=7
+T003 uuid=f5d8c783 passed=False steps=8 distractors=3 answer_chars=43 apertus_tools=6
+T004 uuid=7b1c45a4 passed=False steps=9 distractors=3 answer_chars=62 apertus_tools=7
+T005 uuid=adbb7dae passed=False steps=9 distractors=3 answer_chars=101 apertus_tools=6
+T006 uuid=db7619ec passed=False steps=8 distractors=3 answer_chars=65 apertus_tools=7
+T007 uuid=b827bebc passed=False steps=8 distractors=3 answer_chars=110 apertus_tools=7
+T008 uuid=345dd675 passed=False steps=8 distractors=3 answer_chars=116 apertus_tools=7
+T009 uuid=3522756b passed=False steps=10 distractors=3 answer_chars=48 apertus_tools=6
+T010 uuid=50a2aa48 passed=False steps=8 distractors=3 answer_chars=46 apertus_tools=5
+T011 uuid=0e96d2e6 passed=False steps=10 distractors=3 answer_chars=284 apertus_tools=7
+T012 uuid=f1c41561 passed=False steps=10 distractors=3 answer_chars=79 apertus_tools=6

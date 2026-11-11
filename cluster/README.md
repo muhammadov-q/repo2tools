@@ -44,6 +44,12 @@ ssh -N -L 18000:<RTX 4090 node>:8000 -L 18001:<H100 node>:8000 <your UBELIX logi
 
 Cancel jobs when you finish: `scancel <job id>`.
 
+## A general model for ToolGym
+
+ToolGym's pipeline needs one model that writes text and also calls tools. `serve_qwen3_32b.sbatch` serves Qwen3-32B on one H100 (download: `hf download Qwen/Qwen3-32B`, 65 GB), with tool calling on. Thinking is off by default there, through a changed chat template, because ToolGym cannot switch it off per request.
+
+The free H100 quota is shared by everyone on `gratis`. When it's full, `squeue` shows the reason `QOSGrpGRES` and the job waits. The top of the script shows two ways out: the preemptable partition (free, started within a minute on 11 November 2026, but it can be stopped at any time), or the 8B model on an RTX 4090.
+
 ## Good to know
 
 - `sbatch` refuses `--mem` without `--nodes`.

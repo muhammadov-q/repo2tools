@@ -1,0 +1,379 @@
+{
+ "set": "more-itertools-qwen3-32b",
+ "model": "qwen3-32b",
+ "tools": 50,
+ "tools_without_working_samples": [],
+ "types_proposed": 2,
+ "types_kept": 2,
+ "parameters": 94,
+ "parameters_with_proposed_type": 5,
+ "parameters_with_shared_type": 3,
+ "parameter_claims_tested": 5,
+ "parameter_claims_withdrawn": 2,
+ "output_claims": 22,
+ "output_claims_kept": 19,
+ "links": 21,
+ "linked_tool_pairs": 21,
+ "isolated_tools": [
+  "last",
+  "repeat_each",
+  "difference",
+  "all_unique",
+  "combination_index",
+  "combination_with_replacement_index",
+  "permutation_index",
+  "duplicates_everseen",
+  "duplicates_justseen",
+  "join_mappings",
+  "nth_prime",
+  "argmin",
+  "extract",
+  "subfactorial",
+  "take",
+  "consume",
+  "ncycles",
+  "unique_justseen",
+  "random_permutation",
+  "random_combination_with_replacement",
+  "prepend",
+  "prime_factors",
+  "is_prime",
+  "running_mean",
+  "running_median",
+  "running_min",
+  "random_derangement",
+  "polynomial_derivative",
+  "evaluate_polynomial",
+  "index_of_values"
+ ],
+ "check_calls": 421,
+ "parameter_checks": [
+  {
+   "tool": "sort_together",
+   "parameter": "iterables",
+   "type": "ListArray",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  },
+  {
+   "tool": "transpose_matrix",
+   "parameter": "matrix",
+   "type": "Matrix",
+   "pairs": 6,
+   "pairs_working": 5,
+   "kept": true
+  },
+  {
+   "tool": "reshape_matrix",
+   "parameter": "matrix",
+   "type": "Matrix",
+   "pairs": 6,
+   "pairs_working": 4,
+   "kept": true
+  },
+  {
+   "tool": "matrix_multiply",
+   "parameter": "m1",
+   "type": "Matrix",
+   "pairs": 6,
+   "pairs_working": 5,
+   "kept": false
+  },
+  {
+   "tool": "matrix_multiply",
+   "parameter": "m2",
+   "type": "Matrix",
+   "pairs": 6,
+   "pairs_working": 4,
+   "kept": false
+  }
+ ],
+ "output_checks": [
+  {
+   "tool": "chunked",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "distinct_permutations",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 3,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "windowed",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 3,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "split_into",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "distribute",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "sort_together",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "divide",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "circular_shifts",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "partitions",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "distinct_combinations",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "chunked_even",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "nth_prime",
+   "output": "Prime",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "no parameter has this type",
+   "type": "Prime"
+  },
+  {
+   "tool": "concurrent_tee",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "pairwise",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "grouper",
+   "output": "ListArray",
+   "tried": 3,
+   "worked": 3,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "sliding_window",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "triplewise",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "subslices",
+   "output": "ListArray",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "ListArray"
+  },
+  {
+   "tool": "transpose_matrix",
+   "output": "Matrix",
+   "tried": 8,
+   "worked": 8,
+   "kept": true,
+   "type": "Matrix"
+  },
+  {
+   "tool": "reshape_matrix",
+   "output": "Matrix",
+   "tried": 8,
+   "worked": 4,
+   "kept": false,
+   "type": "Matrix"
+  },
+  {
+   "tool": "matrix_multiply",
+   "output": "Matrix",
+   "tried": 8,
+   "worked": 8,
+   "kept": true,
+   "type": "Matrix"
+  },
+  {
+   "tool": "random_derangement",
+   "output": "Derangement",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "no parameter has this type",
+   "type": "Derangement"
+  }
+ ],
+ "links_list": [
+  [
+   "chunked",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "chunked_even",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "circular_shifts",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "concurrent_tee",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "distinct_combinations",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "distinct_permutations",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "distribute",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "divide",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "grouper",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "matrix_multiply",
+   "reshape_matrix",
+   "direct"
+  ],
+  [
+   "matrix_multiply",
+   "transpose_matrix",
+   "direct"
+  ],
+  [
+   "pairwise",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "partitions",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "sliding_window",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "sort_together",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "split_into",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "subslices",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "transpose_matrix",
+   "reshape_matrix",
+   "direct"
+  ],
+  [
+   "transpose_matrix",
+   "transpose_matrix",
+   "direct"
+  ],
+  [
+   "triplewise",
+   "sort_together",
+   "direct"
+  ],
+  [
+   "windowed",
+   "sort_together",
+   "direct"
+  ]
+ ]
+}

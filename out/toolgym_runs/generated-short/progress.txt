@@ -1,0 +1,16 @@
+Run: generated-short-20261111-194609-53c0
+Dir: results/gym/repo2tools/generated-short-20261111-194609-53c0/
+Status: finished
+Entries: 33 in 9.7min (3.4/min)
+
+Stage funnel:
+  sig: 40 done
+  template: 40 done
+  plausibility: 36 done / 4 dropped
+  prompt: 33 done / 3 dropped / 3 retries
+  validation: 33 done
+  realization: 33 done
+  post_validation: 33 done
+  distractor: 33 done
+  nl_answer: 33 done
+  apertus: 33 done

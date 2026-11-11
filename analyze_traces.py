@@ -465,8 +465,12 @@ def main() -> None:
                 continue
             if len(m.calls) < args.min_calls:
                 continue
-            label = "known-good" if trace["source"] == "reference" else \
-                f"{trace.get('model')}, tools: {trace.get('tool_set')}, tool choice: {trace.get('meta', {}).get('tool_choice', 'auto')}"
+            if trace["source"] == "reference":
+                label = "known-good"
+            elif trace["source"] == "toolgym":
+                label = f"ToolGym chains, tools: {trace.get('tool_set')}"
+            else:
+                label = f"{trace.get('model')}, tools: {trace.get('tool_set')}, tool choice: {trace.get('meta', {}).get('tool_choice', 'auto')}"
             groups[f"{label}, {trace.get('horizon')} tasks"].append(m)
     results = {name: analyze(group, tokenizer) for name, group in sorted(groups.items())}
     text = "# What repeats in the traces\n\n" \

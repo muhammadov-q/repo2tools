@@ -1,0 +1,15 @@
+T001 uuid=20793c35 passed=False steps=4 distractors=3 answer_chars=154 apertus_tools=8
+T002 uuid=456999ca passed=False steps=4 distractors=3 answer_chars=77 apertus_tools=7
+T003 uuid=6a7c9a9a passed=False steps=4 distractors=3 answer_chars=56 apertus_tools=8
+T004 uuid=cae4488b passed=False steps=4 distractors=3 answer_chars=210 apertus_tools=8
+T005 uuid=ca621b50 passed=False steps=4 distractors=3 answer_chars=170 apertus_tools=8
+T006 uuid=8b03fc97 passed=False steps=4 distractors=3 answer_chars=61 apertus_tools=7
+T007 uuid=701b2b31 passed=False steps=4 distractors=3 answer_chars=341 apertus_tools=7
+T008 uuid=589f6036 passed=False steps=4 distractors=3 answer_chars=88 apertus_tools=6
+T009 uuid=4679d453 passed=False steps=4 distractors=3 answer_chars=108 apertus_tools=8
+T010 uuid=8a535c86 passed=False steps=4 distractors=3 answer_chars=108 apertus_tools=7
+T011 uuid=7545bfd3 passed=False steps=4 distractors=3 answer_chars=83 apertus_tools=6
+T012 uuid=de17b346 passed=False steps=4 distractors=3 answer_chars=58 apertus_tools=8
+T013 uuid=045fa471 passed=False steps=4 distractors=3 answer_chars=167 apertus_tools=8
+T014 uuid=00578f0d passed=False steps=4 distractors=3 answer_chars=46 apertus_tools=7
+T015 uuid=d14e2673 passed=False steps=4 distractors=3 answer_chars=139 apertus_tools=7

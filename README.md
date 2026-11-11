@@ -17,6 +17,8 @@ Tool-Gym track of the "Agentic Reasoning, Tooling" project at the University of 
 | `repo2tools.py <url>`: repo link in, generated tools out | Works on packaging and arrow, one tool per function; choosing the right tools is the weak point |
 | Trace collection (`traces.py`, `run_model.py`, `collect_reference_traces.py`) | Works for known-good solutions and model runs |
 | Repetition analysis (`analyze_traces.py`) | Works; token counts match the server exactly |
+| Generated tools into ToolGym (`generated_to_toolgym.py`) | Works: types are proposed by an LLM and checked by running the tools; ToolGym's `check` and live `chain_check` pass |
+| Synthetic traces from ToolGym's pipeline (`toolgym_local.py`, `toolgym_traces.py`) | Works for short chains; long chains are still poor |
 | Context compression in a real run | Only simulated so far |
 
 ## Results so far
@@ -83,6 +85,20 @@ uv run python run_model.py out/packaging/exercises.jsonl --mode none --base-url 
 python3 -I compare_runs.py out/runs/qwen3-8b-tools.jsonl out/runs/qwen3-8b-none.jsonl
 ```
 
+Generated tools in ToolGym, 11 November 2026. Qwen3-32B proposes the types and runs ToolGym's pipeline (as writer, judge and challenger). One run each:
+
+| | Generated tools (29, packaging) | Hand-made tools (21) |
+| --- | --- | --- |
+| Type links between tools | 16, all checked by running them | 144 by ToolGym's rules, of which 62 are noise |
+| ToolGym live `chain_check` | 16 of 16 chains pass | not run |
+| Short chains (2 to 4 calls): sampled, finished, accepted by ToolGym's validation | 40, 33, **11** | 40, 15, **0** |
+| Long chains (8 to 10 calls): sampled, finished, accepted | 20, 12, **0** | 20, 8, **0** |
+
+- **Checked types give usable short chains.** Hand-typed tools get chains through ToolGym's automatic casts (a package name fed into a specifier check), and its validation rejects all of them.
+- **Long chains are not solved by asking for more steps.** With 16 links, a long walk loops: one chain is `parse_tag` eight times, and 34 of 104 calls repeat an earlier call exactly.
+- **The check finds tools that cannot be chained.** Eight range tools take a constraint like `>=1.0` but return text like `<VersionRange '[1.0, 2.0.dev0)'>`, which no tool accepts. They passed every check of `repo2tools.py`.
+- **A harder repo:** more-itertools gives 50 accepted tools of 142 picked. Its values are plain lists, so the LLM found only 2 types and 21 links. Kinds of values work for a domain library like packaging, not for generic data.
+
 ## From a repo link to tools
 
 ```sh
@@ -112,6 +128,40 @@ The result goes to `toolsets/generated/<repo>-<model>/` (one file per tool, `ser
 - Other systems have no such sandbox. The tool then warns, and the report says so. Only use repos you trust there.
 
 To score generated tools on exercises, use `run_model.py` with `run_server.sh` as the server command. `run_reference_calls.py` needs the hand-made tool names, so it doesn't work on generated tools.
+
+## Generated tools in ToolGym, and synthetic traces
+
+Needs a ToolGym checkout next to this repo (`../tool-gym`) and a model with tool calling (`cluster/serve_qwen3_32b.sbatch`).
+
+```sh
+T=toolsets/generated/packaging-coder-60
+
+# 1. types for the generated tools, checked by running them; writes ToolGym's catalog folder
+uv run python generated_to_toolgym.py $T --dest ../tool-gym/gym/tools/mcp_servers/catalog --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
+
+# 2. local variants of ToolGym's chain check and pipeline, in its ignored local/ folders
+uv run python toolgym_local.py install ../tool-gym
+
+# 3. ToolGym's own checks: the catalog loads, and every 2-step chain runs on the live tools
+(cd ../tool-gym && uv run python -m gym.tools.mcp_servers.check --no-report-file)
+uv run python toolgym_local.py chains ../tool-gym repo2tools_packaging_coder_60 --tool-server $T/run_server.sh
+
+# 4. synthetic tasks from ToolGym's pipeline, then as traces in our format
+uv run python toolgym_local.py generate ../tool-gym repo2tools_packaging_coder_60 --tool-server $T/run_server.sh \
+    --base-url http://127.0.0.1:18000/v1 --model qwen3-32b --min-length 2 --max-length 4 --chains 40 --run-name generated-short
+uv run python toolgym_traces.py ../tool-gym/results/gym/repo2tools/generated-short-* -o out/traces/toolgym-generated-short.jsonl.gz
+```
+
+How the types are made (`generated_to_toolgym.py`):
+
+1. Every tool is called on its sample inputs. Inputs that work, and their outputs, are the examples.
+2. An LLM proposes a small shared vocabulary, e.g. `VersionString` for every parameter that takes a version.
+3. The claims are tested by running the tools. For every two parameters of a type, the values of one are tried on the other. Every typed output is fed into the parameters that would take it. A claim that fails is withdrawn.
+4. On/off flags get a type of their own each, so a true/false result is never chained into an unrelated flag.
+
+The tool server runs in its sandbox the whole time; ToolGym reaches it over HTTP on this computer only. `out/generated/<set>/toolgym_types.md` lists the types, the withdrawn claims and the links. `out/toolgym_runs/` has the summaries of the pipeline runs.
+
+**Limits.** "Accepted" is ToolGym's own validation (an LLM judge, and a challenger that must reproduce the chain from the task text), with the same model in every role. It's one run per setting. A type link says a value is accepted, not that the chain makes sense.
 
 ## Traces and repetition
 
@@ -145,6 +195,8 @@ No GPU or API key needed. The LLM and the endpoint are scripted.
 | --- | --- |
 | `repo2tools.py` | Repo link to checked tools; see above. |
 | `toolsets/generated/` | Generated tool sets, one file per tool. Not reviewed by a person. |
+| `generated_to_toolgym.py` | ToolGym types for a generated tool set, checked by running the tools; writes the catalog folder. |
+| `toolgym_local.py`, `toolgym_traces.py` | Run ToolGym's chain check and pipeline on tools served from this computer; turn the results into traces. |
 | `tool_worker.py` | Checks one generated tool. It runs inside the tool set's environment and sandbox. |
 | `traces.py` | The trace format. |
 | `collect_reference_traces.py`, `analyze_traces.py` | Known-good solutions as traces; what repeats and what compression would save. |
@@ -161,7 +213,7 @@ No GPU or API key needed. The LLM and the endpoint are scripted.
 | `toolsets/pypa_packaging/toolgym_types.py`, `export_toolgym_catalog.py` | Write the tools into a ToolGym checkout as a catalog server. This repo contains no ToolGym code. |
 | `analyze_catalog_chains.py`, `check_exercise_edges.py` | Summarise ToolGym's chain listings, and check that the links the exercises need are in ToolGym's graph. |
 | `cluster/` | How to serve a model on UBELIX, with the Slurm job scripts. |
-| `out/` | Results: `baseline/` (ToolGym's catalog today), `packaging/` (API, exercises, tool check), `packaging_toolgym/` (ToolGym's view of our tools), `runs/` (model runs), `traces/` (full traces and their analysis), `generated/` (reports and LLM logs of generated tool sets). |
+| `out/` | Results: `baseline/` (ToolGym's catalog today), `packaging/` (API, exercises, tool check), `packaging_toolgym/` (ToolGym's view of our tools), `runs/` (model runs), `traces/` (full traces and their analysis), `generated/` (reports and LLM logs of generated tool sets), `toolgym_runs/` (summaries of ToolGym pipeline runs). |
 
 ## Rebuild from source
 

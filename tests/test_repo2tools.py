@@ -291,6 +291,39 @@ def test_good_tools_are_accepted_and_served(workspace):
     assert asyncio.run(call()) == (["add_numbers", "double_text"], {"result": 42})
 
 
+@pytest.mark.skipif(not HAS_SANDBOX, reason="needs macOS sandbox-exec")
+def test_tools_are_served_over_http_inside_the_sandbox(workspace):
+    import socket
+    import time
+
+    build(workspace, good_script())
+    script = workspace / "root" / "toolsets" / "generated" / "tinylib-test" / "run_server.sh"
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        port = s.getsockname()[1]
+    process = subprocess.Popen([str(script), "--http", str(port)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+    async def call():
+        from mcp import ClientSession
+        from mcp.client.streamable_http import streamablehttp_client
+
+        async with streamablehttp_client(f"http://127.0.0.1:{port}/mcp") as (r, w, _), ClientSession(r, w) as session:
+            await session.initialize()
+            return (await session.call_tool("add_numbers", {"a": 40, "b": 2})).structuredContent
+
+    try:
+        for _ in range(100):
+            try:
+                socket.create_connection(("127.0.0.1", port), timeout=0.2).close()
+                break
+            except OSError:
+                time.sleep(0.1)
+        assert asyncio.run(call()) == {"result": 42}
+    finally:
+        process.terminate()
+        process.wait(timeout=10)
+
+
 def test_the_code_prompt_cannot_see_the_test(workspace):
     repo = make_repo(workspace / "repo" / "tinylib")
     llm = ScriptedLLM(good_script())

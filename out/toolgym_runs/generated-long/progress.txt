@@ -1,0 +1,16 @@
+Run: generated-long-20261111-194609-f6ef
+Dir: results/gym/repo2tools/generated-long-20261111-194609-f6ef/
+Status: finished
+Entries: 12 in 5.8min (2.1/min)
+
+Stage funnel:
+  sig: 15 done / 5 dropped
+  template: 15 done
+  plausibility: 13 done / 2 dropped
+  prompt: 12 done / 1 dropped / 4 retries
+  validation: 12 done
+  realization: 12 done
+  post_validation: 12 done
+  distractor: 12 done
+  nl_answer: 12 done
+  apertus: 12 done
