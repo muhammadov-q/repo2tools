@@ -19,7 +19,7 @@ check   A small model gets each task three times: with only the tool the task wa
         answers the model can guess.
 repair  For every tool with a failed dev task, an LLM sees what the small model did and writes a new
         name and description. A rewrite is kept only if the small model then gets more of the tool's
-        dev tasks right. The tool's code is not touched by the LLM: only the function name and the
+        dev tasks right, and its final answer is the tool's result at least as often as before. The tool's code is not touched by the LLM: only the function name and the
         docstring are replaced, and the tool must pass the checks of repo2tools.py again. The result
         is a new tool set, <set>-usable, and it is measured again through its own server. The
         held-out tasks, which the rewriter never saw, show the effect.
@@ -59,6 +59,8 @@ CONDITIONS = {"alone": "Tool alone", "set": "In the whole set", "none": "No tool
 TASKS_PER_TOOL = 6
 MAX_STEPS = 6
 MAX_DESCRIPTION = 1200
+JSON_NAMES = {str: "a JSON string", bool: "true or false", int: "a JSON number", float: "a JSON number", list: "a JSON list",
+              dict: "a JSON object", type(None): "null"}
 
 
 def canonical(value) -> str:
@@ -352,6 +354,7 @@ def rewrite_messages(shown: dict, schema: dict, callable_: dict, direct_call: st
     parameters = "\n".join(f"- {name} ({p.get('type', 'any')}{', default ' + json.dumps(p['default']) if 'default' in p else ''})"
                            for name, p in (schema.get("properties") or {}).items()) or "- none"
     works = "\n".join(f"- {json.dumps(t['arguments'])} -> {json.dumps(t['expected'])[:200]}" for t in dev_tasks)
+    returns = " or ".join(sorted({JSON_NAMES[type(t["expected"])] for t in dev_tasks}))
     wrong = "\n".join(f"{i}. {text}" for i, text in enumerate(failures, 1))
     return [
         {"role": "system", "content": "You improve the name and description of a tool, so that an AI model picks it and calls it correctly. Reply with JSON only."},
@@ -369,13 +372,14 @@ What the tool computes: `{direct_call}`, with this library function:
 
 Calls that are known to work, as input -> output:
 {works}
+The tool returns {returns}, exactly as shown in these calls. It never returns a library object, whatever the library function returns.
 
 What went wrong:
 {wrong}
 
 Names of the other tools in the set, which are taken: {', '.join(taken)}
 
-Write a better name and description. The model sees only the name, the description and the parameter names and types. So the description must say what the tool does, when to use it, what each parameter means and what form its value has, and what the output is. State only what the library documentation and the working calls above show. Do not mention the requests. At most 120 words. You may keep the name.
+Write a better name and description. The model sees only the name, the description and the parameter names and types. So the description must say what the tool does, when to use it, what each parameter means and what form its value has, and what the output is. Describe the output as the JSON value in the working calls above, not as the library's type. State only what the library documentation and the working calls show. Do not mention the requests. At most 120 words. You may keep the name.
 
 Reply with one JSON object: {{"name": "snake_case_name", "description": "..."}}"""},
     ]
@@ -422,6 +426,7 @@ async def rewrite_tool(tool: str, bench: Bench, view: dict, tasks: list[dict], b
     by_id = {t["id"]: t for t in dev}
     records = [r for r in before if r["tool"] == tool and r["split"] == "dev" and r["condition"] in ("alone", "set")]
     start = best = sum(r["right_call"] for r in records)
+    answers = sum(r["answer_right"] for r in records)  # a rewrite may not make the model read the result worse
     result = {"tool": tool, "dev_runs": len(records), "dev_right_before": start, "dev_right_after": start, "kept": None, "attempts": []}
     shown = view.get(tool, bench.specs[tool])
     taken = sorted(view.get(real, spec)["name"] for real, spec in bench.specs.items() if real != tool)
@@ -439,15 +444,17 @@ async def rewrite_tool(tool: str, bench: Bench, view: dict, tasks: list[dict], b
             continue
         candidate = {**view, tool: rewrite}
         records = await bench.run(dev, ("alone", "set"), candidate)
-        score = sum(r["right_call"] for r in records)
-        result["attempts"].append({**rewrite, "dev_right": score})
-        if score > best:
+        score, read = sum(r["right_call"] for r in records), sum(r["answer_right"] for r in records)
+        result["attempts"].append({**rewrite, "dev_right": score, "dev_answers_right": read})
+        if score > best and read >= answers:
             best, result["kept"], result["dev_right_after"] = score, rewrite, score
-        if score == len(records):
+        if score == len(records) and read >= answers:
             break
-        still = "\n".join(f"{i}. {text}" for i, text in enumerate(failures(records, candidate), 1))
+        still = "\n".join(f"{i}. {text}" for i, text in enumerate(failures(records, candidate), 1)) or "(every call was right)"
+        misread = (f"\nAlso, the model's final answer was the tool's result in only {read} runs (before: {answers}). The description must say "
+                   "truthfully what the tool returns.") if read < answers else ""
         chat = chat + [{"role": "assistant", "content": reply},
-                       {"role": "user", "content": f"With this name and description the model got {score} of {len(records)} runs right (before: {start}). Still wrong:\n{still}\n\n"
+                       {"role": "user", "content": f"With this name and description the model got {score} of {len(records)} runs right (before: {start}). Still wrong:\n{still}{misread}\n\n"
                                                    "Try again. Reply with one JSON object with \"name\" and \"description\"."}]
     return result
 

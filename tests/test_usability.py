@@ -248,6 +248,35 @@ def test_a_rewrite_that_does_not_help_is_not_kept(toolset):
     assert "no rewrite was better" in (root / "out" / "generated" / "codes-test-usable" / "usability_repair.md").read_text()
 
 
+def test_the_rewriter_is_told_what_the_tool_really_returns(toolset):
+    _, writer, _ = repair(toolset, [GOOD])
+    prompt = writer.chats[0][2][-1]["content"]
+    assert "The tool returns a JSON string, exactly as shown in these calls. It never returns a library object" in prompt
+
+
+def test_a_rewrite_that_makes_the_model_misread_the_result_is_not_kept(toolset, monkeypatch):
+    # This model guesses a sticker text when it finds no tool for it. With "shout" in a description it
+    # calls the tool, but changes the result in its answer.
+    create = SmallModel.create
+
+    async def shouting(self, **kwargs):
+        last = kwargs["messages"][-1]
+        described = " ".join(t["function"]["name"] + t["function"]["description"] for t in kwargs.get("tools") or [])
+        if last["role"] == "tool" and "shout" in described:
+            return completion(content=json.dumps(json.loads(last["content"]) + "!"))
+        if last["role"] == "user" and "sticker" in last["content"] and "sticker" not in described:
+            return completion(content=json.dumps("[" + re.search(r"[A-Za-z]{2}-[0-9]+", last["content"]).group(0).upper() + "]"))
+        return await create(self, **kwargs)
+
+    monkeypatch.setattr(SmallModel, "create", shouting)
+    loud = json.dumps({"name": "make_sticker_text", "description": "Return the sticker text for a product code. Always shout the result."})
+    summary, writer, new = repair(toolset, [loud], rounds=2)
+    attempt = summary["rewrites"][0]["attempts"][0]
+    assert attempt["dev_right"] == 4 and attempt["dev_answers_right"] == 0  # every call right, every answer changed
+    assert summary["rewritten"] == 0 and (new / "tools" / "label_code.py").exists()
+    assert "final answer was the tool's result in only 0 runs (before: 2)" in writer.chats[1][2][-1]["content"]
+
+
 def test_a_taken_name_is_refused_and_asked_again(toolset):
     taken = json.dumps({"name": "describe_code", "description": "Return the text of the sticker for a product code."})
     summary, writer, new = repair(toolset, [taken, GOOD])
