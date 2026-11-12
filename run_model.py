@@ -118,7 +118,7 @@ async def solve(ex: dict, args, client: AsyncOpenAI, session: ClientSession | No
     forced = args.mode == "tools" and args.tool_choice != "auto"
     always = args.mode == "tools" and args.tool_choice == "always"
     offered = [*tools, SUBMIT_TOOL] if always else tools
-    system = SYSTEM[args.mode] + (SUBMIT_HINT if always else "")
+    system = (getattr(args, "system", None) or SYSTEM[args.mode]) + (SUBMIT_HINT if always else "")  # usability.py brings its own
     messages = [{"role": "system", "content": system}, *getattr(args, "example_messages", []), {"role": "user", "content": ex["task"]}]
     full_trace = new_trace("model", ex["id"], ex["task"], offered, kind=ex["kind"], horizon=ex["horizon"], model=args.model,
                            tool_set=args.tag or ("none" if args.mode == "none" else "function"),
