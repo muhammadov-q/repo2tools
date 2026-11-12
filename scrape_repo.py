@@ -189,6 +189,10 @@ def constructors(repo: Path, callables: list[Callable]) -> dict[str, dict]:
             "module": c.module,
             "params": [asdict(p) for p in collect_params(init[0].args, drop_first=True)] if init else None,
             "summary": (ast.get_docstring(node) or "").split("\n\n")[0].replace("\n", " ") if node else "",
+            "docstring": (ast.get_docstring(node) or "") if node else "",
+            "file": c.file,
+            "line": node.lineno if node else 1,
+            "loc": (node.end_lineno - node.lineno + 1) if node else 0,
         }
     return found
 

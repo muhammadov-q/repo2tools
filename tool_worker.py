@@ -51,7 +51,9 @@ SAFE_BUILTINS = ("abs", "bool", "bytes", "dict", "float", "frozenset", "int", "l
                  "repr", "set", "sorted", "str", "sum", "tuple")
 DIRECT_CALL_NODES = (ast.Expression, ast.Call, ast.Attribute, ast.Name, ast.Load, ast.Constant, ast.keyword,
                      ast.List, ast.Tuple, ast.Dict, ast.Set, ast.Subscript, ast.UnaryOp, ast.USub, ast.Not, ast.IfExp,
-                     ast.BoolOp, ast.And, ast.Or, ast.Compare, ast.Is, ast.IsNot, ast.Eq, ast.NotEq)
+                     ast.BoolOp, ast.And, ast.Or, ast.Compare, ast.Is, ast.IsNot, ast.Eq, ast.NotEq,
+                     # operators that library classes define: ordering, membership, and combining two objects
+                     ast.Lt, ast.LtE, ast.Gt, ast.GtE, ast.In, ast.NotIn, ast.BinOp, ast.BitAnd, ast.BitOr, ast.BitXor, ast.Sub, ast.Add)
 SAMPLE_SECONDS = 5
 # errors that mean the direct call itself is written wrongly, not that a sample is invalid
 BROKEN_CALL_ERRORS = (NameError, AttributeError, ImportError, SyntaxError)

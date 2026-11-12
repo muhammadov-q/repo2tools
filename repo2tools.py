@@ -47,6 +47,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from openai import AsyncOpenAI
 
+from repo_usage import count_usage
 from run_reference_calls import output_value
 from scrape_repo import constructors, scrape_package
 from tool_worker import DANGEROUS_MODULES, FORBIDDEN_NAMES, direct_call_problem
@@ -61,6 +62,7 @@ NATIVE_SUFFIXES = {".c", ".cc", ".cpp", ".f90", ".pxd", ".pyd", ".pyx", ".rs", "
 JSON_TYPES = {"string", "integer", "number", "boolean", "array", "object", "null"}
 TOOL_NAME = re.compile(r"[a-z][a-z0-9_]*$")
 LISTING_CHUNK = 150
+MAX_PER_CLASS = 6  # tools one class may give when classes can be picked (--classes)
 WORKER_SECONDS = 90
 
 
@@ -282,8 +284,70 @@ def function_path(c: dict) -> str:
     return f"{c['module']}.{c['qualname']}"
 
 
-def propose_messages(package: str, callables: list[dict], max_tools: int) -> list[dict]:
-    listing = "\n".join(f"- {c['kind']} {signature(c)} | {c['summary'][:110]}" for c in callables)
+def class_callables(classes: dict) -> list[dict]:
+    """Classes as entries the LLM can pick, for uses that no single function stands for: building the object, and operators."""
+    return [{"qualname": name, "module": info["module"], "kind": "class", "params": info["params"] or [], "returns": name,
+             "summary": info["summary"], "docstring": info.get("docstring", info["summary"]), "file": info["file"], "line": info["line"],
+             "loc": info["loc"], "n_overloads": 0, "decorators": []} for name, info in classes.items() if info.get("file")]
+
+
+def usage_note(c: dict, usage: dict, by: str) -> str:
+    """How often the repository's own documentation or tests use this entry, as text for the listing."""
+    sources = ("docs", "tests") if by == "both" else (by,)
+    count = lambda row: sum(row.get(s, 0) for s in sources)  # noqa: E731
+    if c["kind"] != "class":
+        return f"used {count(usage['callables'].get(function_path(c), {}))} times"
+    info = usage["classes"].get(c["qualname"], {"built": {}, "operators": {}})
+    operators = sorted(((count(n), op) for op, n in info["operators"].items() if count(n)), reverse=True)
+    return f"built {count(info['built'])} times" + ("; used with " + ", ".join(f"{op} ({n})" for n, op in operators) if operators else "")
+
+
+def usage_score(c: dict, usage: dict, by: str) -> float:
+    """Sort key for the listing: the entry's share of all uses, in the documentation, the tests, or both."""
+    sources = ("docs", "tests") if by == "both" else (by,)
+    total = 0.0
+    for s in sources:
+        everything = sum(r[s] for r in usage["callables"].values()) + sum(k["built"][s] for k in usage["classes"].values()) or 1
+        if c["kind"] == "class":
+            info = usage["classes"].get(c["qualname"])
+            mine = (info["built"][s] + sum(n[s] for n in info["operators"].values())) if info else 0
+        else:
+            mine = usage["callables"].get(function_path(c), {}).get(s, 0)
+        total += mine / everything
+    return total
+
+
+def propose_messages(package: str, callables: list[dict], max_tools: int, usage: dict | None = None, by: str = "docs") -> list[dict]:
+    """Ask which functions become tools. With `usage`, each entry shows how often the repository itself uses it.
+
+    Entries of kind "class" (see class_callables) may be picked several times, once per operation.
+    """
+    where = {"docs": "documentation examples", "tests": "tests", "both": "documentation examples and tests"}[by]
+    listing = "\n".join(f"- {c['kind']} {signature(c)} | {c['summary'][:110]}" + (f" | {usage_note(c, usage, by)}" if usage else "") for c in callables)
+    has_classes = any(c["kind"] == "class" for c in callables)
+    extra = ""
+    if usage:
+        extra += (f" After each entry you see how often the repository's own {where} use it. Prefer what is used often: that is what the "
+                  "library is for.")
+    if has_classes:
+        extra += (" A `class` entry stands for uses that have no function of their own: building the object from text, which also checks "
+                  "the text and gives its normal form, and operators such as <, == or `in`. You may make several tools from one class, one "
+                  "per operation: give each its own name, and say the operation in the description.")
+    one_each = "Make one tool per library function." if not has_classes else "For all other entries, make one tool per library function."
+    if usage or has_classes:
+        return [
+            {"role": "system", "content": "You design tools for an AI agent. A tool is one Python function that wraps "
+                                          "one function of a library and takes and returns plain JSON values. "
+                                          "Reply with JSON only."},
+            {"role": "user", "content": f"""The library `{package}` has these public functions, methods and properties:
+
+{listing}
+
+Pick at most {max_tools} that are the most useful for an agent solving tasks with this library. Choose from the whole list, and prefer the library's main features over rarely used ones.{extra} {one_each} Inputs must be JSON values: a tool can build a library object from a string, for example. Leave out what needs files or network, what depends on the computer the tool runs on, what returns a plain attribute with little use on its own, and what only makes sense inside the library.
+
+Reply with a JSON list, one object per tool. "function" is the full path of the library function, exactly as listed, without its parameters:
+[{{"function": "{function_path(callables[0])}", "name": "snake_case_tool_name", "description": "One sentence for a model that does not know this library."}}]"""},
+        ]
     return [
         {"role": "system", "content": "You design tools for an AI agent. A tool is one Python function that wraps "
                                       "one function of a library and takes and returns plain JSON values. "
@@ -409,8 +473,10 @@ def parse_proposal(text: str, callables: list[dict]) -> tuple[list[dict], str | 
             continue
         target = by_path.get(re.split(r"[( ]", str(item.get("function", "")).strip())[0])
         name = str(item.get("name", ""))
-        if target is None or function_path(target) in used:
-            continue  # an invented function, or a second tool for the same one
+        if target is None or (function_path(target) in used and target["kind"] != "class"):
+            continue  # an invented function, or a second tool for the same one (a class may give several, one per operation)
+        if target["kind"] == "class" and sum(function_path(p["callable"]) == function_path(target) for p in picks) >= MAX_PER_CLASS:
+            continue
         if not TOOL_NAME.match(name) or name in names or not item.get("description"):
             continue
         used.add(function_path(target))
@@ -755,12 +821,19 @@ async def generate(args, llm=None) -> dict:
 
     # which functions become tools; big APIs are asked about in parts, so they fit the model's context
     items = [asdict(c) for c in callables]
+    usage, by = None, getattr(args, "usage", None)
+    if getattr(args, "classes", False):
+        items = class_callables(classes) + items
+    if by:  # what the repository's own documentation and tests use, counted without running anything
+        usage = count_usage(json.loads((out / "api.json").read_text()), root, base / package).as_json()
+        (out / "usage.json").write_text(json.dumps(usage, indent=1), encoding="utf-8")
+        items.sort(key=lambda c: usage_score(c, usage, by), reverse=True)
     chunks = [items[i:i + LISTING_CHUNK] for i in range(0, len(items), LISTING_CHUNK)]
     picks: list[dict] = []
     dropped_picks = 0
     for chunk in chunks:
         share = max(1, round(args.max_tools * len(chunk) / len(items)))
-        chat = propose_messages(package, chunk, share)
+        chat = propose_messages(package, chunk, share, usage, by or "docs")
         for _ in range(args.repair_rounds + 1):
             reply = await llm.chat("propose", package, chat, max_tokens=6000)
             found, problem, dropped = parse_proposal(reply, chunk)
@@ -788,7 +861,7 @@ async def generate(args, llm=None) -> dict:
         else "NONE: this system has no sandbox-exec, only a separate environment"
     meta = {"url": url, "commit": commit, "package": package, "model": getattr(llm, "model", "unknown"), "thinking": getattr(llm, "thinking", False),
             "set": set_name, "toolset": str(toolset.relative_to(ROOT)), "sandbox": sandbox, "dependencies": dependencies,
-            "dropped_proposals": dropped_picks}
+            "dropped_proposals": dropped_picks, "pick": {"usage": by, "classes": bool(getattr(args, "classes", False))}}
     write_toolset(toolset, set_name, tag, meta, accepted)
 
     # the finished server, over real MCP; anything that fails here leaves the tool set
@@ -819,6 +892,10 @@ def main() -> None:
     parser.add_argument("--repair-rounds", type=int, default=3)
     parser.add_argument("--concurrency", type=int, default=4)
     parser.add_argument("--thinking", action="store_true", help="let Qwen3-style models think first")
+    parser.add_argument("--usage", choices=("docs", "tests", "both"),
+                        help="show the LLM how often the repository's own documentation examples, tests or both use each function (repo_usage.py)")
+    parser.add_argument("--classes", action="store_true",
+                        help="let the LLM also make tools from a class itself: building the object, and its operators")
     parser.add_argument("--env-only", action="store_true", help="only (re)build the environment of an existing tool set")
     args = parser.parse_args()
     if not args.env_only and not (args.base_url and args.model):
