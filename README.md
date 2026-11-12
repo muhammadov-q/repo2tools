@@ -211,6 +211,25 @@ The result goes to `toolsets/generated/<repo>-<model>/` (one file per tool, `ser
 
 To score generated tools on exercises, use `run_model.py` with `run_server.sh` as the server command. `run_reference_calls.py` needs the hand-made tool names, so it doesn't work on generated tools.
 
+### Which functions to wrap: how the repo itself uses its API
+
+By default the LLM picks functions from a plain list of the public API. Two options give it more to go on:
+
+```sh
+uv run python repo_usage.py out/generated/packaging-coder-60/api.json .cache/repos/packaging \
+    --package-dir .cache/repos/packaging/src/packaging -o out/usage/packaging.json
+uv run python repo2tools.py https://github.com/pypa/packaging --commit c1d2a9d \
+    --base-url http://127.0.0.1:18000/v1 --model qwen3-coder --usage docs --classes
+```
+
+- `repo_usage.py` counts how often each API function is used in the repo's own documentation (doctest lines, code blocks, docstring examples) and in its tests. It only reads the files with `ast`; nothing is run. It also counts, per class, how often the class is built and which operators (`<`, `==`, `in`, `&`, ...) are used on its objects.
+- `--usage docs|tests|both` sorts the list shown to the LLM by these counts and prints the counts next to each entry.
+- `--classes` adds each class as an entry. A class may be picked several times, once per operation, so a tool can wrap `Version(a) < Version(b)` or `version in SpecifierSet(spec)`, which no single function offers.
+
+On packaging (28 doc files, 35 test files, 92 API functions): 45 functions appear in the docs and 87 in the tests. The most used things are not functions at all: `Version` is built 17 times in the docs and 680 times in the tests, and operators are used on its objects about 340 times (mostly `in`, `==`, `<`, `not in`, `>`). 5 of the 13 exercise kinds (100 of 222 exercises) need exactly that, and a function-only list cannot offer it.
+
+`--usage tests` and `--usage both` are **circular** for the packaging exercises, because the exercises are built from the same tests. `--usage docs` is the independent signal.
+
 ## Usability: can a small model call the tools
 
 A tool that agrees with the library is still of no use if the model can't pick it or call it. `usability.py` measures this per tool, with two models: a larger one writes, a small one uses the tools.
@@ -364,6 +383,7 @@ No GPU or API key needed. The LLM and the endpoint are scripted.
 | Path | What it does |
 | --- | --- |
 | `repo2tools.py` | Repo link to checked tools; see above. |
+| `repo_usage.py` | Counts how the repo's own docs and tests use each API function, class and operator. Static; runs nothing. |
 | `toolsets/generated/` | Generated tool sets, one file per tool. Not reviewed by a person. |
 | `generated_to_toolgym.py` | ToolGym types for a generated tool set, checked by running the tools; writes the catalog folder. |
 | `repair_chains.py` | Rewrites tools whose output no tool accepts, with three checks on every repair. |
