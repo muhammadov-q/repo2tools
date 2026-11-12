@@ -9,7 +9,8 @@ match. Generated tools only have JSON types (string, array, ...), so this script
   1. Observe: start the tool set's own server and call every tool on its sample inputs. Inputs that
      work, and their outputs, are the examples.
   2. Propose (LLM): one small shared vocabulary of types, e.g. the same "VersionString" for every
-     parameter that takes a version.
+     parameter that takes a version. A second question asks which fields of object outputs hold
+     values of those types.
   3. Check by running (no LLM): a type is a claim that its values are interchangeable. So for every
      two parameters of a type, the values of one are tried on the other, and every typed output is
      fed into the parameters that would consume it. Claims that fail are withdrawn: the parameter
@@ -199,6 +200,44 @@ def read_proposal(reply: str, tools: dict) -> dict:
         proposal[name] = {"parameters": {p: parse_type(parameters.get(p)) for p in tool["input_schema"].get("properties", {})},
                           "output": parsed_output}
     return proposal
+
+
+def fields_messages(tools: dict, proposal: dict, wanted: list[str]) -> list[dict]:
+    """Ask which fields of object outputs hold values of the types already named for parameters."""
+    examples: dict[str, list] = {}
+    for name, tool in tools.items():
+        for param, parsed in proposal[name]["parameters"].items():
+            if parsed:
+                values = [e["arguments"][param] for e in tool["examples"] if e["arguments"].get(param) is not None]
+                examples.setdefault(parsed[1], []).extend(v for value in values for v in (value if parsed[0] == "list" and isinstance(value, list) else [value]))
+    vocabulary = "\n".join(f"- `{name}`, e.g. {', '.join(short(v, 60) for v in unique(values)[:3])}" for name, values in sorted(examples.items()))
+    outputs = "\n\n".join(f"### {name}\n{short(tools[name]['examples'][0]['output'], 500)}" for name in wanted)
+    return [
+        {"role": "system", "content": "You assign semantic types to the fields of tool outputs, so that tools can be chained. Reply with JSON only."},
+        {"role": "user", "content": f"""These types are used for the inputs of a library's tools:
+
+{vocabulary}
+
+These tools return objects. One example output each:
+
+{outputs}
+
+For each tool, say which top-level fields hold a value of one of the types above: `TypeName` for one value, `list[TypeName]` for a list of them. Leave out fields that fit no type.
+
+Reply with one JSON object: {{"tool_name": {{"field": "TypeName", "other_field": "list[TypeName]"}}}}"""},
+    ]
+
+
+def read_fields(reply: str, wanted: list[str]) -> dict:
+    data = extract_json(reply)
+    data = data if isinstance(data, dict) else {}
+    found = {}
+    for name in wanted:
+        given = data.get(name) if isinstance(data.get(name), dict) else {}
+        fields = {f: parse_type(t) for f, t in given.items() if isinstance(f, str) and f.isidentifier() and not f.startswith("_")}
+        if any(fields.values()):
+            found[name] = {"fields": {f: t for f, t in fields.items() if t}}
+    return found
 
 
 # --- 3. check by running ------------------------------------------------------------------------
@@ -647,6 +686,17 @@ async def export(toolset: Path, dest: Path, llm, seed: int = 0) -> dict:
                 chat += [{"role": "assistant", "content": reply}, {"role": "user", "content": f"{e}. Reply with the JSON object only."}]
         if proposal is None:
             raise SystemExit("the LLM gave no usable types")
+        # object outputs: a second question, about their fields. An LLM tends to name the whole object
+        # ("ParsedWheel"), which no parameter takes, so the object would give no links.
+        objects = [name for name, tool in tools.items() if all(isinstance(e["output"], dict) for e in tool["examples"])
+                   and not isinstance(proposal[name]["output"], dict)]
+        if objects and any(t for p in proposal.values() for t in p["parameters"].values()):
+            try:
+                found = read_fields(await llm.chat("fields", set_name, fields_messages(tools, proposal, objects), max_tokens=3000), objects)
+            except ValueError:
+                found = {}
+            for name, fields in found.items():
+                proposal[name]["output"] = fields
         typing = Typing(tools, proposal)
         param_log = await check_parameters(server, typing, rng)
         outputs, output_log = await check_outputs(server, typing, proposal, rng)

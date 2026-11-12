@@ -13,6 +13,9 @@ Per exercise it records: passed, the parsed answer, tool calls and tool errors, 
 used, and whether they include every tool of the reference solution (a tool-retrieval signal).
 The full trace of each run (every request, see traces.py) goes to out/traces/<same name>.jsonl.gz.
 
+--examples puts worked examples (recorded runs from a trace file) before the task. --exercises from
+toolgym_exercises.py work like any others.
+
 --tool-choice forces tool use, because a model that may choose often makes no call at all:
     auto    the model decides (default)
     first   the first request must call a tool; after that the model decides
@@ -35,7 +38,7 @@ from openai import AsyncOpenAI
 
 from exercise_check import check
 from run_reference_calls import output_value
-from traces import add_request, new_trace, write_traces
+from traces import add_request, new_trace, read_traces, write_traces
 
 HERE = Path(__file__).parent
 SYSTEM = {
@@ -51,6 +54,39 @@ SUBMIT_TOOL = {"type": "function", "function": {
     "parameters": {"type": "object", "properties": {"answer": {"description": "The final answer as a JSON value"}},
                    "required": ["answer"]}}}
 SUBMIT_HINT = " When you are done, give the final answer by calling submit_answer, not as text."
+
+
+def load_examples(path: Path, n: int, min_calls: int = 0) -> list[dict]:
+    """Worked examples for the prompt, as chat messages: n runs from a trace file (see traces.py).
+
+    Each example is a task, the tool calls with their outputs, and the final answer. The runs with the
+    most different tools come first, and runs with a failed call are left out. For ToolGym chains the
+    final answer is the last call's output, because their own answer is a sentence and our tasks want
+    a JSON value. The examples must use tools that the model is also offered.
+    """
+    def different_tools(trace: dict) -> int:
+        last = trace["requests"][-1]["messages"]
+        return len({c["function"]["name"] for m in last for c in m.get("tool_calls") or []})
+
+    def clean(trace: dict) -> bool:
+        last = trace["requests"][-1]["messages"]
+        return not any(m["role"] == "tool" and str(m.get("content", "")).startswith(("Error", "\"Error")) for m in last)
+
+    traces = [t for t in read_traces(path) if (t["outcome"] or {}).get("tool_calls", 0) >= min_calls and clean(t)]
+    traces.sort(key=lambda t: (-different_tools(t), t["task_id"]))
+    messages = []
+    for number, trace in enumerate(traces[:n]):
+        last = trace["requests"][-1]
+        turns = json.loads(json.dumps(last["messages"][1:]))  # without the system prompt
+        outputs = [m["content"] for m in turns if m["role"] == "tool"]
+        answer = outputs[-1] if trace["source"] == "toolgym" and outputs else last["response"].get("content") or ""
+        for m in turns:  # call ids must be unique in the whole conversation
+            for call in m.get("tool_calls") or []:
+                call["id"] = f"example{number}_{call['id']}"
+            if m["role"] == "tool":
+                m["tool_call_id"] = f"example{number}_{m['tool_call_id']}"
+        messages += [*turns, {"role": "assistant", "content": answer}]
+    return messages
 
 
 async def list_tools(session: ClientSession) -> list[dict]:
@@ -82,10 +118,11 @@ async def solve(ex: dict, args, client: AsyncOpenAI, session: ClientSession | No
     always = args.mode == "tools" and args.tool_choice == "always"
     offered = [*tools, SUBMIT_TOOL] if always else tools
     system = SYSTEM[args.mode] + (SUBMIT_HINT if always else "")
-    messages = [{"role": "system", "content": system}, {"role": "user", "content": ex["task"]}]
+    messages = [{"role": "system", "content": system}, *getattr(args, "example_messages", []), {"role": "user", "content": ex["task"]}]
     full_trace = new_trace("model", ex["id"], ex["task"], offered, kind=ex["kind"], horizon=ex["horizon"], model=args.model,
                            tool_set=args.tag or ("none" if args.mode == "none" else "function"),
-                           meta={"thinking": args.thinking, "tool_choice": args.tool_choice})
+                           meta={"thinking": args.thinking, "tool_choice": args.tool_choice,
+                                 "example_messages": len(getattr(args, "example_messages", []))})
     used, calls, errors, tokens, finish, raw, trace, answer = [], 0, 0, 0, "max_steps", None, [], None
     for step in range(args.max_steps):
         tool_choice = None if not offered else "required" if always or (forced and step == 0) else "auto"
@@ -179,14 +216,21 @@ def main() -> None:
     parser.add_argument("--tag", help="label for the output file name, e.g. the tool set's granularity")
     parser.add_argument("--tool-choice", choices=("auto", "first", "always"), default="auto",
                         help="force tool use: see the top of this file")
+    parser.add_argument("--examples", type=Path, help="trace file with worked examples to put before the task (see load_examples)")
+    parser.add_argument("--n-examples", type=int, default=3)
+    parser.add_argument("--examples-min-calls", type=int, default=0, help="only use example runs with at least this many tool calls")
     args = parser.parse_args()
+    args.example_messages = load_examples(args.examples, args.n_examples, args.examples_min_calls) if args.examples else []
+    if args.examples and args.mode != "tools":
+        parser.error("--examples needs --mode tools: the examples call tools")
     if args.mode == "tools" and not args.command:
         parser.error("--mode tools needs the MCP server command after --")
 
     exercises = [ex for ex in map(json.loads, open(args.exercises)) if args.horizon in (None, ex["horizon"])][: args.limit]
     results = asyncio.run(run(exercises, args))
     forced = f"force-{args.tool_choice}" if args.tool_choice != "auto" else None
-    suffix = "".join(f"-{part}" for part in (args.tag, args.horizon, "thinking" if args.thinking else None, forced) if part)
+    shown = f"examples{args.n_examples}" if args.examples else None
+    suffix = "".join(f"-{part}" for part in (args.tag, args.horizon, "thinking" if args.thinking else None, forced, shown) if part)
     out = HERE / "out" / "runs" / f"{args.model}-{args.mode}{suffix}.jsonl"
     out.parent.mkdir(parents=True, exist_ok=True)
     write_traces(HERE / "out" / "traces" / f"{out.name}.gz", [r.pop("full_trace") for r in results if "full_trace" in r])

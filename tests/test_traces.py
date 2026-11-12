@@ -269,6 +269,46 @@ def test_always_forces_every_request_and_submit_answer_ends_the_run():
     assert result["tools_used"] == ["add"]
 
 
+def example_file(tmp_path):
+    good = trace_from_calls("toolgym", "b-two-tools", "Do the thing", "system", TOOLS,
+                            [{"tool": "parse", "arguments": {"x": 1}, "output": '"p"'}, {"tool": "sort", "arguments": {"v": "p"}, "output": '["a", "b"]'}],
+                            "The sorted list is a and b.", outcome={"passed": False, "tool_calls": 2})
+    one_tool = trace_from_calls("toolgym", "a-one-tool", "Other", "system", TOOLS,
+                                [{"tool": "sort", "arguments": {"v": 1}, "output": "[1]"}, {"tool": "sort", "arguments": {"v": 2}, "output": "[2]"}],
+                                "x", outcome={"passed": True, "tool_calls": 2})
+    failed = trace_from_calls("toolgym", "c-error", "Bad", "system", TOOLS,
+                              [{"tool": "parse", "arguments": {}, "output": "Error executing tool parse: no"}, {"tool": "sort", "arguments": {}, "output": "[]"},
+                               {"tool": "filter", "arguments": {}, "output": "[]"}], "x", outcome={"passed": False, "tool_calls": 3})
+    short = trace_from_calls("toolgym", "d-short", "Short", "system", TOOLS, [{"tool": "parse", "arguments": {}, "output": '"p"'}], "x",
+                             outcome={"passed": True, "tool_calls": 1})
+    write_traces(tmp_path / "examples.jsonl", [one_tool, good, failed, short])
+    return tmp_path / "examples.jsonl"
+
+
+def test_examples_are_chosen_and_turned_into_messages(tmp_path):
+    messages = run_model.load_examples(example_file(tmp_path), n=1, min_calls=2)
+    # the run with the most different tools wins; the one with a failed call and the short one are left out
+    assert [m["role"] for m in messages] == ["user", "assistant", "tool", "assistant", "tool", "assistant"]
+    assert messages[0]["content"] == "Do the thing"
+    assert messages[1]["tool_calls"][0]["id"] == "example0_call_0" and messages[2]["tool_call_id"] == "example0_call_0"
+    assert messages[-1] == {"role": "assistant", "content": '["a", "b"]'}  # the last output, not ToolGym's sentence
+    two = run_model.load_examples(example_file(tmp_path), n=2, min_calls=2)
+    assert [m["content"] for m in two if m["role"] == "user"] == ["Do the thing", "Other"]
+    assert {m["tool_call_id"] for m in two if m["role"] == "tool"} == {"example0_call_0", "example0_call_1", "example1_call_0", "example1_call_1"}
+
+
+def test_examples_go_between_the_system_prompt_and_the_task(tmp_path):
+    args = Namespace(mode="tools", model="m", thinking=False, tag=None, tool_choice="auto", max_steps=4,
+                     example_messages=run_model.load_examples(example_file(tmp_path), n=1, min_calls=2))
+    endpoint = Endpoint([completion(content="42")])
+    result = asyncio.run(run_model.solve(EXERCISE, args, endpoint, Session(), TOOL_LIST))
+    sent = endpoint.requests[0]["messages"]
+    assert sent[0]["role"] == "system" and sent[1]["content"] == "Do the thing" and sent[-1]["content"] == EXERCISE["task"]
+    assert len(sent) == 2 + 6
+    assert result["full_trace"]["meta"]["example_messages"] == 6
+    assert result["full_trace"]["requests"][0]["messages"] == sent  # the trace shows what was really sent
+
+
 def test_always_gives_up_at_max_steps():
     result, endpoint = solve([completion(calls=[("add", {"x": 41})])] * 4, "always")
     assert not result["passed"] and result["finish"] == "max_steps" and len(endpoint.requests) == 4

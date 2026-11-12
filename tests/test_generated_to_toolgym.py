@@ -167,6 +167,23 @@ def test_an_output_with_a_narrower_name_falls_back_to_the_parameter_type(toolset
     assert check["kept"] and "works as ProductCode" in check["why"]
 
 
+def test_object_fields_are_asked_about_and_checked(toolset):
+    folder, dest = toolset
+    whole = json.loads(json.dumps(GOOD))
+    whole["split_code"]["output"] = "SplitResult"  # the LLM names the whole object; no parameter takes that
+    llm = ScriptedLLM({("types", "codes-test"): [json.dumps({"tools": whole})],
+                       ("fields", "codes-test"): [json.dumps({"split_code": {"related": "list[ProductCode]", "prefix": "ProductCode", "number": "integer"}})]})
+    summary = asyncio.run(generated_to_toolgym.export(folder, dest, llm))
+    catalog = dest / "repo2tools_codes_test"
+    server, types = json.loads((catalog / "mcp_server.json").read_text()), json.loads((catalog / "types.json").read_text())
+    assert gym_types(server)["split_code"]["output_type"] == "SplitCodeOutput"
+    assert types["objects"]["SplitCodeOutput"]["fields"] == {"related": "ProductCodeList"}  # the prefix is not a code: checked by running
+    question = next(m for stage, _, m in llm.chats if stage == "fields")[-1]["content"]
+    assert "`ProductCode`" in question and '"prefix"' in question and "### split_code" in question
+    assert "### normalize_code" not in question  # only tools that return objects are asked about
+    assert ("split_code", "normalize_code") in {(a, b) for a, b, _ in links(server, types)}
+
+
 def test_links_follow_the_kept_types(toolset):
     _, server, types, _ = run_export(toolset, GOOD)
     found = links(server, types)

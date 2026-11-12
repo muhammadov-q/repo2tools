@@ -13,7 +13,8 @@ stays clean:
   gym/generation/pipelines/local/repo2tools/               the `basic` pipeline, over HTTP, with
                                                            the server, chain length and number of
                                                            chains taken from environment variables;
-                                                           it also saves every entry as JSON
+                                                           it can drop chains that loop on a tool,
+                                                           and it saves every entry as JSON
 
 The variants are made by copying ToolGym's files and replacing a few lines. If ToolGym changes so
 that a line is no longer found, `install` stops and says which. This repo holds no ToolGym code.
@@ -45,7 +46,20 @@ CHAIN_CHECK = [
 ]
 PIPELINE = {
     "pipeline.py": [
-        ("from data_gen.pipelines import Pipeline, PipelineBuilder\n", "import os\n\nfrom data_gen.pipelines import Pipeline, PipelineBuilder\n"),
+        ("from data_gen.pipelines import Pipeline, PipelineBuilder\n",
+         "import os\nfrom collections import Counter\n\nfrom data_gen.pipelines import FilterEdge, Pipeline, PipelineBuilder\n"),
+        # drop chains that loop: a random walk on a small graph likes to call one tool again and again
+        ("        .then(build_template_edge(shared))\n",
+         "        .then(FilterEdge(inner=build_template_edge(shared), predicate=_no_loops))\n"),
+        ("def build_pipeline(\n",
+         "MAX_TOOL_USES = int(os.environ.get(\"REPO2TOOLS_MAX_TOOL_USES\", \"0\"))  # 0 = no limit\n\n\n"
+         "def _no_loops(entry) -> bool:\n"
+         "    names = [step.tool.name for step in entry.trace_template.steps]\n"
+         "    if not MAX_TOOL_USES:\n"
+         "        return True\n"
+         "    in_a_row = any(a == b for a, b in zip(names, names[1:]))\n"
+         "    return not in_a_row and max(Counter(names).values()) <= MAX_TOOL_USES\n\n\n"
+         "def build_pipeline(\n"),
         ("INCLUDE_SERVERS: list[str] | None = None  # None = every discovered server\n",
          'INCLUDE_SERVERS: list[str] | None = os.environ["REPO2TOOLS_SERVERS"].split(",")\n'),
         ('NAME = "basic-default"\n', 'NAME = os.environ.get("REPO2TOOLS_RUN_NAME", "repo2tools")\n'),
@@ -170,6 +184,8 @@ def main() -> None:
             sub.add_argument("--max-length", type=int, default=4)
             sub.add_argument("--chains", type=int, default=20, help="how many chains to sample")
             sub.add_argument("--walk-steps", type=int, help="length of the random walk a chain is cut from; default: 3 x max length")
+            sub.add_argument("--max-tool-uses", type=int, default=0,
+                             help="drop chains that call a tool twice in a row, or more often than this in total; 0 keeps all")
             sub.add_argument("--run-name")
     args = parser.parse_args()
     toolgym = args.toolgym.resolve()
@@ -183,6 +199,7 @@ def main() -> None:
                "REPO2TOOLS_SERVERS": args.server, "REPO2TOOLS_CHAINS": str(args.chains),
                "REPO2TOOLS_MIN_LENGTH": str(args.min_length), "REPO2TOOLS_MAX_LENGTH": str(args.max_length),
                "REPO2TOOLS_WALK_STEPS": str(args.walk_steps or 3 * args.max_length),
+               "REPO2TOOLS_MAX_TOOL_USES": str(args.max_tool_uses),
                "REPO2TOOLS_RUN_NAME": args.run_name or f"{args.server}-len{args.min_length}-{args.max_length}"}
         sys.exit(run_in_toolgym(toolgym, "gym.generation.pipelines.local.repo2tools", [], env, args.tool_server, args.port))
 
