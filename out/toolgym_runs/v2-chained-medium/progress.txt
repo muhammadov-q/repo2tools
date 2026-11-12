@@ -1,0 +1,16 @@
+Run: v2-chained-medium-20261112-142935-e115
+Dir: results/gym/repo2tools/v2-chained-medium-20261112-142935-e115/
+Status: running
+Entries: 29 in 8.7min (3.3/min)
+
+Stage funnel:
+  sig: 28 done
+  template: 28 done
+  plausibility: 28 done
+  prompt: 28 done / 1 retries
+  validation: 28 done
+  realization: 28 done
+  post_validation: 28 done
+  distractor: 28 done
+  nl_answer: 28 done
+  apertus: 28 done

@@ -10,11 +10,12 @@
  "parameters_with_shared_type": 36,
  "parameter_claims_tested": 36,
  "parameter_claims_withdrawn": 0,
- "output_claims": 18,
- "output_claims_kept": 7,
- "links": 16,
- "linked_tool_pairs": 16,
+ "output_claims": 31,
+ "output_claims_kept": 14,
+ "links": 45,
+ "linked_tool_pairs": 35,
  "isolated_tools": [
+  "evaluate_marker",
   "parse_metadata_email",
   "create_empty_version_range",
   "create_full_version_range",
@@ -29,11 +30,9 @@
   "convert_specifier_set_to_range",
   "check_specifier_set_subset",
   "check_specifier_set_superset",
-  "check_specifier_sets_disjoint",
-  "parse_wheel_filename",
-  "parse_sdist_filename"
+  "check_specifier_sets_disjoint"
  ],
- "check_calls": 1035,
+ "check_calls": 1075,
  "parameter_checks": [
   {
    "tool": "evaluate_marker",
@@ -327,10 +326,98 @@
  "output_checks": [
   {
    "tool": "get_default_marker_environment",
-   "output": "MarkerEnvironment",
-   "tried": 1,
-   "worked": 1,
+   "output": "field implementation_name: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field implementation_version: VersionString",
+   "tried": 3,
+   "worked": 3,
    "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field os_name: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field platform_machine: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field platform_release: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field platform_system: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field platform_version: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field python_full_version: VersionString",
+   "tried": 3,
+   "worked": 3,
+   "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field platform_python_implementation: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field python_version: VersionString",
+   "tried": 3,
+   "worked": 3,
+   "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field sys_platform: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
    "type": "MarkerEnvironment"
   },
   {
@@ -443,28 +530,50 @@
    "tool": "canonicalize_version_string",
    "output": "CanonicalizedVersion",
    "tried": 12,
-   "worked": 10,
+   "worked": 12,
    "kept": true,
    "type": "VersionString",
    "why": "no parameter has type CanonicalizedVersion; works as VersionString"
   },
   {
    "tool": "parse_wheel_filename",
-   "output": "ParsedWheel",
-   "tried": 0,
-   "worked": 0,
-   "kept": false,
-   "why": "no parameter has this type",
-   "type": "ParsedWheel"
+   "output": "field name: PackageName",
+   "tried": 6,
+   "worked": 6,
+   "kept": true,
+   "type": "PackageName"
+  },
+  {
+   "tool": "parse_wheel_filename",
+   "output": "field version: VersionString",
+   "tried": 9,
+   "worked": 9,
+   "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "parse_wheel_filename",
+   "output": "field tags: list[Tag]",
+   "tried": 2,
+   "worked": 2,
+   "kept": true,
+   "type": "Tag"
   },
   {
    "tool": "parse_sdist_filename",
-   "output": "ParsedSdist",
-   "tried": 0,
-   "worked": 0,
-   "kept": false,
-   "why": "no parameter has this type",
-   "type": "ParsedSdist"
+   "output": "field name: PackageName",
+   "tried": 6,
+   "worked": 6,
+   "kept": true,
+   "type": "PackageName"
+  },
+  {
+   "tool": "parse_sdist_filename",
+   "output": "field version: VersionString",
+   "tried": 9,
+   "worked": 9,
+   "kept": true,
+   "type": "VersionString"
   },
   {
    "tool": "parse_version_string",
@@ -524,8 +633,113 @@
   ],
   [
    "get_default_marker_environment",
-   "evaluate_marker",
-   "direct"
+   "canonicalize_version_string",
+   "field implementation_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "canonicalize_version_string",
+   "field python_full_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "canonicalize_version_string",
+   "field python_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_range",
+   "field implementation_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_range",
+   "field python_full_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_range",
+   "field python_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_specifier_set",
+   "field implementation_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_specifier_set",
+   "field python_full_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_specifier_set",
+   "field python_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "create_singleton_version_range",
+   "field implementation_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "create_singleton_version_range",
+   "field python_full_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "create_singleton_version_range",
+   "field python_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "parse_version_string",
+   "field implementation_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "parse_version_string",
+   "field python_full_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "parse_version_string",
+   "field python_version"
+  ],
+  [
+   "parse_sdist_filename",
+   "canonicalize_package_name",
+   "field name"
+  ],
+  [
+   "parse_sdist_filename",
+   "canonicalize_version_string",
+   "field version"
+  ],
+  [
+   "parse_sdist_filename",
+   "check_normalized_package_name",
+   "field name"
+  ],
+  [
+   "parse_sdist_filename",
+   "check_version_in_range",
+   "field version"
+  ],
+  [
+   "parse_sdist_filename",
+   "check_version_in_specifier_set",
+   "field version"
+  ],
+  [
+   "parse_sdist_filename",
+   "create_singleton_version_range",
+   "field version"
+  ],
+  [
+   "parse_sdist_filename",
+   "parse_version_string",
+   "field version"
   ],
   [
    "parse_tag",
@@ -556,6 +770,46 @@
    "parse_version_string",
    "parse_version_string",
    "direct"
+  ],
+  [
+   "parse_wheel_filename",
+   "canonicalize_package_name",
+   "field name"
+  ],
+  [
+   "parse_wheel_filename",
+   "canonicalize_version_string",
+   "field version"
+  ],
+  [
+   "parse_wheel_filename",
+   "check_normalized_package_name",
+   "field name"
+  ],
+  [
+   "parse_wheel_filename",
+   "check_version_in_range",
+   "field version"
+  ],
+  [
+   "parse_wheel_filename",
+   "check_version_in_specifier_set",
+   "field version"
+  ],
+  [
+   "parse_wheel_filename",
+   "create_singleton_version_range",
+   "field version"
+  ],
+  [
+   "parse_wheel_filename",
+   "parse_tag",
+   "field tags, first element"
+  ],
+  [
+   "parse_wheel_filename",
+   "parse_version_string",
+   "field version"
   ]
  ]
 }

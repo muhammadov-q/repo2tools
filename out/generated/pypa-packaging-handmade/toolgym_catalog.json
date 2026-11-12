@@ -1,0 +1,953 @@
+{
+ "mcp_server": {
+  "name": "repo2tools_pypa_packaging_handmade",
+  "repo": "repo2tools/pypa-packaging-handmade",
+  "tools": [
+   {
+    "mcp_spec": {
+     "name": "is_valid_version",
+     "description": "Check whether a string is a valid version under Python's version rules (PEP 440).",
+     "inputSchema": {
+      "properties": {
+       "version": {
+        "title": "Version",
+        "type": "string"
+       }
+      },
+      "required": [
+       "version"
+      ],
+      "title": "is_valid_versionArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version": "IsValidVersionVersion"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "normalize_version",
+     "description": "Return the normalized PEP 440 form of a version string, e.g. '1.0-BETA2' -> '1.0b2'.",
+     "inputSchema": {
+      "properties": {
+       "version": {
+        "title": "Version",
+        "type": "string"
+       }
+      },
+      "required": [
+       "version"
+      ],
+      "title": "normalize_versionArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version": "VersionStringX"
+     },
+     "output_type": "VersionStringX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "version_info",
+     "description": "Split a PEP 440 version into its parts: epoch, release numbers, pre-, post- and\ndev-release, local label, public and base version, and whether it is a pre-, post- or\ndev-release.",
+     "inputSchema": {
+      "properties": {
+       "version": {
+        "title": "Version",
+        "type": "string"
+       }
+      },
+      "required": [
+       "version"
+      ],
+      "title": "version_infoArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version": "VersionStringX"
+     },
+     "output_type": "object"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "base_version",
+     "description": "Return the base version: the epoch and release numbers only, without pre-, post-,\ndev-release or local parts, e.g. '1!2.0rc1.post3+abc' -> '1!2.0'.",
+     "inputSchema": {
+      "properties": {
+       "version": {
+        "title": "Version",
+        "type": "string"
+       }
+      },
+      "required": [
+       "version"
+      ],
+      "title": "base_versionArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version": "VersionStringX"
+     },
+     "output_type": "VersionStringX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "compare_versions",
+     "description": "Compare two PEP 440 versions. Returns -1 if version_a is older, 0 if they are equal,\n1 if version_a is newer.",
+     "inputSchema": {
+      "properties": {
+       "version_a": {
+        "title": "Version A",
+        "type": "string"
+       },
+       "version_b": {
+        "title": "Version B",
+        "type": "string"
+       }
+      },
+      "required": [
+       "version_a",
+       "version_b"
+      ],
+      "title": "compare_versionsArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version_a": "VersionStringX",
+      "version_b": "VersionStringX"
+     },
+     "output_type": "integer"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "sort_versions",
+     "description": "Sort version strings from oldest to newest (or newest first if descending is true),\nusing PEP 440 ordering. The strings are returned unchanged.",
+     "inputSchema": {
+      "properties": {
+       "versions": {
+        "items": {
+         "type": "string"
+        },
+        "title": "Versions",
+        "type": "array"
+       },
+       "descending": {
+        "default": false,
+        "title": "Descending",
+        "type": "boolean"
+       }
+      },
+      "required": [
+       "versions"
+      ],
+      "title": "sort_versionsArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "versions": "VersionStringList",
+      "descending": "SortVersionsDescending"
+     },
+     "output_type": "VersionStringList"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "canonicalize_version",
+     "description": "Return the canonical form of a version used for comparing file names: normalized and,\nby default, without trailing '.0' release segments, e.g. '1.0.0' -> '1'.",
+     "inputSchema": {
+      "properties": {
+       "version": {
+        "title": "Version",
+        "type": "string"
+       }
+      },
+      "required": [
+       "version"
+      ],
+      "title": "canonicalize_versionArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version": "VersionStringX"
+     },
+     "output_type": "VersionStringX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "is_valid_specifier",
+     "description": "Check whether a string is a valid version constraint (specifier set), e.g. '>=1.0,<2'.",
+     "inputSchema": {
+      "properties": {
+       "specifier": {
+        "title": "Specifier",
+        "type": "string"
+       }
+      },
+      "required": [
+       "specifier"
+      ],
+      "title": "is_valid_specifierArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifier": "SpecifierString"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "version_satisfies",
+     "description": "Check whether a version is allowed by a version constraint such as '>=1.0,!=1.3,<2'.\ninclude_prereleases: true allows pre-releases, false excludes them, null (default) follows\nPEP 440: pre-releases match only if the constraint itself mentions one.",
+     "inputSchema": {
+      "properties": {
+       "version": {
+        "title": "Version",
+        "type": "string"
+       },
+       "specifier": {
+        "title": "Specifier",
+        "type": "string"
+       },
+       "include_prereleases": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Include Prereleases"
+       }
+      },
+      "required": [
+       "version",
+       "specifier"
+      ],
+      "title": "version_satisfiesArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version": "VersionStringX",
+      "specifier": "SpecifierString",
+      "include_prereleases": "VersionSatisfiesIncludePrereleases"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "filter_versions",
+     "description": "Keep only the versions allowed by a version constraint, in their original order.\ninclude_prereleases: true keeps pre-releases, false drops them, null (default) follows\nPEP 440: pre-releases are kept only if nothing else matches or the constraint mentions one.",
+     "inputSchema": {
+      "properties": {
+       "versions": {
+        "items": {
+         "type": "string"
+        },
+        "title": "Versions",
+        "type": "array"
+       },
+       "specifier": {
+        "title": "Specifier",
+        "type": "string"
+       },
+       "include_prereleases": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Include Prereleases"
+       }
+      },
+      "required": [
+       "versions",
+       "specifier"
+      ],
+      "title": "filter_versionsArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "versions": "FilterVersionsVersions",
+      "specifier": "SpecifierString",
+      "include_prereleases": "FilterVersionsIncludePrereleases"
+     },
+     "output_type": "VersionStringList"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "combine_specifiers",
+     "description": "Combine two version constraints into one that requires both, e.g. '>=1.0' and '<2' ->\n'<2,>=1.0'.",
+     "inputSchema": {
+      "properties": {
+       "specifier_a": {
+        "title": "Specifier A",
+        "type": "string"
+       },
+       "specifier_b": {
+        "title": "Specifier B",
+        "type": "string"
+       }
+      },
+      "required": [
+       "specifier_a",
+       "specifier_b"
+      ],
+      "title": "combine_specifiersArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifier_a": "SpecifierString",
+      "specifier_b": "SpecifierString"
+     },
+     "output_type": "SpecifierString"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "is_satisfiable",
+     "description": "Check whether at least one version could satisfy a version constraint, e.g.\n'>=2,<1' cannot.",
+     "inputSchema": {
+      "properties": {
+       "specifier": {
+        "title": "Specifier",
+        "type": "string"
+       }
+      },
+      "required": [
+       "specifier"
+      ],
+      "title": "is_satisfiableArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifier": "SpecifierString"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "specifier_is_subset",
+     "description": "Check whether every version allowed by `specifier` is also allowed by `other`, e.g.\n'>=3.12,<3.13' is a subset of '>=3.12'.",
+     "inputSchema": {
+      "properties": {
+       "specifier": {
+        "title": "Specifier",
+        "type": "string"
+       },
+       "other": {
+        "title": "Other",
+        "type": "string"
+       },
+       "include_prereleases": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Include Prereleases"
+       }
+      },
+      "required": [
+       "specifier",
+       "other"
+      ],
+      "title": "specifier_is_subsetArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifier": "SpecifierString",
+      "other": "SpecifierString",
+      "include_prereleases": "SpecifierIsSubsetIncludePrereleases"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "specifiers_overlap",
+     "description": "Check whether at least one version is allowed by both version constraints.",
+     "inputSchema": {
+      "properties": {
+       "specifier_a": {
+        "title": "Specifier A",
+        "type": "string"
+       },
+       "specifier_b": {
+        "title": "Specifier B",
+        "type": "string"
+       }
+      },
+      "required": [
+       "specifier_a",
+       "specifier_b"
+      ],
+      "title": "specifiers_overlapArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifier_a": "SpecifierString",
+      "specifier_b": "SpecifierString"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "parse_requirement",
+     "description": "Parse a dependency line such as 'requests[socks]>=2.31; python_version < \"3.13\"' into\nits name, extras, version constraint, environment marker and URL.",
+     "inputSchema": {
+      "properties": {
+       "requirement": {
+        "title": "Requirement",
+        "type": "string"
+       }
+      },
+      "required": [
+       "requirement"
+      ],
+      "title": "parse_requirementArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "requirement": "ParseRequirementRequirement"
+     },
+     "output_type": "ParseRequirementOutput"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "evaluate_marker",
+     "description": "Evaluate an environment marker such as 'python_version < \"3.11\" and sys_platform ==\n\"win32\"'. environment maps marker variables (python_version, sys_platform, os_name,\nplatform_machine, extra, ...) to values; variables not given are those of CPython 3.12.0\non Linux x86_64.",
+     "inputSchema": {
+      "properties": {
+       "marker": {
+        "title": "Marker",
+        "type": "string"
+       },
+       "environment": {
+        "anyOf": [
+         {
+          "additionalProperties": true,
+          "type": "object"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Environment"
+       }
+      },
+      "required": [
+       "marker"
+      ],
+      "title": "evaluate_markerArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "marker": "MarkerString",
+      "environment": "EvaluateMarkerEnvironment"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "canonicalize_name",
+     "description": "Return the normalized project name used by package indexes, e.g. 'Typing_Extensions' ->\n'typing-extensions'.",
+     "inputSchema": {
+      "properties": {
+       "name": {
+        "title": "Name",
+        "type": "string"
+       }
+      },
+      "required": [
+       "name"
+      ],
+      "title": "canonicalize_nameArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "name": "CanonicalizeNameName"
+     },
+     "output_type": "string"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "parse_wheel_filename",
+     "description": "Parse a wheel file name such as 'numpy-2.1.0-cp312-cp312-manylinux_2_17_x86_64.whl'\ninto project name, version, build tag and the set of compatibility tags it declares.",
+     "inputSchema": {
+      "properties": {
+       "filename": {
+        "title": "Filename",
+        "type": "string"
+       }
+      },
+      "required": [
+       "filename"
+      ],
+      "title": "parse_wheel_filenameArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "filename": "WheelFilenameXX"
+     },
+     "output_type": "ParseWheelFilenameOutputX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "parse_sdist_filename",
+     "description": "Parse a source distribution file name such as 'requests-2.31.0.tar.gz' into project name\nand version.",
+     "inputSchema": {
+      "properties": {
+       "filename": {
+        "title": "Filename",
+        "type": "string"
+       }
+      },
+      "required": [
+       "filename"
+      ],
+      "title": "parse_sdist_filenameArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "filename": "SdistFilenameXX"
+     },
+     "output_type": "object"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "parse_tag",
+     "description": "Expand a compressed compatibility tag such as 'py2.py3-none-any' into the individual\ntags it stands for.",
+     "inputSchema": {
+      "properties": {
+       "tag": {
+        "title": "Tag",
+        "type": "string"
+       }
+      },
+      "required": [
+       "tag"
+      ],
+      "title": "parse_tagArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "tag": "TagString"
+     },
+     "output_type": "TagStringList"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "supported_tags",
+     "description": "List the wheel tags a CPython interpreter accepts, most preferred first.\npython_version is like '3.12'; platforms are platform tags such as\n['manylinux_2_17_x86_64', 'linux_x86_64'], most preferred first.",
+     "inputSchema": {
+      "properties": {
+       "python_version": {
+        "title": "Python Version",
+        "type": "string"
+       },
+       "platforms": {
+        "items": {
+         "type": "string"
+        },
+        "title": "Platforms",
+        "type": "array"
+       }
+      },
+      "required": [
+       "python_version",
+       "platforms"
+      ],
+      "title": "supported_tagsArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "python_version": "SupportedTagsPythonVersion",
+      "platforms": "SupportedTagsPlatforms"
+     },
+     "output_type": "TagStringList"
+    }
+   }
+  ]
+ },
+ "types": {
+  "pools": {
+   "MarkerString": [
+    "extra == 'security'",
+    "extra == 'Different.punctuation..is...equal'",
+    "os_name == 'foo'",
+    "python_version ~= '2.7.0' and (os_name == 'foo' or os_name == 'bar')",
+    "extra == 'SECURITY'",
+    "'2.7' not in python_version",
+    "'2.7' in python_version"
+   ],
+   "SdistFilenameXX": [
+    "requests-2.32.3.tar.gz",
+    "numpy-2.1.3.tar.gz",
+    "typing_extensions-4.12.2.tar.gz"
+   ],
+   "SpecifierString": [
+    ">=1.0,<2",
+    "~=2.2",
+    "==1.*",
+    "not a specifier",
+    ">=0.9,!=0.9,<=1.0",
+    "==2.*",
+    ">=1,!=1.*,!=2.*,!=3.0,!=3.1,<4",
+    ">=1.0.dev0,<1.0.post1",
+    ">=2",
+    "<=2",
+    "!=2.0.0",
+    ">=1,!=1.*,!=2.*,!=3.0,<=3.0",
+    ">3.0.0a7",
+    "==1.*,>=1.0",
+    ">=1.0,<=2.0dev",
+    ">=1.0",
+    ">=1.0,!=2.0",
+    "",
+    ">=1.0,<=2.0",
+    "<2.0a1",
+    ">=1.2.3",
+    ">=1.0,===1.5",
+    "!=1.5",
+    ">=3.9",
+    "<2",
+    "~=1.4",
+    "<3.13",
+    "==1.0,>=2.0",
+    "==1.0+local1,!=1.0+local2",
+    "~=1.0a1,<1.0",
+    "~=1.0.dev0,>=2.0",
+    "===1.0,>=0.5",
+    "==1.0a1,>1.0a1",
+    "==1.0rc1,<1.0.post0",
+    "==1.0+local1,!=1.0",
+    "~=1.0a1,<1.0.post0",
+    ">=3.12,<3.13",
+    ">=2.0,<1.0",
+    ">1",
+    ">2",
+    ">=3.12",
+    ">=3.11,<3.13",
+    ">=3.12,<3.12.5",
+    "<1.0",
+    "==1.5"
+   ],
+   "TagString": [
+    "py3-none-any",
+    "cp312-cp312-manylinux_2_17_x86_64",
+    "py2.py3-none-any"
+   ],
+   "VersionStringX": [
+    "v1.0",
+    "1.0+AbC",
+    "1.0dev",
+    "1.0dev1",
+    "1.0-post",
+    "1.0.rev1",
+    "1.0-r5",
+    "1.0-alpha",
+    "1.0.A1",
+    "1.0a05",
+    "1.0.post1+dev",
+    "1.0a1.post1.dev1",
+    "1.0",
+    "1.0rc1.dev1",
+    "1.0+dev",
+    "1.0.dev0",
+    "1.0.post1",
+    "1.0rc1",
+    "1.0c1.dev1",
+    "1.0a1.dev1",
+    "1!1.0a1.post5",
+    "1.0a1",
+    "1!1.0a1+deadbeef",
+    "1!1.0rc4",
+    "1.0a1.post5",
+    "1!1.0a1.post5.dev6",
+    "1.0rc4",
+    "1!1.0",
+    "1.0a1.post5+deadbeef",
+    "1!1.0.dev0",
+    "1!1.0rc0",
+    "1!1.0.dev456+local",
+    "1!1.0a1.dev1+local",
+    "1!1.0b2.post345.dev456",
+    "1!1.2+2",
+    "1.0a0",
+    "1.0b2-346",
+    "1!1.0.dev456",
+    "1.0.1a1",
+    "1!1.0a0.post0",
+    "1.0b2.post345.dev456",
+    "1!1.0a1",
+    "1!1.2+abcdef",
+    "1!1.0rc2",
+    "1.0.1",
+    "1.2+123456",
+    "1.26.20",
+    "2.0.7",
+    "2.2.3",
+    "2.25.1",
+    "2.28.2",
+    "2.31.0",
+    "2.32.3",
+    "0.4.4",
+    "0.4.5",
+    "305",
+    "306",
+    "4.5.0",
+    "4.7.1",
+    "4.9.0"
+   ],
+   "WheelFilenameXX": [
+    "pyvirtualcam-0.13.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+    "foo-2-py2.py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+    "foo-1.0-py3-none-any.whl",
+    "foo_b\u00e1r-1.0-py3-none-any.whl",
+    "foo-1.0-1000abc-py3-none-any.whl",
+    "foo-1.0-1000-py3-none-any.whl",
+    "some_PACKAGE-1.0-py3-none-any.whl",
+    "foo_b\u00e1r-1.0-1000-py3-none-any.whl"
+   ],
+   "IsValidVersionVersion": [
+    "1.0+foo&asd",
+    "1.0rc0",
+    ".",
+    "1!1.0.1+local",
+    "1. 0a1",
+    "1!1.0b2-346",
+    "1.0a 1",
+    "1!1.0b1.dev456",
+    ".1.0",
+    "1.0b1.dev456"
+   ],
+   "SortVersionsDescending": [
+    false,
+    true
+   ],
+   "VersionSatisfiesIncludePrereleases": [
+    false,
+    true
+   ],
+   "FilterVersionsVersions": [
+    [
+     "0.9",
+     "1.0",
+     "1.5",
+     "2.0"
+    ],
+    [
+     "1.0",
+     "1.5a1"
+    ],
+    [
+     "1.0",
+     "2.0a1"
+    ],
+    [
+     "invalid",
+     "1.0",
+     "2.0",
+     "3.0"
+    ],
+    [
+     "1.0",
+     "invalid version"
+    ],
+    [
+     "1.0a1"
+    ],
+    [
+     "1.0a2",
+     "1.0",
+     "2.0a1"
+    ],
+    [
+     "1.3",
+     "1.5a1"
+    ],
+    [
+     "1.5",
+     "foobar",
+     "invalid"
+    ]
+   ],
+   "FilterVersionsIncludePrereleases": [
+    false,
+    true
+   ],
+   "SpecifierIsSubsetIncludePrereleases": [
+    false,
+    true
+   ],
+   "ParseRequirementRequirement": [
+    "urllib3>=1.26.20",
+    "Requests",
+    "NumPy; platform_machine == \"arm64\"",
+    "colorama<0.4.6",
+    "PyWin32>=305,<308",
+    "charset-normalizer!=3.4.0,>=3.3.2; sys_platform == \"win32\"",
+    "typing-extensions>=4.5.0",
+    "NumPy!=2.0.2,>=1.26.4; python_version >= \"3.10\"",
+    "urllib3~=1.26",
+    "exceptiongroup>=1.1.3,<1.2.0; sys_platform != \"win32\""
+   ],
+   "EvaluateMarkerEnvironment": [
+    {
+     "extra": "quux"
+    },
+    {
+     "extra": "different__punctuation_is_EQUAL"
+    },
+    {
+     "os_name": "bar"
+    },
+    {
+     "os_name": "foo",
+     "python_version": "2.7.4"
+    },
+    {
+     "os_name": "other",
+     "python_version": "2.7.4"
+    },
+    {
+     "extra": "security"
+    },
+    {
+     "python_version": "2.7"
+    },
+    {
+     "python_version": "2.7.5"
+    },
+    {
+     "os_name": "bar",
+     "python_version": "2.7.4"
+    }
+   ],
+   "CanonicalizeNameName": [
+    "fOo",
+    "foo----bar",
+    "Foo",
+    "foo.bar",
+    "foo",
+    "foo___bar",
+    "Foo.....Bar",
+    "foo_bar",
+    "foo-bar",
+    "Foo.Bar"
+   ],
+   "SupportedTagsPythonVersion": [
+    "3.12",
+    "3.11",
+    "3.10"
+   ],
+   "SupportedTagsPlatforms": [
+    [
+     "manylinux_2_17_x86_64"
+    ],
+    [
+     "macosx_11_0_arm64"
+    ],
+    [
+     "win_amd64",
+     "linux_x86_64"
+    ]
+   ]
+  },
+  "lists": {
+   "VersionStringList": {
+    "element": "VersionStringX",
+    "min_items": 1,
+    "max_items": 4
+   },
+   "TagStringList": {
+    "element": "TagString",
+    "min_items": 1,
+    "max_items": 4
+   }
+  },
+  "objects": {
+   "ParseRequirementOutput": {
+    "fields": {
+     "specifier": "SpecifierString"
+    }
+   },
+   "ParseWheelFilenameOutputX": {
+    "fields": {
+     "tags": "TagStringList"
+    }
+   }
+  }
+ }
+}

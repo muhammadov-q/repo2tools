@@ -1,0 +1,927 @@
+{
+ "set": "packaging-coder-60-chained",
+ "model": "qwen3-32b (replayed)",
+ "tools": 29,
+ "tools_without_working_samples": [],
+ "types_proposed": 10,
+ "types_kept": 10,
+ "parameters": 51,
+ "parameters_with_proposed_type": 36,
+ "parameters_with_shared_type": 36,
+ "parameter_claims_tested": 36,
+ "parameter_claims_withdrawn": 0,
+ "output_claims": 31,
+ "output_claims_kept": 17,
+ "links": 69,
+ "linked_tool_pairs": 59,
+ "isolated_tools": [
+  "evaluate_marker",
+  "parse_metadata_email",
+  "create_empty_version_range",
+  "create_full_version_range",
+  "check_specifier_set_unsatisfiable",
+  "check_specifier_set_subset",
+  "check_specifier_set_superset",
+  "check_specifier_sets_disjoint"
+ ],
+ "check_calls": 1076,
+ "parameter_checks": [
+  {
+   "tool": "evaluate_marker",
+   "parameter": "environment",
+   "type": "MarkerEnvironment",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  },
+  {
+   "tool": "evaluate_marker",
+   "parameter": "marker",
+   "type": "MarkerExpression",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  },
+  {
+   "tool": "parse_metadata_email",
+   "parameter": "data",
+   "type": "MetadataEmail",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  },
+  {
+   "tool": "canonicalize_package_name",
+   "parameter": "name",
+   "type": "PackageName",
+   "pairs": 2,
+   "pairs_working": 2,
+   "kept": true
+  },
+  {
+   "tool": "check_normalized_package_name",
+   "parameter": "name",
+   "type": "PackageName",
+   "pairs": 2,
+   "pairs_working": 2,
+   "kept": true
+  },
+  {
+   "tool": "parse_sdist_filename",
+   "parameter": "filename",
+   "type": "SdistFilename",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  },
+  {
+   "tool": "check_specifier_set_unsatisfiable",
+   "parameter": "specifiers",
+   "type": "SpecifierSet",
+   "pairs": 16,
+   "pairs_working": 16,
+   "kept": true
+  },
+  {
+   "tool": "convert_specifier_set_to_range",
+   "parameter": "specifiers",
+   "type": "SpecifierSet",
+   "pairs": 16,
+   "pairs_working": 16,
+   "kept": true
+  },
+  {
+   "tool": "check_specifier_set_subset",
+   "parameter": "specifier_set1",
+   "type": "SpecifierSet",
+   "pairs": 16,
+   "pairs_working": 16,
+   "kept": true
+  },
+  {
+   "tool": "check_specifier_set_subset",
+   "parameter": "specifier_set2",
+   "type": "SpecifierSet",
+   "pairs": 16,
+   "pairs_working": 16,
+   "kept": true
+  },
+  {
+   "tool": "check_specifier_set_superset",
+   "parameter": "specifier_set1",
+   "type": "SpecifierSet",
+   "pairs": 16,
+   "pairs_working": 16,
+   "kept": true
+  },
+  {
+   "tool": "check_specifier_set_superset",
+   "parameter": "specifier_set2",
+   "type": "SpecifierSet",
+   "pairs": 16,
+   "pairs_working": 16,
+   "kept": true
+  },
+  {
+   "tool": "check_specifier_sets_disjoint",
+   "parameter": "specifier_set1",
+   "type": "SpecifierSet",
+   "pairs": 16,
+   "pairs_working": 16,
+   "kept": true
+  },
+  {
+   "tool": "check_specifier_sets_disjoint",
+   "parameter": "specifier_set2",
+   "type": "SpecifierSet",
+   "pairs": 16,
+   "pairs_working": 16,
+   "kept": true
+  },
+  {
+   "tool": "check_version_in_specifier_set",
+   "parameter": "specifier_set",
+   "type": "SpecifierSet",
+   "pairs": 16,
+   "pairs_working": 16,
+   "kept": true
+  },
+  {
+   "tool": "parse_tag",
+   "parameter": "tag",
+   "type": "Tag",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  },
+  {
+   "tool": "intersect_version_ranges",
+   "parameter": "range1",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "intersect_version_ranges",
+   "parameter": "range2",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "union_version_ranges",
+   "parameter": "version_range_a",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "union_version_ranges",
+   "parameter": "version_range_b",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "complement_version_range",
+   "parameter": "version_specifier",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "difference_version_ranges",
+   "parameter": "version_range_a",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "difference_version_ranges",
+   "parameter": "version_range_b",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "check_version_range_subset",
+   "parameter": "range1",
+   "type": "VersionRange",
+   "pairs": 24,
+   "pairs_working": 24,
+   "kept": true
+  },
+  {
+   "tool": "check_version_range_subset",
+   "parameter": "range2",
+   "type": "VersionRange",
+   "pairs": 24,
+   "pairs_working": 24,
+   "kept": true
+  },
+  {
+   "tool": "check_version_range_superset",
+   "parameter": "outer_range",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "check_version_range_superset",
+   "parameter": "inner_range",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "check_version_ranges_disjoint",
+   "parameter": "range1",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "check_version_ranges_disjoint",
+   "parameter": "range2",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "check_version_in_range",
+   "parameter": "specifier_set",
+   "type": "VersionRange",
+   "pairs": 26,
+   "pairs_working": 26,
+   "kept": true
+  },
+  {
+   "tool": "create_singleton_version_range",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 8,
+   "pairs_working": 8,
+   "kept": true
+  },
+  {
+   "tool": "check_version_in_range",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 8,
+   "pairs_working": 8,
+   "kept": true
+  },
+  {
+   "tool": "check_version_in_specifier_set",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 8,
+   "pairs_working": 8,
+   "kept": true
+  },
+  {
+   "tool": "canonicalize_version_string",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 8,
+   "pairs_working": 8,
+   "kept": true
+  },
+  {
+   "tool": "parse_version_string",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 8,
+   "pairs_working": 8,
+   "kept": true
+  },
+  {
+   "tool": "parse_wheel_filename",
+   "parameter": "filename",
+   "type": "WheelFilename",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  }
+ ],
+ "output_checks": [
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field implementation_name: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field implementation_version: VersionString",
+   "tried": 3,
+   "worked": 3,
+   "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field os_name: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field platform_machine: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field platform_release: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field platform_system: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field platform_version: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field python_full_version: VersionString",
+   "tried": 3,
+   "worked": 3,
+   "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field platform_python_implementation: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field python_version: VersionString",
+   "tried": 3,
+   "worked": 3,
+   "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "get_default_marker_environment",
+   "output": "field sys_platform: MarkerEnvironment",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "the output has another shape",
+   "type": "MarkerEnvironment"
+  },
+  {
+   "tool": "parse_metadata_email",
+   "output": "ParsedMetadata",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "no parameter has this type",
+   "type": "ParsedMetadata"
+  },
+  {
+   "tool": "create_empty_version_range",
+   "output": "VersionRange",
+   "tried": 9,
+   "worked": 0,
+   "kept": false,
+   "type": "VersionRange"
+  },
+  {
+   "tool": "create_full_version_range",
+   "output": "VersionRange",
+   "tried": 12,
+   "worked": 0,
+   "kept": false,
+   "type": "VersionRange"
+  },
+  {
+   "tool": "create_singleton_version_range",
+   "output": "VersionRange",
+   "tried": 12,
+   "worked": 0,
+   "kept": false,
+   "type": "VersionRange"
+  },
+  {
+   "tool": "intersect_version_ranges",
+   "output": "VersionRange",
+   "tried": 12,
+   "worked": 12,
+   "kept": true,
+   "type": "VersionRange"
+  },
+  {
+   "tool": "union_version_ranges",
+   "output": "VersionRange",
+   "tried": 12,
+   "worked": 0,
+   "kept": false,
+   "type": "VersionRange"
+  },
+  {
+   "tool": "complement_version_range",
+   "output": "VersionRange",
+   "tried": 12,
+   "worked": 0,
+   "kept": false,
+   "type": "VersionRange"
+  },
+  {
+   "tool": "difference_version_ranges",
+   "output": "VersionRange",
+   "tried": 6,
+   "worked": 6,
+   "kept": true,
+   "type": "VersionRange"
+  },
+  {
+   "tool": "convert_specifier_set_to_range",
+   "output": "VersionRange",
+   "tried": 12,
+   "worked": 12,
+   "kept": true,
+   "type": "VersionRange"
+  },
+  {
+   "tool": "parse_tag",
+   "output": "list[Tag]",
+   "tried": 3,
+   "worked": 3,
+   "kept": true,
+   "type": "Tag"
+  },
+  {
+   "tool": "generate_generic_tags",
+   "output": "list[Tag]",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "Tag"
+  },
+  {
+   "tool": "generate_compatible_tags",
+   "output": "list[Tag]",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "Tag"
+  },
+  {
+   "tool": "canonicalize_package_name",
+   "output": "NormalizedPackageName",
+   "tried": 8,
+   "worked": 8,
+   "kept": true,
+   "type": "PackageName",
+   "why": "no parameter has type NormalizedPackageName; works as PackageName"
+  },
+  {
+   "tool": "canonicalize_version_string",
+   "output": "CanonicalizedVersion",
+   "tried": 12,
+   "worked": 12,
+   "kept": true,
+   "type": "VersionString",
+   "why": "no parameter has type CanonicalizedVersion; works as VersionString"
+  },
+  {
+   "tool": "parse_wheel_filename",
+   "output": "field name: PackageName",
+   "tried": 6,
+   "worked": 6,
+   "kept": true,
+   "type": "PackageName"
+  },
+  {
+   "tool": "parse_wheel_filename",
+   "output": "field version: VersionString",
+   "tried": 9,
+   "worked": 9,
+   "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "parse_wheel_filename",
+   "output": "field tags: list[Tag]",
+   "tried": 2,
+   "worked": 2,
+   "kept": true,
+   "type": "Tag"
+  },
+  {
+   "tool": "parse_sdist_filename",
+   "output": "field name: PackageName",
+   "tried": 6,
+   "worked": 6,
+   "kept": true,
+   "type": "PackageName"
+  },
+  {
+   "tool": "parse_sdist_filename",
+   "output": "field version: VersionString",
+   "tried": 9,
+   "worked": 9,
+   "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "parse_version_string",
+   "output": "ParsedVersion",
+   "tried": 12,
+   "worked": 12,
+   "kept": true,
+   "type": "VersionString",
+   "why": "no parameter has type ParsedVersion; works as VersionString"
+  }
+ ],
+ "links_list": [
+  [
+   "canonicalize_package_name",
+   "canonicalize_package_name",
+   "direct"
+  ],
+  [
+   "canonicalize_package_name",
+   "check_normalized_package_name",
+   "direct"
+  ],
+  [
+   "canonicalize_version_string",
+   "canonicalize_version_string",
+   "direct"
+  ],
+  [
+   "canonicalize_version_string",
+   "check_version_in_range",
+   "direct"
+  ],
+  [
+   "canonicalize_version_string",
+   "check_version_in_specifier_set",
+   "direct"
+  ],
+  [
+   "canonicalize_version_string",
+   "create_singleton_version_range",
+   "direct"
+  ],
+  [
+   "canonicalize_version_string",
+   "parse_version_string",
+   "direct"
+  ],
+  [
+   "convert_specifier_set_to_range",
+   "check_version_in_range",
+   "direct"
+  ],
+  [
+   "convert_specifier_set_to_range",
+   "check_version_range_subset",
+   "direct"
+  ],
+  [
+   "convert_specifier_set_to_range",
+   "check_version_range_superset",
+   "direct"
+  ],
+  [
+   "convert_specifier_set_to_range",
+   "check_version_ranges_disjoint",
+   "direct"
+  ],
+  [
+   "convert_specifier_set_to_range",
+   "complement_version_range",
+   "direct"
+  ],
+  [
+   "convert_specifier_set_to_range",
+   "difference_version_ranges",
+   "direct"
+  ],
+  [
+   "convert_specifier_set_to_range",
+   "intersect_version_ranges",
+   "direct"
+  ],
+  [
+   "convert_specifier_set_to_range",
+   "union_version_ranges",
+   "direct"
+  ],
+  [
+   "difference_version_ranges",
+   "check_version_in_range",
+   "direct"
+  ],
+  [
+   "difference_version_ranges",
+   "check_version_range_subset",
+   "direct"
+  ],
+  [
+   "difference_version_ranges",
+   "check_version_range_superset",
+   "direct"
+  ],
+  [
+   "difference_version_ranges",
+   "check_version_ranges_disjoint",
+   "direct"
+  ],
+  [
+   "difference_version_ranges",
+   "complement_version_range",
+   "direct"
+  ],
+  [
+   "difference_version_ranges",
+   "difference_version_ranges",
+   "direct"
+  ],
+  [
+   "difference_version_ranges",
+   "intersect_version_ranges",
+   "direct"
+  ],
+  [
+   "difference_version_ranges",
+   "union_version_ranges",
+   "direct"
+  ],
+  [
+   "generate_compatible_tags",
+   "parse_tag",
+   "first element"
+  ],
+  [
+   "generate_generic_tags",
+   "parse_tag",
+   "first element"
+  ],
+  [
+   "get_default_marker_environment",
+   "canonicalize_version_string",
+   "field implementation_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "canonicalize_version_string",
+   "field python_full_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "canonicalize_version_string",
+   "field python_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_range",
+   "field implementation_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_range",
+   "field python_full_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_range",
+   "field python_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_specifier_set",
+   "field implementation_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_specifier_set",
+   "field python_full_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "check_version_in_specifier_set",
+   "field python_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "create_singleton_version_range",
+   "field implementation_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "create_singleton_version_range",
+   "field python_full_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "create_singleton_version_range",
+   "field python_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "parse_version_string",
+   "field implementation_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "parse_version_string",
+   "field python_full_version"
+  ],
+  [
+   "get_default_marker_environment",
+   "parse_version_string",
+   "field python_version"
+  ],
+  [
+   "intersect_version_ranges",
+   "check_version_in_range",
+   "direct"
+  ],
+  [
+   "intersect_version_ranges",
+   "check_version_range_subset",
+   "direct"
+  ],
+  [
+   "intersect_version_ranges",
+   "check_version_range_superset",
+   "direct"
+  ],
+  [
+   "intersect_version_ranges",
+   "check_version_ranges_disjoint",
+   "direct"
+  ],
+  [
+   "intersect_version_ranges",
+   "complement_version_range",
+   "direct"
+  ],
+  [
+   "intersect_version_ranges",
+   "difference_version_ranges",
+   "direct"
+  ],
+  [
+   "intersect_version_ranges",
+   "intersect_version_ranges",
+   "direct"
+  ],
+  [
+   "intersect_version_ranges",
+   "union_version_ranges",
+   "direct"
+  ],
+  [
+   "parse_sdist_filename",
+   "canonicalize_package_name",
+   "field name"
+  ],
+  [
+   "parse_sdist_filename",
+   "canonicalize_version_string",
+   "field version"
+  ],
+  [
+   "parse_sdist_filename",
+   "check_normalized_package_name",
+   "field name"
+  ],
+  [
+   "parse_sdist_filename",
+   "check_version_in_range",
+   "field version"
+  ],
+  [
+   "parse_sdist_filename",
+   "check_version_in_specifier_set",
+   "field version"
+  ],
+  [
+   "parse_sdist_filename",
+   "create_singleton_version_range",
+   "field version"
+  ],
+  [
+   "parse_sdist_filename",
+   "parse_version_string",
+   "field version"
+  ],
+  [
+   "parse_tag",
+   "parse_tag",
+   "first element"
+  ],
+  [
+   "parse_version_string",
+   "canonicalize_version_string",
+   "direct"
+  ],
+  [
+   "parse_version_string",
+   "check_version_in_range",
+   "direct"
+  ],
+  [
+   "parse_version_string",
+   "check_version_in_specifier_set",
+   "direct"
+  ],
+  [
+   "parse_version_string",
+   "create_singleton_version_range",
+   "direct"
+  ],
+  [
+   "parse_version_string",
+   "parse_version_string",
+   "direct"
+  ],
+  [
+   "parse_wheel_filename",
+   "canonicalize_package_name",
+   "field name"
+  ],
+  [
+   "parse_wheel_filename",
+   "canonicalize_version_string",
+   "field version"
+  ],
+  [
+   "parse_wheel_filename",
+   "check_normalized_package_name",
+   "field name"
+  ],
+  [
+   "parse_wheel_filename",
+   "check_version_in_range",
+   "field version"
+  ],
+  [
+   "parse_wheel_filename",
+   "check_version_in_specifier_set",
+   "field version"
+  ],
+  [
+   "parse_wheel_filename",
+   "create_singleton_version_range",
+   "field version"
+  ],
+  [
+   "parse_wheel_filename",
+   "parse_tag",
+   "field tags, first element"
+  ],
+  [
+   "parse_wheel_filename",
+   "parse_version_string",
+   "field version"
+  ]
+ ]
+}

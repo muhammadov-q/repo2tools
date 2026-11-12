@@ -1,6 +1,6 @@
 # ToolGym types for packaging-coder-60
 
-Types proposed by `qwen3-32b`, then checked by 1035 tool calls. A claim stands if at least 60% of its test calls work.
+Types proposed by `qwen3-32b`, then checked by 1075 tool calls. A claim stands if at least 60% of its test calls work.
 
 | | Count |
 | --- | --- |
@@ -8,9 +8,9 @@ Types proposed by `qwen3-32b`, then checked by 1035 tool calls. A claim stands i
 | Shared types proposed / kept | 10 / 10 |
 | Parameters with a shared type: proposed / kept | 36 / 36 |
 | Parameter claims tested / withdrawn | 36 / 0 |
-| Output claims / kept | 18 / 7 |
-| Data-flow links between tools | 16, over 16 tool pairs |
-| Tools with no link | 17 |
+| Output claims / kept | 31 / 14 |
+| Data-flow links between tools | 45, over 35 tool pairs |
+| Tools with no link | 16 |
 
 ## Types
 
@@ -31,7 +31,17 @@ Types proposed by `qwen3-32b`, then checked by 1035 tool calls. A claim stands i
 
 | Tool | Claim | Worked | Kept |
 | --- | --- | --- | --- |
-| `get_default_marker_environment` | MarkerEnvironment | 1 of 1 | yes |
+| `get_default_marker_environment` | field implementation_name: MarkerEnvironment | 0 of 0 | no: the output has another shape |
+| `get_default_marker_environment` | field implementation_version: VersionString | 3 of 3 | yes |
+| `get_default_marker_environment` | field os_name: MarkerEnvironment | 0 of 0 | no: the output has another shape |
+| `get_default_marker_environment` | field platform_machine: MarkerEnvironment | 0 of 0 | no: the output has another shape |
+| `get_default_marker_environment` | field platform_release: MarkerEnvironment | 0 of 0 | no: the output has another shape |
+| `get_default_marker_environment` | field platform_system: MarkerEnvironment | 0 of 0 | no: the output has another shape |
+| `get_default_marker_environment` | field platform_version: MarkerEnvironment | 0 of 0 | no: the output has another shape |
+| `get_default_marker_environment` | field python_full_version: VersionString | 3 of 3 | yes |
+| `get_default_marker_environment` | field platform_python_implementation: MarkerEnvironment | 0 of 0 | no: the output has another shape |
+| `get_default_marker_environment` | field python_version: VersionString | 3 of 3 | yes |
+| `get_default_marker_environment` | field sys_platform: MarkerEnvironment | 0 of 0 | no: the output has another shape |
 | `parse_metadata_email` | ParsedMetadata | 0 of 0 | no: no parameter has this type |
 | `create_empty_version_range` | VersionRange | 0 of 9 | no |
 | `create_full_version_range` | VersionRange | 0 of 12 | no |
@@ -45,9 +55,12 @@ Types proposed by `qwen3-32b`, then checked by 1035 tool calls. A claim stands i
 | `generate_generic_tags` | list[Tag] | 4 of 4 | yes |
 | `generate_compatible_tags` | list[Tag] | 4 of 4 | yes |
 | `canonicalize_package_name` | NormalizedPackageName | 8 of 8 | yes |
-| `canonicalize_version_string` | CanonicalizedVersion | 10 of 12 | yes |
-| `parse_wheel_filename` | ParsedWheel | 0 of 0 | no: no parameter has this type |
-| `parse_sdist_filename` | ParsedSdist | 0 of 0 | no: no parameter has this type |
+| `canonicalize_version_string` | CanonicalizedVersion | 12 of 12 | yes |
+| `parse_wheel_filename` | field name: PackageName | 6 of 6 | yes |
+| `parse_wheel_filename` | field version: VersionString | 9 of 9 | yes |
+| `parse_wheel_filename` | field tags: list[Tag] | 2 of 2 | yes |
+| `parse_sdist_filename` | field name: PackageName | 6 of 6 | yes |
+| `parse_sdist_filename` | field version: VersionString | 9 of 9 | yes |
 | `parse_version_string` | ParsedVersion | 12 of 12 | yes |
 
 ## Links
@@ -61,10 +74,39 @@ Types proposed by `qwen3-32b`, then checked by 1035 tool calls. A claim stands i
 - `canonicalize_version_string` → `parse_version_string` (direct)
 - `generate_compatible_tags` → `parse_tag` (first element)
 - `generate_generic_tags` → `parse_tag` (first element)
-- `get_default_marker_environment` → `evaluate_marker` (direct)
+- `get_default_marker_environment` → `canonicalize_version_string` (field implementation_version)
+- `get_default_marker_environment` → `canonicalize_version_string` (field python_full_version)
+- `get_default_marker_environment` → `canonicalize_version_string` (field python_version)
+- `get_default_marker_environment` → `check_version_in_range` (field implementation_version)
+- `get_default_marker_environment` → `check_version_in_range` (field python_full_version)
+- `get_default_marker_environment` → `check_version_in_range` (field python_version)
+- `get_default_marker_environment` → `check_version_in_specifier_set` (field implementation_version)
+- `get_default_marker_environment` → `check_version_in_specifier_set` (field python_full_version)
+- `get_default_marker_environment` → `check_version_in_specifier_set` (field python_version)
+- `get_default_marker_environment` → `create_singleton_version_range` (field implementation_version)
+- `get_default_marker_environment` → `create_singleton_version_range` (field python_full_version)
+- `get_default_marker_environment` → `create_singleton_version_range` (field python_version)
+- `get_default_marker_environment` → `parse_version_string` (field implementation_version)
+- `get_default_marker_environment` → `parse_version_string` (field python_full_version)
+- `get_default_marker_environment` → `parse_version_string` (field python_version)
+- `parse_sdist_filename` → `canonicalize_package_name` (field name)
+- `parse_sdist_filename` → `canonicalize_version_string` (field version)
+- `parse_sdist_filename` → `check_normalized_package_name` (field name)
+- `parse_sdist_filename` → `check_version_in_range` (field version)
+- `parse_sdist_filename` → `check_version_in_specifier_set` (field version)
+- `parse_sdist_filename` → `create_singleton_version_range` (field version)
+- `parse_sdist_filename` → `parse_version_string` (field version)
 - `parse_tag` → `parse_tag` (first element)
 - `parse_version_string` → `canonicalize_version_string` (direct)
 - `parse_version_string` → `check_version_in_range` (direct)
 - `parse_version_string` → `check_version_in_specifier_set` (direct)
 - `parse_version_string` → `create_singleton_version_range` (direct)
 - `parse_version_string` → `parse_version_string` (direct)
+- `parse_wheel_filename` → `canonicalize_package_name` (field name)
+- `parse_wheel_filename` → `canonicalize_version_string` (field version)
+- `parse_wheel_filename` → `check_normalized_package_name` (field name)
+- `parse_wheel_filename` → `check_version_in_range` (field version)
+- `parse_wheel_filename` → `check_version_in_specifier_set` (field version)
+- `parse_wheel_filename` → `create_singleton_version_range` (field version)
+- `parse_wheel_filename` → `parse_tag` (field tags, first element)
+- `parse_wheel_filename` → `parse_version_string` (field version)

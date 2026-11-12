@@ -9,9 +9,10 @@ gives the output a type, and feeding the output into the tools that take this ty
 
 For each such tool this script asks the LLM for a new test (a direct library call whose result has
 the form other tools take), then, in a separate request that cannot see the test, for new code. A
-repaired tool is kept only if both hold:
-  1. it passes all checks of repo2tools.py again (same result as the direct library call), and
-  2. the tools that take its type accept its outputs when they are run.
+repaired tool is kept only if all of these hold:
+  1. it passes all checks of repo2tools.py again (same result as the direct library call),
+  2. inputs that gave different results before still give different results, and
+  3. the tools that take its type accept its outputs when they are run.
 
 The result is a new tool set, <set>-chained, with the repaired tools swapped in and the others
 unchanged. Run generated_to_toolgym.py on it to see the links it now has.
@@ -104,6 +105,27 @@ Change "direct_call" so that its result has the form those tools accept. Still c
 Keep the same parameters and samples. Reply with the corrected JSON only."""
 
 
+def merged_results(old_rows: list[dict], new_rows: list[dict]) -> str | None:
+    """Two inputs that used to give different results and now give the same one, as text, or None.
+
+    A repair may change the form of an output, not lose information. Seen with a real model: a union
+    of version ranges that the library cannot write as one constraint was returned as "", which means
+    "all versions". The test and the tool agreed on that, and every consumer accepted "".
+    """
+    old = {json.dumps(r["arguments"], sort_keys=True): r["tool"] for r in old_rows if r["result"].startswith("same")}
+    seen: dict[str, tuple[str, object]] = {}
+    for row in new_rows:
+        key = json.dumps(row["arguments"], sort_keys=True)
+        if not row["result"].startswith("same") or key not in old:
+            continue
+        new_value = json.dumps(row["tool"], sort_keys=True)
+        if new_value in seen and json.dumps(seen[new_value][1], sort_keys=True) != json.dumps(old[key], sort_keys=True):
+            return (f"inputs {seen[new_value][0]} and {key} gave different results before ({json.dumps(seen[new_value][1])} and "
+                    f"{json.dumps(old[key])}) and now both give {new_value}")
+        seen.setdefault(new_value, (key, old[key]))
+    return None
+
+
 async def consumers_accept(server: Server, dead: DeadEnd, base_arguments: dict, values: list, rng: random.Random) -> tuple[int, int, str | None]:
     """(tried, worked, first rejected call) when the new outputs are fed into the tools that take the type."""
     tried, worked, rejected = 0, 0, None
@@ -127,6 +149,9 @@ async def repair(dead: DeadEnd, report: dict, callable_: dict, api: dict, llm, b
     # the code writer learns what form the output must have, but never sees the test
     hint = (f" Return the result as a {dead.type_name}, in the form other tools take as input, for example "
             f"{', '.join(json.dumps(v) for v in dead.examples[:3])}. Do not return the printed form of a library object.")
+    methods = returned_class_api(callable_, api)
+    if methods:  # library documentation, not the test: without it the code writer invents conversion methods
+        hint += " Convert with the library, using only functions that exist. The class offers:\n" + methods
     code_pick = {**pick, "description": report["description"].rstrip(".") + "." + hint}
 
     def note(stage: str, error: str, chat: list, reply: str, request: str) -> None:
@@ -143,7 +168,7 @@ async def repair(dead: DeadEnd, report: dict, callable_: dict, api: dict, llm, b
             continue
         code_chat = code_messages(code_pick, spec, base, api["classes"])
         check = None
-        for _ in range(2):
+        for _ in range(3):
             code_reply = await llm.chat("repair_code", name, code_chat)
             code = extract_code(code_reply)
             static = static_problem(code, name, [p["name"] for p in spec["parameters"]])
@@ -158,6 +183,12 @@ async def repair(dead: DeadEnd, report: dict, callable_: dict, api: dict, llm, b
             else:
                 spec_chat += [{"role": "assistant", "content": json.dumps(spec)},
                               {"role": "user", "content": "No tool could be written for this plan. Try another direct_call. Reply with the corrected JSON only."}]
+            continue
+        merged = merged_results(report["check"]["samples"], check["samples"])
+        if merged:
+            note("merged", merged, spec_chat, json.dumps(spec),
+                 f"This loses information: {merged}. A repair may change the form of the output, but different results must stay different. "
+                 "If the library cannot express a result in the new form, do not replace it with a made-up value.\nReply with the corrected JSON only.")
             continue
         outputs = unique([row["tool"] for row in check["samples"] if row["result"].startswith("same")])
         dead.tried, dead.worked, rejected = await consumers_accept(server, dead, base_arguments, outputs, rng)
@@ -186,7 +217,8 @@ def write_report(path: Path, source_set: str, new_set: str, model: str, dead_end
         before = json.dumps(d.old_outputs[0])[:60] if d.old_outputs else ""
         after = json.dumps(d.new_outputs[0])[:60] if d.new_outputs else ""
         last = d.attempts[-1] if d.attempts else {"stage": "none", "error": ""}
-        result = "repaired" if d.repaired else f"not repaired: {last['stage']}: {re.sub(r'[|\\s]+', ' ', str(last['error']))[:120]}"
+        error = re.sub(r"[|\s]+", " ", str(last["error"]))[:120]
+        result = "repaired" if d.repaired else f"not repaired: {last['stage']}: {error}"
         lines.append(f"| `{d.tool}` | `{d.type_name}` | `{before}` | `{after}` | {d.worked} of {d.tried} | {len(d.attempts)} | {result} |")
     path.with_suffix(".md").write_text("\n".join(lines) + "\n", encoding="utf-8")
     return summary

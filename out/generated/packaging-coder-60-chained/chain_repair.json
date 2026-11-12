@@ -1,0 +1,966 @@
+{
+ "source_set": "packaging-coder-60",
+ "set": "packaging-coder-60-chained",
+ "model": "qwen3-32b",
+ "dead_ends": 8,
+ "repaired": 3,
+ "tools": [
+  {
+   "tool": "create_empty_version_range",
+   "type_name": "VersionRange",
+   "examples": [
+    ">=1.0",
+    ">1.0,<3.0",
+    "==1.0.0",
+    ">=1.0.0,<2.0.0",
+    ">=1.0.0",
+    "<2.0"
+   ],
+   "consumers": [
+    [
+     "intersect_version_ranges",
+     "range1"
+    ],
+    [
+     "intersect_version_ranges",
+     "range2"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "complement_version_range",
+     "version_specifier"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "check_version_range_subset",
+     "range1"
+    ],
+    [
+     "check_version_range_subset",
+     "range2"
+    ],
+    [
+     "check_version_range_superset",
+     "outer_range"
+    ],
+    [
+     "check_version_range_superset",
+     "inner_range"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range1"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range2"
+    ],
+    [
+     "check_version_in_range",
+     "specifier_set"
+    ]
+   ],
+   "old_outputs": [
+    "<VersionRange '(empty)'>",
+    "<VersionRange '(empty)' pre=True>",
+    "<VersionRange '(empty)' pre=False>"
+   ],
+   "repaired": false,
+   "new_outputs": [],
+   "tried": 0,
+   "worked": 0,
+   "attempts": [
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    }
+   ],
+   "spec": null,
+   "code": null
+  },
+  {
+   "tool": "create_full_version_range",
+   "type_name": "VersionRange",
+   "examples": [
+    ">=1.0",
+    ">1.0,<3.0",
+    "==1.0.0",
+    ">=1.0.0,<2.0.0",
+    ">=1.0.0",
+    "<2.0"
+   ],
+   "consumers": [
+    [
+     "intersect_version_ranges",
+     "range1"
+    ],
+    [
+     "intersect_version_ranges",
+     "range2"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "complement_version_range",
+     "version_specifier"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "check_version_range_subset",
+     "range1"
+    ],
+    [
+     "check_version_range_subset",
+     "range2"
+    ],
+    [
+     "check_version_range_superset",
+     "outer_range"
+    ],
+    [
+     "check_version_range_superset",
+     "inner_range"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range1"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range2"
+    ],
+    [
+     "check_version_in_range",
+     "specifier_set"
+    ]
+   ],
+   "old_outputs": [
+    "<VersionRange '(-inf, +inf)' arbitrary>",
+    "<VersionRange '(-inf, +inf)'>",
+    "<VersionRange '(-inf, +inf)' arbitrary pre=True>",
+    "<VersionRange '(-inf, +inf)' pre=False>"
+   ],
+   "repaired": false,
+   "new_outputs": [],
+   "tried": 0,
+   "worked": 0,
+   "attempts": [
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    },
+    {
+     "stage": "fastmcp",
+     "error": "NameError: name 'Interval' is not defined"
+    }
+   ],
+   "spec": null,
+   "code": null
+  },
+  {
+   "tool": "create_singleton_version_range",
+   "type_name": "VersionRange",
+   "examples": [
+    ">=1.0",
+    ">1.0,<3.0",
+    "==1.0.0",
+    ">=1.0.0,<2.0.0",
+    ">=1.0.0",
+    "<2.0"
+   ],
+   "consumers": [
+    [
+     "intersect_version_ranges",
+     "range1"
+    ],
+    [
+     "intersect_version_ranges",
+     "range2"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "complement_version_range",
+     "version_specifier"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "check_version_range_subset",
+     "range1"
+    ],
+    [
+     "check_version_range_subset",
+     "range2"
+    ],
+    [
+     "check_version_range_superset",
+     "outer_range"
+    ],
+    [
+     "check_version_range_superset",
+     "inner_range"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range1"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range2"
+    ],
+    [
+     "check_version_in_range",
+     "specifier_set"
+    ]
+   ],
+   "old_outputs": [
+    "<VersionRange '[1.0.0, 1.0.0]'>",
+    "<VersionRange '[2.0.0a1, 2.0.0a1]' pre=True>",
+    "<VersionRange '[3.0.0+build.1, 3.0.0+build.1]' pre=False>",
+    "<VersionRange '[1.0.0.dev0, 1.0.0.dev0]'>"
+   ],
+   "repaired": false,
+   "new_outputs": [],
+   "tried": 0,
+   "worked": 0,
+   "attempts": [
+    {
+     "stage": "differential",
+     "error": "Input {\"prereleases\": null, \"version\": \"1.0.0\"}: the tool returned \"None\", but the direct library call returned null\nInput {\"prereleases\": true, \"version\": \"2.0.0a1\"}: the tool returned \"None\", but the direct library call returned null\nInput {\"prereleases\": null, \"version\": \"1.0.0.dev0\"}: the tool returned \"None\", but the direct library call returned null"
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"prereleases\": null, \"version\": \"1.0.0\"}: the tool raised ValueError: Invalid version string: '1.0.0', but the direct library call returned null\nInput {\"prereleases\": true, \"version\": \"2.0.0a1\"}: the tool raised ValueError: Invalid version string: '2.0.0a1', but the direct library call returned null\nInput {\"prereleases\": null, \"version\": \"1.0.0.dev0\"}: the tool raised ValueError: Invalid version string: '1.0.0.dev0', but the direct library call returned null"
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"prereleases\": null, \"version\": \"1.0.0\"}: the tool returned \"\", but the direct library call returned null\nInput {\"prereleases\": true, \"version\": \"2.0.0a1\"}: the tool returned \"\", but the direct library call returned null\nInput {\"prereleases\": null, \"version\": \"1.0.0.dev0\"}: the tool returned \"\", but the direct library call returned null"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: 'NoneType' object has no attribute '_specifiers'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: 'NoneType' object has no attribute '_get_specifiers'"
+    },
+    {
+     "stage": "merged",
+     "error": "inputs {\"prereleases\": null, \"version\": \"1.0.0\"} and {\"prereleases\": true, \"version\": \"2.0.0a1\"} gave different results before (\"<VersionRange '[1.0.0, 1.0.0]'>\" and \"<VersionRange '[2.0.0a1, 2.0.0a1]' pre=True>\") and now both give \"None\""
+    }
+   ],
+   "spec": null,
+   "code": null
+  },
+  {
+   "tool": "intersect_version_ranges",
+   "type_name": "VersionRange",
+   "examples": [
+    ">=1.0",
+    ">1.0,<3.0",
+    "==1.0.0",
+    ">=1.0.0,<2.0.0",
+    ">=1.0.0",
+    "<2.0"
+   ],
+   "consumers": [
+    [
+     "union_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "complement_version_range",
+     "version_specifier"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "check_version_range_subset",
+     "range1"
+    ],
+    [
+     "check_version_range_subset",
+     "range2"
+    ],
+    [
+     "check_version_range_superset",
+     "outer_range"
+    ],
+    [
+     "check_version_range_superset",
+     "inner_range"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range1"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range2"
+    ],
+    [
+     "check_version_in_range",
+     "specifier_set"
+    ]
+   ],
+   "old_outputs": [
+    "<VersionRange '[1.0, 2.0.dev0)'>",
+    "<VersionRange '[2.0, 3.0.dev0)'>",
+    "<VersionRange '[1.0.0, 1.0.0[AFTER_LOCALS]]'>",
+    "<VersionRange '[1.5.0, 1.9.0.dev0)'>"
+   ],
+   "repaired": true,
+   "new_outputs": [
+    "<2.0,>=1.0",
+    "<3.0,>=2.0",
+    "==1.0.0",
+    "<1.9.0,>=1.5.0"
+   ],
+   "tried": 12,
+   "worked": 12,
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: 'SpecifierSet' object has no attribute '_get_canonical_specifier'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: 'SpecifierSet' object has no attribute '_spec'"
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ],
+   "spec": {
+    "parameters": [
+     {
+      "name": "range1",
+      "type": "string",
+      "description": "First version range specifier",
+      "required": true
+     },
+     {
+      "name": "range2",
+      "type": "string",
+      "description": "Second version range specifier",
+      "required": true
+     }
+    ],
+    "direct_call": "str(packaging.ranges.VersionRange.intersection(packaging.specifiers.SpecifierSet(range1).to_range(), packaging.specifiers.SpecifierSet(range2).to_range()).to_specifier_set())",
+    "samples": [
+     {
+      "range1": ">=1.0",
+      "range2": "<2.0"
+     },
+     {
+      "range1": ">1.0,<3.0",
+      "range2": ">=2.0,<4.0"
+     },
+     {
+      "range1": "==1.0.0",
+      "range2": "==1.0.0"
+     },
+     {
+      "range1": ">=1.0.0,<2.0.0",
+      "range2": ">=1.5.0,<1.9.0"
+     },
+     {
+      "range1": ">=1.0.0",
+      "range2": "<1.0.0"
+     }
+    ]
+   },
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef intersect_version_ranges(range1: str, range2: str) -> str:\n    \"\"\"Compute the intersection of two version ranges. range1 and range2 are version range specifiers, e.g. \">=1.0\", \">1.0,<3.0\", \"==1.0.0\". Returns the intersection as a version range string.\"\"\"\n    try:\n        a = SpecifierSet(range1).to_range()\n        b = SpecifierSet(range2).to_range()\n        result = a.intersection(b)\n        return str(result.to_specifier_set())\n    except Exception as e:\n        raise ValueError(f\"Invalid version range operation: {e}\") from e\n"
+  },
+  {
+   "tool": "union_version_ranges",
+   "type_name": "VersionRange",
+   "examples": [
+    ">=1.0",
+    ">1.0,<3.0",
+    "==1.0.0",
+    ">=1.0.0,<2.0.0",
+    ">=1.0.0",
+    "<2.0"
+   ],
+   "consumers": [
+    [
+     "intersect_version_ranges",
+     "range1"
+    ],
+    [
+     "intersect_version_ranges",
+     "range2"
+    ],
+    [
+     "complement_version_range",
+     "version_specifier"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "check_version_range_subset",
+     "range1"
+    ],
+    [
+     "check_version_range_subset",
+     "range2"
+    ],
+    [
+     "check_version_range_superset",
+     "outer_range"
+    ],
+    [
+     "check_version_range_superset",
+     "inner_range"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range1"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range2"
+    ],
+    [
+     "check_version_in_range",
+     "specifier_set"
+    ]
+   ],
+   "old_outputs": [
+    "<VersionRange '[1.0, 2.0.dev0) | [2.0, 3.0.dev0)'>",
+    "<VersionRange '[1.0, 1.0[AFTER_LOCALS]] | [2.0, 2.0[AFTER_LOCALS]]'>",
+    "<VersionRange '(-inf, +inf)'>",
+    "<VersionRange '[1.0, 2.dev0) | [2.0, 3.dev0)'>"
+   ],
+   "repaired": false,
+   "new_outputs": [],
+   "tried": 0,
+   "worked": 0,
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: 'NoneType' object has no attribute '_spec'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: 'NoneType' object has no attribute '_get_str'"
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"version_range_a\": \">=1.0,<2.0\", \"version_range_b\": \">=2.0,<3.0\"}: the tool raised ValueError: Invalid version range input: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead, but the direct library call returned \"None\"\nInput {\"version_range_a\": \"==1.0\", \"version_range_b\": \"==2.0\"}: the tool raised ValueError: Invalid version range input: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead, but the direct library call returned \"None\"\nInput {\"version_range_a\": \">=1.0\", \"version_range_b\": \"<2.0\"}: the tool raised ValueError: Invalid version range input: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead, but the direct library call returned \"None\""
+    },
+    {
+     "stage": "merged",
+     "error": "inputs {\"version_range_a\": \">=1.0,<2.0\", \"version_range_b\": \">=2.0,<3.0\"} and {\"version_range_a\": \"==1.0\", \"version_range_b\": \"==2.0\"} gave different results before (\"<VersionRange '[1.0, 2.0.dev0) | [2.0, 3.0.dev0)'>\" and \"<VersionRange '[1.0, 1.0[AFTER_LOCALS]] | [2.0, 2.0[AFTER_LOCALS]]'>\") and now both give \"None\""
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"version_range_a\": \">=1.0,<2.0\", \"version_range_b\": \">=2.0,<3.0\"}: the tool raised ValueError: Invalid version range input: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead, but the direct library call returned null\nInput {\"version_range_a\": \"==1.0\", \"version_range_b\": \"==2.0\"}: the tool raised ValueError: Invalid version range input: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead, but the direct library call returned null\nInput {\"version_range_a\": \">=1.0\", \"version_range_b\": \"<2.0\"}: the tool raised ValueError: Invalid version range input: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead, but the direct library call returned null"
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"version_range_a\": \">=1.0,<2.0\", \"version_range_b\": \">=2.0,<3.0\"}: the tool returned \"None\", but the direct library call returned null\nInput {\"version_range_a\": \"==1.0\", \"version_range_b\": \"==2.0\"}: the tool returned \"None\", but the direct library call returned null\nInput {\"version_range_a\": \">=1.0\", \"version_range_b\": \"<2.0\"}: the tool returned \"None\", but the direct library call returned null"
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"version_range_a\": \">=1.0,<2.0\", \"version_range_b\": \">=2.0,<3.0\"}: the tool returned \"None\", but the direct library call returned null\nInput {\"version_range_a\": \"==1.0\", \"version_range_b\": \"==2.0\"}: the tool returned \"None\", but the direct library call returned null\nInput {\"version_range_a\": \">=1.0\", \"version_range_b\": \"<2.0\"}: the tool returned \"None\", but the direct library call returned null"
+    }
+   ],
+   "spec": null,
+   "code": null
+  },
+  {
+   "tool": "complement_version_range",
+   "type_name": "VersionRange",
+   "examples": [
+    ">=1.0",
+    ">1.0,<3.0",
+    "==1.0.0",
+    ">=1.0.0,<2.0.0",
+    ">=1.0.0",
+    "<2.0"
+   ],
+   "consumers": [
+    [
+     "intersect_version_ranges",
+     "range1"
+    ],
+    [
+     "intersect_version_ranges",
+     "range2"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "check_version_range_subset",
+     "range1"
+    ],
+    [
+     "check_version_range_subset",
+     "range2"
+    ],
+    [
+     "check_version_range_superset",
+     "outer_range"
+    ],
+    [
+     "check_version_range_superset",
+     "inner_range"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range1"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range2"
+    ],
+    [
+     "check_version_in_range",
+     "specifier_set"
+    ]
+   ],
+   "old_outputs": [
+    "<VersionRange '(-inf, 1.0)'>",
+    "<VersionRange '[2.0.dev0, +inf)'>",
+    "<VersionRange '(-inf, 1.0.0) | (1.0.0[AFTER_LOCALS], +inf)'>",
+    "<VersionRange '(-inf, 1.0[AFTER_POSTS]] | [2.0.dev0, +inf)'>"
+   ],
+   "repaired": false,
+   "new_outputs": [],
+   "tried": 0,
+   "worked": 0,
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct call failed on every sample, so nothing can be compared. Errors: [\"InvalidSpecifier: Invalid specifier: 'invalid-specifier'\", \"TypeError: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead\"]. Use samples that are valid for the library."
+    },
+    {
+     "stage": "spec",
+     "error": "the direct call failed on every sample, so nothing can be compared. Errors: [\"TypeError: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead\"]. Use samples that are valid for the library."
+    },
+    {
+     "stage": "spec",
+     "error": "the direct call failed on every sample, so nothing can be compared. Errors: [\"TypeError: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead\"]. Use samples that are valid for the library."
+    }
+   ],
+   "spec": null,
+   "code": null
+  },
+  {
+   "tool": "difference_version_ranges",
+   "type_name": "VersionRange",
+   "examples": [
+    ">=1.0",
+    ">1.0,<3.0",
+    "==1.0.0",
+    ">=1.0.0,<2.0.0",
+    ">=1.0.0",
+    "<2.0"
+   ],
+   "consumers": [
+    [
+     "intersect_version_ranges",
+     "range1"
+    ],
+    [
+     "intersect_version_ranges",
+     "range2"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "complement_version_range",
+     "version_specifier"
+    ],
+    [
+     "check_version_range_subset",
+     "range1"
+    ],
+    [
+     "check_version_range_subset",
+     "range2"
+    ],
+    [
+     "check_version_range_superset",
+     "outer_range"
+    ],
+    [
+     "check_version_range_superset",
+     "inner_range"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range1"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range2"
+    ],
+    [
+     "check_version_in_range",
+     "specifier_set"
+    ]
+   ],
+   "old_outputs": [
+    "<VersionRange '[1.0, 2.0)'>",
+    "<VersionRange '(empty)'>"
+   ],
+   "repaired": true,
+   "new_outputs": [
+    "!=2.0,<=2.0,>=1.0",
+    "<0"
+   ],
+   "tried": 6,
+   "worked": 6,
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: 'SpecifierSet' object has no attribute '_get_canonical_specifier'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: 'SpecifierSet' object has no attribute '_spec'"
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ],
+   "spec": {
+    "parameters": [
+     {
+      "name": "version_range_a",
+      "type": "string",
+      "description": "The first version range in specifier format (e.g., '>=1.0')",
+      "required": true
+     },
+     {
+      "name": "version_range_b",
+      "type": "string",
+      "description": "The second version range in specifier format (e.g., '>=2.0')",
+      "required": true
+     }
+    ],
+    "direct_call": "str(packaging.specifiers.SpecifierSet(version_range_a).to_range().difference(packaging.specifiers.SpecifierSet(version_range_b).to_range()).to_specifier_set())",
+    "samples": [
+     {
+      "version_range_a": ">=1.0",
+      "version_range_b": ">=2.0"
+     },
+     {
+      "version_range_a": ">=1.0,<3.0",
+      "version_range_b": ">=2.0,<3.0"
+     },
+     {
+      "version_range_a": "==1.0.0",
+      "version_range_b": "==1.0.0"
+     },
+     {
+      "version_range_a": ">=1.0",
+      "version_range_b": ">=1.0"
+     },
+     {
+      "version_range_a": ">=1.0",
+      "version_range_b": ">=1.0"
+     },
+     {
+      "version_range_a": ">=1.0",
+      "version_range_b": ">=1.0"
+     }
+    ]
+   },
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef difference_version_ranges(version_range_a: str, version_range_b: str) -> str:\n    \"\"\"Compute the difference between two version ranges. \n    version_range_a: a version range in specifier format (e.g., '>=1.0').\n    version_range_b: a version range in specifier format (e.g., '>=2.0').\n    Returns the resulting version range in specifier format.\n    \n    Example: difference_version_ranges(\">=1.0\", \">=2.0\") -> \"<2.0, >=1.0\"\n    \"\"\"\n    try:\n        range_a = SpecifierSet(version_range_a).to_range()\n        range_b = SpecifierSet(version_range_b).to_range()\n        result_range = range_a.difference(range_b)\n        return str(result_range.to_specifier_set())\n    except Exception as e:\n        raise ValueError(f\"Invalid version range operation: {e}\") from e\n"
+  },
+  {
+   "tool": "convert_specifier_set_to_range",
+   "type_name": "VersionRange",
+   "examples": [
+    ">=1.0",
+    ">1.0,<3.0",
+    "==1.0.0",
+    ">=1.0.0,<2.0.0",
+    ">=1.0.0",
+    "<2.0"
+   ],
+   "consumers": [
+    [
+     "intersect_version_ranges",
+     "range1"
+    ],
+    [
+     "intersect_version_ranges",
+     "range2"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "union_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "complement_version_range",
+     "version_specifier"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_a"
+    ],
+    [
+     "difference_version_ranges",
+     "version_range_b"
+    ],
+    [
+     "check_version_range_subset",
+     "range1"
+    ],
+    [
+     "check_version_range_subset",
+     "range2"
+    ],
+    [
+     "check_version_range_superset",
+     "outer_range"
+    ],
+    [
+     "check_version_range_superset",
+     "inner_range"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range1"
+    ],
+    [
+     "check_version_ranges_disjoint",
+     "range2"
+    ],
+    [
+     "check_version_in_range",
+     "specifier_set"
+    ]
+   ],
+   "old_outputs": [
+    "<VersionRange '[1.0, 2.0.dev0)'>",
+    "<VersionRange '(-inf, +inf)' arbitrary>",
+    "<VersionRange '{1.0.0}'>",
+    "<VersionRange '[1.0, 1.5) | (1.5[AFTER_LOCALS], 2.0.dev0)'>"
+   ],
+   "repaired": true,
+   "new_outputs": [
+    "<2.0,>=1.0",
+    "",
+    "===1.0.0",
+    "!=1.5,<2.0,>=1.0"
+   ],
+   "tried": 12,
+   "worked": 12,
+   "attempts": [
+    {
+     "stage": "differential",
+     "error": "Input {\"specifiers\": \">=1.0,<2.0\"}: the tool returned \"<VersionRange '[1.0, 2.0.dev0)'>\", but the direct library call returned \"<2.0,>=1.0\"\nInput {\"specifiers\": \"\"}: the tool returned \"<VersionRange '(-inf, +inf)' arbitrary>\", but the direct library call returned \"\"\nInput {\"specifiers\": \"===1.0.0\"}: the tool returned \"<VersionRange '{1.0.0}'>\", but the direct library call returned \"===1.0.0\""
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ],
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifiers",
+      "type": "string",
+      "description": "A string representation of version specifiers",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifiers).to_range().to_specifier_set()",
+    "samples": [
+     {
+      "specifiers": ">=1.0,<2.0"
+     },
+     {
+      "specifiers": ""
+     },
+     {
+      "specifiers": "===1.0.0"
+     },
+     {
+      "specifiers": ">=1.0,!=1.5,<2.0"
+     },
+     {
+      "specifiers": "invalid-specifier"
+     }
+    ]
+   },
+   "code": "from packaging.specifiers import SpecifierSet\n\n\ndef convert_specifier_set_to_range(specifiers: str) -> str:\n    \"\"\"Convert a specifier set to a version range. specifiers: a string of version specifiers, e.g. '>=1.0,<2.0' -> '>=1.0,<2.0'.\"\"\"\n    try:\n        specifier_set = SpecifierSet(specifiers)\n        version_range = specifier_set.to_range()\n        return str(specifier_set)\n    except Exception as e:\n        raise ValueError(f\"Invalid specifiers: {specifiers!r}\") from e\n"
+  }
+ ]
+}

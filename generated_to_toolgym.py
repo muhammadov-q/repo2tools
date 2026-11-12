@@ -261,6 +261,14 @@ class Typing:
                     proposed = proposal[name]["parameters"].get(param)
                     fits = proposed and (proposed[0] == "one" or all(isinstance(v, list) for v in values))
                     self.param[name, param] = proposed if fits else self.private(name, param)
+        # A parameter that always takes a list, typed like parameters that take single values: the LLM
+        # named the element type and forgot the list. Read it as a list of that type.
+        scalar = {type_name for key, (kind, type_name) in self.param.items()
+                  if kind == "one" and not any(isinstance(v, list) for v in self.values(*key))}
+        for key, (kind, type_name) in list(self.param.items()):
+            values = self.values(*key)
+            if kind == "one" and type_name in scalar and all(isinstance(v, list) and v and not any(isinstance(x, (list, dict)) for x in v) for v in values):
+                self.param[key] = ("list", type_name)
 
     def values(self, tool: str, param: str) -> list:
         return unique([e["arguments"][param] for e in self.tools[tool]["examples"] if e["arguments"].get(param) is not None])
@@ -664,7 +672,34 @@ def write_report(path: Path, set_name: str, model: str, typing: Typing, proposal
     return summary
 
 
+class Replay:
+    """Answers with the replies saved from an earlier export, so two tool sets get the same type claims."""
+
+    def __init__(self, path: Path):
+        self.replies = json.loads(path.read_text())
+        self.model = self.replies.get("model", "unknown") + " (replayed)"
+
+    async def chat(self, stage: str, subject: str, messages: list[dict], max_tokens: int = 0) -> str:
+        if stage not in self.replies:
+            raise ValueError(f"no saved reply for {stage}")
+        return self.replies[stage]
+
+
+class Recorder:
+    """Keeps the first usable reply per stage, to save next to the report."""
+
+    def __init__(self, llm):
+        self.llm, self.replies = llm, {}
+        self.model = getattr(llm, "model", "unknown")
+
+    async def chat(self, stage: str, subject: str, messages: list[dict], max_tokens: int = 2048) -> str:
+        reply = await self.llm.chat(stage, subject, messages, max_tokens=max_tokens)
+        self.replies[stage] = reply
+        return reply
+
+
 async def export(toolset: Path, dest: Path, llm, seed: int = 0) -> dict:
+    llm = Recorder(llm)
     manifest = json.loads((toolset / "manifest.json").read_text())
     set_name = manifest["set"]
     rng = random.Random(seed)
@@ -718,6 +753,7 @@ async def export(toolset: Path, dest: Path, llm, seed: int = 0) -> dict:
     out = OUT / set_name
     out.mkdir(parents=True, exist_ok=True)
     (out / "toolgym_catalog.json").write_text(json.dumps({"mcp_server": server_json, "types": types_json}, indent=1), encoding="utf-8")
+    (out / "toolgym_proposal.json").write_text(json.dumps({"model": llm.model.removesuffix(" (replayed)"), **llm.replies}, indent=1), encoding="utf-8")
     summary = write_report(out / "toolgym_types", set_name, getattr(llm, "model", "unknown"), typing, proposal, param_log, output_log,
                            server_json, types_json, calls, skipped)
     print(f"{folder}\n{summary['tools']} tools; shared types {summary['types_proposed']} proposed, {summary['types_kept']} kept; "
@@ -731,13 +767,20 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("toolset", type=Path, help="a folder under toolsets/generated/")
     parser.add_argument("--dest", type=Path, required=True, help="the catalog folder of a ToolGym checkout")
-    parser.add_argument("--base-url", required=True)
-    parser.add_argument("--model", required=True)
+    parser.add_argument("--base-url")
+    parser.add_argument("--model")
     parser.add_argument("--thinking", action="store_true")
+    parser.add_argument("--proposal-from", type=Path, help="toolgym_proposal.json of another tool set: use the same type claims, "
+                        "with no LLM call. For comparing two versions of a tool set, since proposals differ from run to run")
     args = parser.parse_args()
     toolset = args.toolset.resolve()
     set_name = json.loads((toolset / "manifest.json").read_text())["set"]
-    llm = LLM(args.base_url, args.model, args.thinking, 1, OUT / set_name / "toolgym_llm_log.jsonl")
+    if args.proposal_from:
+        llm = Replay(args.proposal_from)
+    elif args.base_url and args.model:
+        llm = LLM(args.base_url, args.model, args.thinking, 1, OUT / set_name / "toolgym_llm_log.jsonl")
+    else:
+        parser.error("give --base-url and --model, or --proposal-from")
     asyncio.run(export(toolset, args.dest.resolve(), llm))
 
 

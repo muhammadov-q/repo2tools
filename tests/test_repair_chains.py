@@ -132,7 +132,8 @@ def test_repaired_tool_is_checked_again_and_chains(toolset):
     assert "<Label " in request and "normalize_code" in request and "Label.text" in request
     # the code writer is told the output form, but never sees the test
     code_prompt = json.dumps(next(m for stage, _, m in llm.chats if stage == "repair_code"))
-    assert "ProductCode" in code_prompt and ".text()" not in code_prompt
+    assert "ProductCode" in code_prompt and "codes.label(code).text()" not in code_prompt
+    assert "Label.text" in code_prompt  # the library's methods are documentation, not the test
     # typed again, the repaired set has the link that was missing
     again = asyncio.run(generated_to_toolgym.export(new, dest, ScriptedLLM({("types", "codes-test-chained"): [json.dumps({"tools": TYPES})]})))
     assert next(e for e in again["output_checks"] if e["tool"] == "label_code")["kept"]
@@ -151,6 +152,18 @@ def test_a_repair_that_is_still_a_dead_end_is_not_kept(toolset):
     assert (new / "tools" / "label_code.py").read_text() == (folder / "tools" / "label_code.py").read_text()
     feedback = [m for stage, _, m in llm.chats if stage == "repair_spec"][1][-1]["content"]
     assert "still rejected" in feedback and "<Label " in feedback and "Only 0 of" in feedback
+
+
+def test_a_repair_that_merges_different_results_is_not_kept(toolset):
+    """Seen with a real model: every union of version ranges became "", which consumers accept and the test agreed with."""
+    constant = "'AA-1' if codes.label(code) else 'AA-1'"
+    summary, llm, new = run_repair(toolset, {("repair_spec", "label_code"): [spec(constant, SAMPLES["label_code"])],
+                                             ("repair_code", "label_code"): [code("label_code", constant)]}, rounds=1)
+    assert summary["repaired"] == 0
+    attempts = summary["tools"][0]["attempts"]
+    assert [a["stage"] for a in attempts] == ["merged", "merged"] and "now both give" in attempts[0]["error"]
+    assert "AA-1" not in (new / "tools" / "label_code.py").read_text()
+    assert "different results must stay different" in [m for stage, _, m in llm.chats if stage == "repair_spec"][1][-1]["content"]
 
 
 def test_a_repair_that_disagrees_with_the_library_is_not_kept(toolset):

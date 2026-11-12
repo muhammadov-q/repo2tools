@@ -13,7 +13,8 @@ stays clean:
   gym/generation/pipelines/local/repo2tools/               the `basic` pipeline, over HTTP, with
                                                            the server, chain length and number of
                                                            chains taken from environment variables;
-                                                           it can drop chains that loop on a tool,
+                                                           it can spread the walk over different
+                                                           tools, drop chains that still loop,
                                                            and it saves every entry as JSON
 
 The variants are made by copying ToolGym's files and replacing a few lines. If ToolGym changes so
@@ -66,7 +67,27 @@ PIPELINE = {
     ],
     "persistence.py": [('OUTPUT_ROOT = Path("results/gym/basic")\n', 'OUTPUT_ROOT = Path("results/gym/repo2tools")\n')],
     "stages/sig.py": [
-        ("from data_gen.pipelines import NamedEdge, wrap\n", "import os\n\nfrom data_gen.pipelines import NamedEdge, wrap\n"),
+        ("from data_gen.pipelines import NamedEdge, wrap\n",
+         "import os\nfrom collections import Counter\n\nfrom data_gen.pipelines import NamedEdge, wrap\n"
+         "from modules.trace_generation.traversal.edge_sampling import EdgeSamplingStrategy, UniformEdgeSampling\n"),
+        # A uniform random walk loops: with a tool whose output has the type of its own input, 80 of 80
+        # walks of 8 to 10 steps called a tool twice in a row. This strategy goes to the least visited node.
+        ("def build_sig_edge(\n",
+         "class _LeastVisited(EdgeSamplingStrategy):\n"
+         "    \"\"\"Prefer the neighbour this walk has visited least, and never stay on the same node if another is offered.\"\"\"\n\n"
+         "    def __init__(self) -> None:\n"
+         "        self.last, self.visits = None, Counter()\n\n"
+         "    def pick_edge(self, G, current, edges, rng):\n"
+         "        if current != self.last:  # a new walk has started\n"
+         "            self.visits = Counter()\n"
+         "        self.visits[current] += 1\n"
+         "        fewest = min(self.visits[e[1]] + (10 if e[1] == current else 0) for e in edges)\n"
+         "        choice = rng.choice([e for e in edges if self.visits[e[1]] + (10 if e[1] == current else 0) == fewest])\n"
+         "        self.last = choice[1]\n"
+         "        return choice\n\n\n"
+         "SPREAD_WALK = os.environ.get(\"REPO2TOOLS_SPREAD_WALK\", \"0\") == \"1\"\n\n\n"
+         "def build_sig_edge(\n"),
+        ("        n_steps=N_STEPS,\n", "        n_steps=N_STEPS,\n        edge_strategy=_LeastVisited() if SPREAD_WALK else UniformEdgeSampling(),\n"),
         ("N_FANOUT = 2\n", 'N_FANOUT = int(os.environ.get("REPO2TOOLS_CHAINS", "2"))\n'),
         ("N_STEPS = 7\n", 'N_STEPS = int(os.environ.get("REPO2TOOLS_WALK_STEPS", "7"))\n'),
         ("MIN_TRACE_LENGTH: int | None = None\n", 'MIN_TRACE_LENGTH: int | None = int(os.environ.get("REPO2TOOLS_MIN_LENGTH", "1"))\n'),
@@ -186,6 +207,8 @@ def main() -> None:
             sub.add_argument("--walk-steps", type=int, help="length of the random walk a chain is cut from; default: 3 x max length")
             sub.add_argument("--max-tool-uses", type=int, default=0,
                              help="drop chains that call a tool twice in a row, or more often than this in total; 0 keeps all")
+            sub.add_argument("--spread-walk", action="store_true",
+                             help="walk to the least visited neighbour instead of a uniformly random one, so long chains use different tools")
             sub.add_argument("--run-name")
     args = parser.parse_args()
     toolgym = args.toolgym.resolve()
@@ -199,7 +222,7 @@ def main() -> None:
                "REPO2TOOLS_SERVERS": args.server, "REPO2TOOLS_CHAINS": str(args.chains),
                "REPO2TOOLS_MIN_LENGTH": str(args.min_length), "REPO2TOOLS_MAX_LENGTH": str(args.max_length),
                "REPO2TOOLS_WALK_STEPS": str(args.walk_steps or 3 * args.max_length),
-               "REPO2TOOLS_MAX_TOOL_USES": str(args.max_tool_uses),
+               "REPO2TOOLS_MAX_TOOL_USES": str(args.max_tool_uses), "REPO2TOOLS_SPREAD_WALK": "1" if args.spread_walk else "0",
                "REPO2TOOLS_RUN_NAME": args.run_name or f"{args.server}-len{args.min_length}-{args.max_length}"}
         sys.exit(run_in_toolgym(toolgym, "gym.generation.pipelines.local.repo2tools", [], env, args.tool_server, args.port))
 

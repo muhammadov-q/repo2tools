@@ -184,6 +184,23 @@ def test_object_fields_are_asked_about_and_checked(toolset):
     assert ("split_code", "normalize_code") in {(a, b) for a, b, _ in links(server, types)}
 
 
+def test_a_list_typed_as_a_single_value_is_read_as_a_list(toolset):
+    forgot = json.loads(json.dumps(GOOD))
+    forgot["newest_code"]["parameters"]["items"] = "ProductCode"  # the LLM forgot the list
+    _, server, types, _ = run_export(toolset, forgot)
+    assert gym_types(server)["newest_code"]["parameters"] == {"items": "ProductCodeList"}
+    assert "aa-1" in types["pools"]["ProductCode"]
+
+
+def test_a_saved_proposal_can_be_replayed(toolset, tmp_path):
+    folder, dest = toolset
+    first, server, types, _ = run_export(toolset, GOOD)
+    saved = generated_to_toolgym.OUT / "codes-test" / "toolgym_proposal.json"
+    assert json.loads(saved.read_text())["types"]
+    again = asyncio.run(generated_to_toolgym.export(folder, dest, generated_to_toolgym.Replay(saved)))
+    assert again["links_list"] == first["links_list"] and again["model"].endswith("(replayed)")
+
+
 def test_links_follow_the_kept_types(toolset):
     _, server, types, _ = run_export(toolset, GOOD)
     found = links(server, types)

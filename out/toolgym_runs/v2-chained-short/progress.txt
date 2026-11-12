@@ -1,0 +1,16 @@
+Run: v2-chained-short-20261112-142453-e14d
+Dir: results/gym/repo2tools/v2-chained-short-20261112-142453-e14d/
+Status: finished
+Entries: 38 in 9.4min (4.1/min)
+
+Stage funnel:
+  sig: 40 done
+  template: 40 done
+  plausibility: 39 done / 1 dropped
+  prompt: 38 done / 1 dropped / 1 retries
+  validation: 38 done
+  realization: 38 done
+  post_validation: 38 done
+  distractor: 38 done
+  nl_answer: 38 done
+  apertus: 38 done

@@ -74,6 +74,7 @@ def load_examples(path: Path, n: int, min_calls: int = 0) -> list[dict]:
 
     traces = [t for t in read_traces(path) if (t["outcome"] or {}).get("tool_calls", 0) >= min_calls and clean(t)]
     traces.sort(key=lambda t: (-different_tools(t), t["task_id"]))
+    load_examples.task_ids = [t["task_id"] for t in traces[:n]]  # so the caller can leave these tasks out of the run
     messages = []
     for number, trace in enumerate(traces[:n]):
         last = trace["requests"][-1]
@@ -226,7 +227,8 @@ def main() -> None:
     if args.mode == "tools" and not args.command:
         parser.error("--mode tools needs the MCP server command after --")
 
-    exercises = [ex for ex in map(json.loads, open(args.exercises)) if args.horizon in (None, ex["horizon"])][: args.limit]
+    shown_tasks = set(getattr(load_examples, "task_ids", [])) if args.examples else set()  # never test a task that is shown as an example
+    exercises = [ex for ex in map(json.loads, open(args.exercises)) if args.horizon in (None, ex["horizon"]) and ex["id"] not in shown_tasks][: args.limit]
     results = asyncio.run(run(exercises, args))
     forced = f"force-{args.tool_choice}" if args.tool_choice != "auto" else None
     shown = f"examples{args.n_examples}" if args.examples else None

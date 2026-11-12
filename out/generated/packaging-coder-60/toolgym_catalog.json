@@ -16,7 +16,7 @@
     },
     "gym_types": {
      "parameters": {},
-     "output_type": "MarkerEnvironment"
+     "output_type": "GetDefaultMarkerEnvironmentOutput"
     }
    },
    {
@@ -906,7 +906,7 @@
      "parameters": {
       "filename": "WheelFilename"
      },
-     "output_type": "object"
+     "output_type": "ParseWheelFilenameOutput"
     }
    },
    {
@@ -931,7 +931,7 @@
      "parameters": {
       "filename": "SdistFilename"
      },
-     "output_type": "object"
+     "output_type": "ParseSdistFilenameOutput"
     }
    },
    {
@@ -1199,6 +1199,27 @@
     "max_items": 4
    }
   },
-  "objects": {}
+  "objects": {
+   "GetDefaultMarkerEnvironmentOutput": {
+    "fields": {
+     "implementation_version": "VersionString",
+     "python_full_version": "VersionString",
+     "python_version": "VersionString"
+    }
+   },
+   "ParseWheelFilenameOutput": {
+    "fields": {
+     "name": "PackageName",
+     "version": "VersionString",
+     "tags": "TagList"
+    }
+   },
+   "ParseSdistFilenameOutput": {
+    "fields": {
+     "name": "PackageName",
+     "version": "VersionString"
+    }
+   }
+  }
  }
 }

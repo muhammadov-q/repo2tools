@@ -47,7 +47,7 @@ Three things follow from that rule, one per stage:
 | 2. Chain | Give the tools semantic types checked by execution, load them into ToolGym, run its live chain check and its data-generation pipeline | `generated_to_toolgym.py`, `toolgym_local.py` |
 | 3. Measure | Run a model on exercises with and without tools; save every request as a trace; quantify repetition and simulate context compression | `run_model.py`, `analyze_traces.py` |
 
-Also included: 21 reference tools over [pypa/packaging](https://github.com/pypa/packaging) that were written before the pipeline existed (called "hand-made" below, as the baseline the generated tools are compared with), 242 exercises with known answers, and an 86-test suite that needs no GPU and no API key.
+Also included: 21 reference tools over [pypa/packaging](https://github.com/pypa/packaging) that were written before the pipeline existed (called "hand-made" below, as the baseline the generated tools are compared with), 242 exercises with known answers, and a test suite of over 100 tests that needs no GPU and no API key.
 
 ## Results at a glance
 
@@ -62,7 +62,8 @@ All numbers are first results: small models, one run per setting, one library. E
 - **Offering unsuitable tools can be worse than offering none.** With 22 generated tools the model solves 44% of the exercises, below the 60% of the run without tools (an earlier run, whose system prompt also differs slightly).
 - **Passing every check does not make a tool usable.** `check_specifier_set_unsatisfiable` is correct, but asked whether a constraint *can* be satisfied, the model copies its `true` (at most 1 of 20 solved). Eight range tools return text that no other tool accepts.
 - **Types checked by execution give ToolGym chains that survive its validation:** 11 of 33 short chains accepted, against 0 of 15 with hand-written types, whose chains run through automatic casts.
-- **Long chains need a richer graph, not more steps.** With 16 links, chains of 8 to 10 calls loop on one tool; none of the 20 sampled was accepted.
+- **Long chains need a richer graph, not more steps.** The longest chain in which every tool appears once has 4 calls for the generated tools and 8 for the hand-made ones, so a random walk of 8 to 10 steps can only go in circles (201 of 201 did). Long tasks in practice repeat a short pattern over many items.
+- **Worked examples in the prompt did not unlock long tool use.** With known-good solutions of similar tasks as examples, Qwen3-8B still solves 0 of 18 long tasks; Qwen3-32B makes more of the right calls (7.2 per run, up from 3.5) but solves 2 of 18.
 - **The tool list dominates the prompt.** It is 60% to 97% of all prompt tokens when 21 or more tools are offered. Sending only the 5 most relevant tools (with a perfect retriever) would save 44% to 81%. Trimming old tool outputs saves 0% to 3% in those runs, but 20% on ToolGym's long chains, where outputs are long lists.
 - **Forcing tool calls yields more calls, not better ones.** Forced on every step, all 20 long runs call tools (6 of 20 otherwise), 2 pass, and 250 of 502 calls repeat an earlier call exactly.
 
@@ -125,6 +126,21 @@ Generated tools in ToolGym, 11 November 2026. Qwen3-32B proposes the types and r
 - **Long chains are not solved by asking for more steps.** With 16 links, a long walk loops: one chain is `parse_tag` eight times, and 34 of 104 calls repeat an earlier call exactly.
 - **The check finds tools that cannot be chained.** Eight range tools take a constraint like `>=1.0` but return text like `<VersionRange '[1.0, 2.0.dev0)'>`, which no tool accepts. They passed every check of `repo2tools.py`.
 - **A harder repo:** more-itertools gives 50 accepted tools of 142 picked. Its values are plain lists, so the LLM found only 2 types and 21 links. Kinds of values work for a domain library like packaging, not for generic data.
+
+Chaining, 12 November 2026. Qwen3-32B repairs and types the tools and runs ToolGym; Qwen3-8B is the second model. One run each, small numbers.
+
+| Step | Result |
+| --- | --- |
+| Dead-end tools repaired (`repair_chains.py`) | 3 of 8. One more "repair" passed the library check and the consumer check but returned `""` for every union of ranges; a third guard (different results must stay different) rejected it |
+| Links between the 29 generated tools, same type claims before and after | 45 before, 69 after; tools with no link: 16, then 8. ToolGym's live chain check: 44 of 44, then 86 of 86 |
+| Hand-made tools with checked types instead of hand-written ones | 49 links; short chains accepted by ToolGym: 11 of 26 (hand-written types: 0 of 15) |
+| Longest chain in which every tool appears once | 4 calls (generated, before and after repair), 8 (hand-made), 3 (more-itertools) |
+| Chains of 8 to 10 calls from ToolGym's uniform walk | 201 of 201 sampled chains call a tool twice or more; 199 call one twice in a row |
+| Walk to the least visited step instead (`--spread-walk`) | 45 chains of 4 to 6 calls with all tools different and no repeated call; none of 8 or more, because the graphs have no such path |
+| ToolGym tasks as exercises for a second model (answer = output of the last call) | Hand-made tools: 11 of 25 with tools, 7 of 25 without. Generated tools: 16 of 37 with, 18 of 37 without. 19 of 25 true/false answers are right without any tool |
+| Tasks ToolGym accepted against tasks it rejected, solved by the second model with tools | 13 of 27 against 14 of 35 |
+| 20 long exercises with worked examples in the prompt, Qwen3-8B | No examples: 0 of 20. Three ToolGym chains: 0 of 20, and no run calls a tool. Two known-good solutions of other long tasks: 0 of 18, 1.9 calls of 17 needed |
+| The same with Qwen3-32B | No tools 4 of 20; tools 2 of 20; ToolGym chains 2 of 20 (0.8 calls per run); known-good solutions 2 of 18 (7.2 calls per run, 11 runs use every needed tool) |
 
 </details>
 
@@ -209,6 +225,27 @@ How the types are made (`generated_to_toolgym.py`):
 
 The tool server runs in its sandbox the whole time; ToolGym reaches it over HTTP on this computer only. `out/generated/<set>/toolgym_types.md` lists the types, the withdrawn claims and the links. `out/toolgym_runs/` has the summaries of the pipeline runs.
 
+More steps around ToolGym:
+
+```sh
+# rewrite tools whose output no tool accepts; the result is the tool set <set>-chained
+uv run python repair_chains.py $T --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
+# type the repaired set with the same claims as the original, so the two can be compared
+uv run python generated_to_toolgym.py $T-chained --dest ../tool-gym/gym/tools/mcp_servers/catalog --proposal-from out/generated/packaging-coder-60/toolgym_proposal.json
+
+# longer chains that do not loop: walk to the least visited step, and drop chains that still repeat a tool
+uv run python toolgym_local.py generate ../tool-gym repo2tools_packaging_coder_60_chained --tool-server $T-chained/run_server.sh \
+    --base-url http://127.0.0.1:18000/v1 --model qwen3-32b --min-length 4 --max-length 6 --chains 60 --spread-walk --max-tool-uses 2
+
+# ToolGym's tasks as exercises with known answers (the output of the chain's last call), for any model
+uv run python toolgym_exercises.py ../tool-gym/results/gym/repo2tools/<run> -o out/toolgym_exercises/<name>.jsonl
+uv run python run_model.py out/toolgym_exercises/<name>.jsonl --mode tools --base-url <url> --model <model> -- $T-chained/run_server.sh
+
+# recorded chains as worked examples before the task
+uv run python run_model.py out/packaging/exercises.jsonl --mode tools --horizon long --examples out/traces/<chains>.jsonl.gz --n-examples 3 \
+    --base-url <url> --model <model> -- toolsets/pypa_packaging/run_server.sh
+```
+
 **Limits.** "Accepted" is ToolGym's own validation (an LLM judge, and a challenger that must reproduce the chain from the task text), with the same model in every role. It's one run per setting. A type link says a value is accepted, not that the chain makes sense.
 
 ## Stage 3: exercises, traces and repetition
@@ -286,6 +323,8 @@ No GPU or API key needed. The LLM and the endpoint are scripted.
 | `repo2tools.py` | Repo link to checked tools; see above. |
 | `toolsets/generated/` | Generated tool sets, one file per tool. Not reviewed by a person. |
 | `generated_to_toolgym.py` | ToolGym types for a generated tool set, checked by running the tools; writes the catalog folder. |
+| `repair_chains.py` | Rewrites tools whose output no tool accepts, with three checks on every repair. |
+| `toolgym_exercises.py` | ToolGym's synthetic tasks as exercises with known answers; `--compose` joins several into one long task. |
 | `toolgym_local.py`, `toolgym_traces.py` | Run ToolGym's chain check and pipeline on tools served from this computer; turn the results into traces. |
 | `tool_worker.py` | Checks one generated tool. It runs inside the tool set's environment and sandbox. |
 | `traces.py` | The trace format. |

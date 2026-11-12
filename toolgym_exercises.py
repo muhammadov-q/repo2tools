@@ -13,6 +13,7 @@ that is part of what it measures. `toolgym_passed` keeps ToolGym's own verdict f
 
 import argparse
 import json
+import random
 from pathlib import Path
 
 from toolgym_traces import user_task
@@ -31,11 +32,33 @@ def exercise(entry: dict, run: str) -> dict | None:
                                                                      "answer_from": "output of the chain's last call, as executed by ToolGym"}}
 
 
+def compose(parts: list[dict], number: int) -> dict:
+    """One long exercise from several short ones: solve them all, answer with the list of results.
+
+    A tool set's type graph allows only short chains of different tools (4 calls for the generated
+    packaging tools). Long tasks in practice repeat short patterns over several items, so this builds
+    them the same way. The parts are independent: a model may solve them in any order.
+    """
+    calls, offsets = [], []
+    for part in parts:
+        offsets.append(len(calls))
+        calls += part["reference_calls"]
+    task = (f"Solve these {len(parts)} tasks. Answer with one JSON list that holds the {len(parts)} results in the same order.\n\n"
+            + "\n\n".join(f"Task {i + 1}: {part['task'].rsplit(chr(10), 1)[0]}" for i, part in enumerate(parts)))
+    return {"id": f"toolgym-composed-{number:03d}", "kind": "toolgym_composed", "horizon": "long" if len(calls) >= 8 else "short",
+            "task": task, "answer": [part["answer"] for part in parts], "check": {"kind": "exact"}, "reference_calls": calls,
+            "reference_answer": [{"$ref": [offset + part["reference_call_count"] - 1]} for offset, part in zip(offsets, parts)],
+            "reference_call_count": len(calls), "toolgym_passed": all(part["toolgym_passed"] for part in parts),
+            "provenance": {"composed_from": [part["id"] for part in parts], "answer_from": "outputs of each chain's last call, as executed by ToolGym"}}
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("runs", nargs="+", type=Path)
     parser.add_argument("-o", "--output", type=Path, required=True)
     parser.add_argument("--only-passed", action="store_true", help="only entries that ToolGym's validation accepted")
+    parser.add_argument("--compose", type=int, default=0, help="combine this many chains into one long exercise")
+    parser.add_argument("--seed", type=int, default=0)
     args = parser.parse_args()
     exercises, skipped = [], 0
     for run in args.runs:
@@ -45,6 +68,11 @@ def main() -> None:
                 skipped += 1
             elif ex["toolgym_passed"] or not args.only_passed:
                 exercises.append(ex)
+    if args.compose:
+        rng = random.Random(args.seed)
+        rng.shuffle(exercises)
+        groups = [exercises[i:i + args.compose] for i in range(0, len(exercises) - args.compose + 1, args.compose)]
+        exercises = [compose(group, number) for number, group in enumerate(groups, 1)]
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text("".join(json.dumps(ex) + "\n" for ex in exercises), encoding="utf-8")
     print(f"{len(exercises)} exercises ({sum(e['toolgym_passed'] for e in exercises)} accepted by ToolGym), "

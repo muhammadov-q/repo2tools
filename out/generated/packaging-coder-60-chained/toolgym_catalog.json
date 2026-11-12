@@ -1,0 +1,1225 @@
+{
+ "mcp_server": {
+  "name": "repo2tools_packaging_coder_60_chained",
+  "repo": "repo2tools/packaging-coder-60-chained",
+  "tools": [
+   {
+    "mcp_spec": {
+     "name": "get_default_marker_environment",
+     "description": "Return the default marker environment for the current Python process.\n    \n    This environment contains metadata about the current Python implementation,\n    version, platform, and system details. It's used by package markers to\n    evaluate compatibility conditions.\n    \n    Returns:\n        A dictionary containing environment variables like 'implementation_name',\n        'implementation_version', 'os_name', 'platform_machine', etc.\n        \n    Example:\n        >>> env = get_default_marker_environment()\n        >>> env['implementation_name']\n        'cpython'\n    ",
+     "inputSchema": {
+      "properties": {},
+      "title": "get_default_marker_environmentArguments",
+      "type": "object",
+      "required": []
+     }
+    },
+    "gym_types": {
+     "parameters": {},
+     "output_type": "GetDefaultMarkerEnvironmentOutputX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "evaluate_marker",
+     "description": "Evaluate a marker expression against an environment.\n    \n    A marker is a string that specifies conditions for package dependencies.\n    This tool evaluates whether the marker matches the given environment.\n    \n    Args:\n        marker: A marker expression to evaluate, e.g. \"python_version >= '3.6'\"\n        environment: Mapping containing keys and values to override the detected environment\n        context: The context in which the marker is evaluated, which influences what marker names are considered valid.\n                 Accepted values are \"metadata\" (default), \"lock_file\", and \"requirement\"\n    \n    Returns:\n        True if the marker matches the environment, otherwise False\n    \n    Example:\n        >>> evaluate_marker(\"python_version >= '3.6'\", {\"python_version\": \"3.8\"})\n        True\n    ",
+     "inputSchema": {
+      "properties": {
+       "marker": {
+        "title": "Marker",
+        "type": "string"
+       },
+       "environment": {
+        "anyOf": [
+         {
+          "additionalProperties": {
+           "anyOf": [
+            {
+             "type": "string"
+            },
+            {
+             "items": {
+              "type": "string"
+             },
+             "type": "array"
+            }
+           ]
+          },
+          "type": "object"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Environment"
+       },
+       "context": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Context"
+       }
+      },
+      "required": [
+       "marker"
+      ],
+      "title": "evaluate_markerArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "marker": "MarkerExpressionX",
+      "environment": "MarkerEnvironmentX",
+      "context": "EvaluateMarkerContextX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "parse_metadata_email",
+     "description": "Parse distribution metadata stored as email headers. data: Distribution metadata as email headers, e.g. 'Name: example\nVersion: 1.0\n' -> {'core': {'name': 'example', 'version': '1.0'}, 'unparsed': {}}.",
+     "inputSchema": {
+      "properties": {
+       "data": {
+        "title": "Data",
+        "type": "string"
+       }
+      },
+      "required": [
+       "data"
+      ],
+      "title": "parse_metadata_emailArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "data": "MetadataEmailX"
+     },
+     "output_type": "object"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "create_empty_version_range",
+     "description": "Return an empty version range that accepts no versions. prereleases: whether prereleases should be considered when determining if the range is empty -> the empty version range as string representation",
+     "inputSchema": {
+      "properties": {
+       "prereleases": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Prereleases"
+       }
+      },
+      "title": "create_empty_version_rangeArguments",
+      "type": "object",
+      "required": []
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "prereleases": "CreateEmptyVersionRangePrereleasesX"
+     },
+     "output_type": "string"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "create_full_version_range",
+     "description": "Return a full version range that accepts all versions. admit_arbitrary: whether to admit arbitrary strings as versions; prereleases: whether to include pre-release versions. Example: create_full_version_range() -> 'VersionRange(full)'.",
+     "inputSchema": {
+      "properties": {
+       "admit_arbitrary": {
+        "default": true,
+        "title": "Admit Arbitrary",
+        "type": "boolean"
+       },
+       "prereleases": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Prereleases"
+       }
+      },
+      "title": "create_full_version_rangeArguments",
+      "type": "object",
+      "required": []
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "admit_arbitrary": "CreateFullVersionRangeAdmitArbitraryX",
+      "prereleases": "CreateFullVersionRangePrereleasesX"
+     },
+     "output_type": "string"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "create_singleton_version_range",
+     "description": "Return a version range that only accepts a single specific version. version: A PEP 440 compliant version string, e.g. '1.0' -> '{1.0}'. prereleases: Whether to include pre-release versions.",
+     "inputSchema": {
+      "properties": {
+       "version": {
+        "title": "Version",
+        "type": "string"
+       },
+       "prereleases": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Prereleases"
+       }
+      },
+      "required": [
+       "version"
+      ],
+      "title": "create_singleton_version_rangeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version": "VersionStringXX",
+      "prereleases": "CreateSingletonVersionRangePrereleasesX"
+     },
+     "output_type": "string"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "intersect_version_ranges",
+     "description": "Compute the intersection of two version ranges. range1 and range2 are version range specifiers, e.g. \">=1.0\", \">1.0,<3.0\", \"==1.0.0\". Returns the intersection as a version range string.",
+     "inputSchema": {
+      "properties": {
+       "range1": {
+        "title": "Range1",
+        "type": "string"
+       },
+       "range2": {
+        "title": "Range2",
+        "type": "string"
+       }
+      },
+      "required": [
+       "range1",
+       "range2"
+      ],
+      "title": "intersect_version_rangesArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "range1": "VersionRangeX",
+      "range2": "VersionRangeX"
+     },
+     "output_type": "VersionRangeX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "union_version_ranges",
+     "description": "Compute the union of two version ranges. version_range_a: First version range in PEP 440 format, version_range_b: Second version range in PEP 440 format. Example: union_version_ranges(\">=1.0\", \"<2.0\") -> \">=1.0,<2.0\".",
+     "inputSchema": {
+      "properties": {
+       "version_range_a": {
+        "title": "Version Range A",
+        "type": "string"
+       },
+       "version_range_b": {
+        "title": "Version Range B",
+        "type": "string"
+       }
+      },
+      "required": [
+       "version_range_a",
+       "version_range_b"
+      ],
+      "title": "union_version_rangesArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version_range_a": "VersionRangeX",
+      "version_range_b": "VersionRangeX"
+     },
+     "output_type": "string"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "complement_version_range",
+     "description": "Compute the complement of a version range. version_specifier: A version specifier string (e.g., '>=1.0', '<2.0') -> The complement range as a string.",
+     "inputSchema": {
+      "properties": {
+       "version_specifier": {
+        "title": "Version Specifier",
+        "type": "string"
+       }
+      },
+      "required": [
+       "version_specifier"
+      ],
+      "title": "complement_version_rangeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version_specifier": "VersionRangeX"
+     },
+     "output_type": "string"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "difference_version_ranges",
+     "description": "Compute the difference between two version ranges. \n    version_range_a: a version range in specifier format (e.g., '>=1.0').\n    version_range_b: a version range in specifier format (e.g., '>=2.0').\n    Returns the resulting version range in specifier format.\n    \n    Example: difference_version_ranges(\">=1.0\", \">=2.0\") -> \"<2.0, >=1.0\"\n    ",
+     "inputSchema": {
+      "properties": {
+       "version_range_a": {
+        "title": "Version Range A",
+        "type": "string"
+       },
+       "version_range_b": {
+        "title": "Version Range B",
+        "type": "string"
+       }
+      },
+      "required": [
+       "version_range_a",
+       "version_range_b"
+      ],
+      "title": "difference_version_rangesArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version_range_a": "VersionRangeX",
+      "version_range_b": "VersionRangeX"
+     },
+     "output_type": "VersionRangeX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "check_version_range_subset",
+     "description": "Check if one version range is a subset of another. range1: First version range specifier, range2: Second version range specifier to check if range1 is a subset of it. >>> check_version_range_subset('>=1.5,<1.8', '>=1.0,<2.0') -> True",
+     "inputSchema": {
+      "properties": {
+       "range1": {
+        "title": "Range1",
+        "type": "string"
+       },
+       "range2": {
+        "title": "Range2",
+        "type": "string"
+       }
+      },
+      "required": [
+       "range1",
+       "range2"
+      ],
+      "title": "check_version_range_subsetArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "range1": "VersionRangeX",
+      "range2": "VersionRangeX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "check_version_range_superset",
+     "description": "Check if one version range is a superset of another. outer_range: A version range specifier string for the outer range, inner_range: A version range specifier string for the inner range.\n    \n    >>> check_version_range_superset(\">=1.0,<2.0\", \">=1.5,<1.8\")\n    True\n    ",
+     "inputSchema": {
+      "properties": {
+       "outer_range": {
+        "title": "Outer Range",
+        "type": "string"
+       },
+       "inner_range": {
+        "title": "Inner Range",
+        "type": "string"
+       }
+      },
+      "required": [
+       "outer_range",
+       "inner_range"
+      ],
+      "title": "check_version_range_supersetArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "outer_range": "VersionRangeX",
+      "inner_range": "VersionRangeX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "check_version_ranges_disjoint",
+     "description": "Check if two version ranges have no common elements. range1: First version range specifier, e.g. '>=1.0,<2.0'. range2: Second version range specifier, e.g. '>=2.0,<3.0'. -> True if ranges are disjoint, False otherwise.\n    \n    >>> check_version_ranges_disjoint('>=1.0,<2.0', '>=2.0,<3.0')\n    True\n    >>> check_version_ranges_disjoint('>=1.0,<2.0', '>=1.5,<2.5')\n    False\n    ",
+     "inputSchema": {
+      "properties": {
+       "range1": {
+        "title": "Range1",
+        "type": "string"
+       },
+       "range2": {
+        "title": "Range2",
+        "type": "string"
+       }
+      },
+      "required": [
+       "range1",
+       "range2"
+      ],
+      "title": "check_version_ranges_disjointArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "range1": "VersionRangeX",
+      "range2": "VersionRangeX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "check_version_in_range",
+     "description": "Check if a version is contained within a version range.\n    \n    :param specifier_set: A specifier set that can be converted to a version range\n    :param version: The version string to check against the range\n    :returns: True if the version is contained in the range, False otherwise\n    \n    >>> check_version_in_range(\">=1.0,<2.0\", \"1.5\")\n    True\n    >>> check_version_in_range(\">=1.0,<2.0\", \"2.0\")\n    False\n    ",
+     "inputSchema": {
+      "properties": {
+       "specifier_set": {
+        "title": "Specifier Set",
+        "type": "string"
+       },
+       "version": {
+        "title": "Version",
+        "type": "string"
+       }
+      },
+      "required": [
+       "specifier_set",
+       "version"
+      ],
+      "title": "check_version_in_rangeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifier_set": "VersionRangeX",
+      "version": "VersionStringXX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "check_specifier_set_unsatisfiable",
+     "description": "Check whether this specifier set can never be satisfied.\n    \n    Returns True if no version can satisfy all specifiers simultaneously.\n    \n    Args:\n        specifiers (str): A string representation of version specifiers\n        \n    Returns:\n        bool: True if the specifier set is unsatisfiable, False otherwise\n        \n    Example:\n        >>> check_specifier_set_unsatisfiable(\">=2.0,<1.0\")\n        True\n    ",
+     "inputSchema": {
+      "properties": {
+       "specifiers": {
+        "title": "Specifiers",
+        "type": "string"
+       }
+      },
+      "required": [
+       "specifiers"
+      ],
+      "title": "check_specifier_set_unsatisfiableArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifiers": "SpecifierSetX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "convert_specifier_set_to_range",
+     "description": "Convert a specifier set to a version range. specifiers: a string of version specifiers, e.g. '>=1.0,<2.0' -> '>=1.0,<2.0'.",
+     "inputSchema": {
+      "properties": {
+       "specifiers": {
+        "title": "Specifiers",
+        "type": "string"
+       }
+      },
+      "required": [
+       "specifiers"
+      ],
+      "title": "convert_specifier_set_to_rangeArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifiers": "SpecifierSetX"
+     },
+     "output_type": "VersionRangeX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "check_specifier_set_subset",
+     "description": "Check if one specifier set is a subset of another. specifier_set1: The first specifier set to check. specifier_set2: The second specifier set to check against. >>> check_specifier_set_subset('>=3.12,<3.13', '>=3.12') True",
+     "inputSchema": {
+      "properties": {
+       "specifier_set1": {
+        "title": "Specifier Set1",
+        "type": "string"
+       },
+       "specifier_set2": {
+        "title": "Specifier Set2",
+        "type": "string"
+       }
+      },
+      "required": [
+       "specifier_set1",
+       "specifier_set2"
+      ],
+      "title": "check_specifier_set_subsetArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifier_set1": "SpecifierSetX",
+      "specifier_set2": "SpecifierSetX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "check_specifier_set_superset",
+     "description": "Check if one specifier set is a superset of another. specifier_set1: The first specifier set to check. specifier_set2: The second specifier set to check against. >>> check_specifier_set_superset('>=3.12', '>=3.12,<3.13') True",
+     "inputSchema": {
+      "properties": {
+       "specifier_set1": {
+        "title": "Specifier Set1",
+        "type": "string"
+       },
+       "specifier_set2": {
+        "title": "Specifier Set2",
+        "type": "string"
+       }
+      },
+      "required": [
+       "specifier_set1",
+       "specifier_set2"
+      ],
+      "title": "check_specifier_set_supersetArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifier_set1": "SpecifierSetX",
+      "specifier_set2": "SpecifierSetX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "check_specifier_sets_disjoint",
+     "description": "Check if two specifier sets share no matching versions.\n    \n    Args:\n        specifier_set1 (str): First specifier set string\n        specifier_set2 (str): Second specifier set string\n    \n    Returns:\n        bool: True if the sets share no matching versions, False otherwise\n    \n    Example:\n        >>> check_specifier_sets_disjoint(\"<3.12\", \">=3.12\")\n        True\n    ",
+     "inputSchema": {
+      "properties": {
+       "specifier_set1": {
+        "title": "Specifier Set1",
+        "type": "string"
+       },
+       "specifier_set2": {
+        "title": "Specifier Set2",
+        "type": "string"
+       }
+      },
+      "required": [
+       "specifier_set1",
+       "specifier_set2"
+      ],
+      "title": "check_specifier_sets_disjointArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifier_set1": "SpecifierSetX",
+      "specifier_set2": "SpecifierSetX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "check_version_in_specifier_set",
+     "description": "Check if a version is contained in a specifier set. specifier_set: A string representing the version specifier set (e.g., '>=1.0.0,!=1.0.1'), version: The version string to check against the specifier set, prereleases: Whether or not to match prereleases with this SpecifierSet. If set to None (the default), it will follow the recommendation from PEP 440.",
+     "inputSchema": {
+      "properties": {
+       "specifier_set": {
+        "title": "Specifier Set",
+        "type": "string"
+       },
+       "version": {
+        "title": "Version",
+        "type": "string"
+       },
+       "prereleases": {
+        "anyOf": [
+         {
+          "type": "boolean"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Prereleases"
+       }
+      },
+      "required": [
+       "specifier_set",
+       "version"
+      ],
+      "title": "check_version_in_specifier_setArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "specifier_set": "SpecifierSetX",
+      "version": "VersionStringXX",
+      "prereleases": "CheckVersionInSpecifierSetPrereleasesX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "parse_tag",
+     "description": "Parse a tag string into a frozenset of Tag instances. tag: The tag to parse, e.g. \"py3-none-any\". validate_order: Check whether compressed tag set components are in sorted order. limit: The maximum number of tags to parse. -> frozenset of tag strings.",
+     "inputSchema": {
+      "properties": {
+       "tag": {
+        "title": "Tag",
+        "type": "string"
+       },
+       "validate_order": {
+        "default": false,
+        "title": "Validate Order",
+        "type": "boolean"
+       },
+       "limit": {
+        "anyOf": [
+         {
+          "type": "integer"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Limit"
+       }
+      },
+      "required": [
+       "tag"
+      ],
+      "title": "parse_tagArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "tag": "TagX",
+      "validate_order": "ParseTagValidateOrderX",
+      "limit": "ParseTagLimitX"
+     },
+     "output_type": "TagListX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "generate_generic_tags",
+     "description": "Generate generic interpreter tags. interpreter: The name of the interpreter, e.g. 'cp39'. abis: Iterable of compatible ABIs, e.g. ['cp39', 'abi3']. platforms: Iterable of compatible platforms, e.g. ['linux_x86_64']. -> List of tag strings like 'cp39-none-linux_x86_64'.",
+     "inputSchema": {
+      "properties": {
+       "interpreter": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Interpreter"
+       },
+       "abis": {
+        "anyOf": [
+         {
+          "items": {
+           "type": "string"
+          },
+          "type": "array"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Abis"
+       },
+       "platforms": {
+        "anyOf": [
+         {
+          "items": {
+           "type": "string"
+          },
+          "type": "array"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Platforms"
+       }
+      },
+      "title": "generate_generic_tagsArguments",
+      "type": "object",
+      "required": []
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "interpreter": "GenerateGenericTagsInterpreterX",
+      "abis": "GenerateGenericTagsAbisX",
+      "platforms": "GenerateGenericTagsPlatformsX"
+     },
+     "output_type": "TagListX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "generate_compatible_tags",
+     "description": "Generate interpreter-compatible tags for a Python version. python_version: A one- or two-item sequence representing the compatible version of Python, e.g. [3, 8] -> ['py38-none-manylinux1_x86_64', ...]. interpreter: The name of the interpreter (if known), e.g. 'cp38' -> ['cp38-none-any', ...].",
+     "inputSchema": {
+      "properties": {
+       "python_version": {
+        "anyOf": [
+         {
+          "items": {
+           "type": "integer"
+          },
+          "type": "array"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Python Version"
+       },
+       "interpreter": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {
+          "type": "null"
+         }
+        ],
+        "default": null,
+        "title": "Interpreter"
+       }
+      },
+      "title": "generate_compatible_tagsArguments",
+      "type": "object",
+      "required": []
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "python_version": "GenerateCompatibleTagsPythonVersionX",
+      "interpreter": "GenerateCompatibleTagsInterpreterX"
+     },
+     "output_type": "TagListX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "canonicalize_package_name",
+     "description": "Normalize a package name to its canonical form. name: The package name to normalize. validate: Check whether the name is a valid distribution name. >>> canonicalize_package_name(\"Django\") 'django'",
+     "inputSchema": {
+      "properties": {
+       "name": {
+        "title": "Name",
+        "type": "string"
+       },
+       "validate": {
+        "default": false,
+        "title": "Validate",
+        "type": "boolean"
+       }
+      },
+      "required": [
+       "name"
+      ],
+      "title": "canonicalize_package_nameArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "name": "PackageNameX",
+      "validate": "CanonicalizePackageNameValidateX"
+     },
+     "output_type": "PackageNameX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "check_normalized_package_name",
+     "description": "Check if a name is already in normalized form. name: The project name to check for normalization -> true if the name is normalized, false otherwise.",
+     "inputSchema": {
+      "properties": {
+       "name": {
+        "title": "Name",
+        "type": "string"
+       }
+      },
+      "required": [
+       "name"
+      ],
+      "title": "check_normalized_package_nameArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "name": "PackageNameX"
+     },
+     "output_type": "boolean"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "canonicalize_version_string",
+     "description": "Return a canonical form of a version string. version: A version string to canonicalize, e.g. '1.0.0' -> '1'. strip_trailing_zero: Whether to strip trailing zeros from the release segment, e.g. '1.0.0' with strip_trailing_zero=False -> '1.0.0'.",
+     "inputSchema": {
+      "properties": {
+       "version": {
+        "title": "Version",
+        "type": "string"
+       },
+       "strip_trailing_zero": {
+        "default": true,
+        "title": "Strip Trailing Zero",
+        "type": "boolean"
+       }
+      },
+      "required": [
+       "version"
+      ],
+      "title": "canonicalize_version_stringArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version": "VersionStringXX",
+      "strip_trailing_zero": "CanonicalizeVersionStringStripTrailingZeroX"
+     },
+     "output_type": "VersionStringXX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "parse_wheel_filename",
+     "description": "Parse a wheel filename into its components. filename: The name of the wheel file, e.g. 'foo-1.0-py3-none-any.whl' -> {'name': 'foo', 'version': '1.0', 'build': [], 'tags': ['py3-none-any']}.",
+     "inputSchema": {
+      "properties": {
+       "filename": {
+        "title": "Filename",
+        "type": "string"
+       }
+      },
+      "required": [
+       "filename"
+      ],
+      "title": "parse_wheel_filenameArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "filename": "WheelFilenameX"
+     },
+     "output_type": "ParseWheelFilenameOutputXX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "parse_sdist_filename",
+     "description": "Parse an sdist filename into its components. filename: The name of the sdist file, e.g. 'foo-1.0.tar.gz' -> {\"name\": \"foo\", \"version\": \"1.0\"}.",
+     "inputSchema": {
+      "properties": {
+       "filename": {
+        "title": "Filename",
+        "type": "string"
+       }
+      },
+      "required": [
+       "filename"
+      ],
+      "title": "parse_sdist_filenameArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "filename": "SdistFilenameX"
+     },
+     "output_type": "ParseSdistFilenameOutputX"
+    }
+   },
+   {
+    "mcp_spec": {
+     "name": "parse_version_string",
+     "description": "Parse the given version string.\n    \n    This is identical to the Version constructor.\n    \n    >>> parse_version_string('1.0.dev1')\n    '1.0.dev1'\n    \n    :param version: The version string to parse.\n    :raises ValueError: When the version string is not a valid version.\n    ",
+     "inputSchema": {
+      "properties": {
+       "version": {
+        "title": "Version",
+        "type": "string"
+       }
+      },
+      "required": [
+       "version"
+      ],
+      "title": "parse_version_stringArguments",
+      "type": "object"
+     }
+    },
+    "gym_types": {
+     "parameters": {
+      "version": "VersionStringXX"
+     },
+     "output_type": "VersionStringXX"
+    }
+   }
+  ]
+ },
+ "types": {
+  "pools": {
+   "MarkerEnvironmentX": [
+    {
+     "sys_platform": "linux"
+    },
+    {
+     "extra": "dev"
+    },
+    {
+     "implementation_name": "pypy"
+    }
+   ],
+   "MarkerExpressionX": [
+    "python_version >= '3.6'",
+    "sys_platform == 'win32'",
+    "extra == 'dev'",
+    "platform_machine != 'x86_64'",
+    "implementation_name == 'cpython'"
+   ],
+   "MetadataEmailX": [
+    "Name: example-package\nVersion: 1.0.0\nSummary: An example package\n",
+    "Name: test-package\nVersion: 2.0.0\nAuthor: John Doe\nAuthor-Email: john@example.com\nClassifier: Development Status :: 4 - Beta\nClassifier: Intended Audience :: Developers\n",
+    "Name: multi-value-test\nVersion: 1.0.0\nHome-Page: https://example.com\nHome-Page: https://another-example.com\n",
+    "Invalid-Header: value\nAnother-Invalid: header\n",
+    "Name: unicode-test\nVersion: 1.0.0\nSummary: Test with unicode: caf\u00e9\n"
+   ],
+   "PackageNameX": [
+    "Django",
+    "oslo.concurrency",
+    "requests",
+    "My_Package_Name",
+    "invalid..package",
+    "valid-package-name",
+    "-not-legal",
+    "my_project",
+    "_invalid",
+    ""
+   ],
+   "SdistFilenameX": [
+    "foo-1.0.tar.gz",
+    "bar-2.5.0.zip",
+    "test-package-1.2.3.tar.gz"
+   ],
+   "SpecifierSetX": [
+    ">=2.0,<1.0",
+    ">=1.0,<2.0",
+    "",
+    "==1.0,!=1.0",
+    ">=3.0,<2.0",
+    "==2.0,!=2.0",
+    "===1.0.0",
+    ">=1.0,!=1.5,<2.0",
+    ">=3.12,<3.13",
+    ">=3.12",
+    "==3.12.0",
+    ">=3.10",
+    "<3.13",
+    ">=3.9",
+    ">=3.12,<3.14",
+    ">=3.12,<3.15",
+    "<4.0",
+    ">=3.0,<4.0",
+    ">=3.13",
+    "<3.12",
+    ">=2.0,<3.0",
+    "==1.0.0",
+    ">=1.0",
+    ">=3.11",
+    ">3.0",
+    "<1.0",
+    ">=1.0.0,!=1.0.1"
+   ],
+   "TagX": [
+    "py3-none-any",
+    "py2.py3-none-any",
+    "cp39-cp39-win_amd64"
+   ],
+   "VersionRangeX": [
+    ">=1.0",
+    ">1.0,<3.0",
+    "==1.0.0",
+    ">=1.0.0,<2.0.0",
+    ">=1.0.0",
+    "<2.0",
+    ">=2.0,<4.0",
+    ">=1.5.0,<1.9.0",
+    "<1.0.0",
+    ">=1.0,<2.0",
+    "==1.0",
+    "~=1.0",
+    ">=1.0,<1.5",
+    ">=2.0,<3.0",
+    "==2.0",
+    "~=2.0",
+    ">=1.7,<2.0",
+    ">1.0,<2.0",
+    "!=1.0.0",
+    ">=1.0,<3.0",
+    ">=2.0",
+    ">=1.5,<1.8",
+    "==1.5.0",
+    ">=1.5,<2.5",
+    "<1.0",
+    ">=1.0.1",
+    ">2.0"
+   ],
+   "VersionStringXX": [
+    "1.0.0",
+    "2.0.0a1",
+    "3.0.0+build.1",
+    "1.0.0.dev0",
+    "1.5",
+    "2.0",
+    "0.9",
+    "1.0.0a1",
+    "not_a_version",
+    "1.2.3",
+    "1.0.1",
+    "1.3.0a1",
+    "invalid.version",
+    "1.4.0.0.0",
+    "foo bar baz",
+    "2.0.0.0.0",
+    "2.1.3.dev1",
+    "1.0.0-alpha.1",
+    "3.2.1+build.123"
+   ],
+   "WheelFilenameX": [
+    "foo-1.0-py3-none-any.whl",
+    "bar-2.1.0.post1-cp38-cp38m-win_amd64.whl",
+    "baz-1.0.0-1-py3-none-any.whl"
+   ],
+   "EvaluateMarkerContextX": [
+    "metadata",
+    "requirement",
+    "lock_file"
+   ],
+   "CreateEmptyVersionRangePrereleasesX": [
+    false,
+    true
+   ],
+   "CreateFullVersionRangeAdmitArbitraryX": [
+    false,
+    true
+   ],
+   "CreateFullVersionRangePrereleasesX": [
+    false,
+    true
+   ],
+   "CreateSingletonVersionRangePrereleasesX": [
+    false,
+    true
+   ],
+   "CheckVersionInSpecifierSetPrereleasesX": [
+    false,
+    true
+   ],
+   "ParseTagValidateOrderX": [
+    false,
+    true
+   ],
+   "ParseTagLimitX": [
+    10,
+    5
+   ],
+   "GenerateGenericTagsInterpreterX": [
+    "py39",
+    "pypy38",
+    "graalpy310",
+    "py310"
+   ],
+   "GenerateGenericTagsAbisX": [
+    [
+     "cp39",
+     "abi3"
+    ],
+    [
+     "pp38"
+    ],
+    [
+     "gpy310"
+    ],
+    [
+     "none"
+    ]
+   ],
+   "GenerateGenericTagsPlatformsX": [
+    [
+     "linux_x86_64"
+    ],
+    [
+     "win_amd64"
+    ],
+    [
+     "linux_aarch64"
+    ],
+    [
+     "any"
+    ]
+   ],
+   "GenerateCompatibleTagsPythonVersionX": [
+    [
+     3,
+     9
+    ],
+    [
+     3,
+     8
+    ],
+    [
+     2,
+     7
+    ],
+    []
+   ],
+   "GenerateCompatibleTagsInterpreterX": [
+    "cp39",
+    "cp310",
+    "cp27",
+    "py39"
+   ],
+   "CanonicalizePackageNameValidateX": [
+    false,
+    true
+   ],
+   "CanonicalizeVersionStringStripTrailingZeroX": [
+    false,
+    true
+   ]
+  },
+  "lists": {
+   "TagListX": {
+    "element": "TagX",
+    "min_items": 1,
+    "max_items": 4
+   }
+  },
+  "objects": {
+   "GetDefaultMarkerEnvironmentOutputX": {
+    "fields": {
+     "implementation_version": "VersionStringXX",
+     "python_full_version": "VersionStringXX",
+     "python_version": "VersionStringXX"
+    }
+   },
+   "ParseWheelFilenameOutputXX": {
+    "fields": {
+     "name": "PackageNameX",
+     "version": "VersionStringXX",
+     "tags": "TagListX"
+    }
+   },
+   "ParseSdistFilenameOutputX": {
+    "fields": {
+     "name": "PackageNameX",
+     "version": "VersionStringXX"
+    }
+   }
+  }
+ }
+}

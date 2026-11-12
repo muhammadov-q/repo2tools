@@ -1,0 +1,584 @@
+{
+ "set": "pypa-packaging-handmade",
+ "model": "qwen3-32b",
+ "tools": 21,
+ "tools_without_working_samples": [],
+ "types_proposed": 6,
+ "types_kept": 6,
+ "parameters": 33,
+ "parameters_with_proposed_type": 24,
+ "parameters_with_shared_type": 22,
+ "parameter_claims_tested": 24,
+ "parameter_claims_withdrawn": 2,
+ "output_claims": 14,
+ "output_claims_kept": 10,
+ "links": 49,
+ "linked_tool_pairs": 49,
+ "isolated_tools": [
+  "is_valid_version",
+  "evaluate_marker",
+  "canonicalize_name",
+  "parse_sdist_filename"
+ ],
+ "check_calls": 792,
+ "parameter_checks": [
+  {
+   "tool": "evaluate_marker",
+   "parameter": "marker",
+   "type": "MarkerString",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  },
+  {
+   "tool": "parse_sdist_filename",
+   "parameter": "filename",
+   "type": "SdistFilename",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  },
+  {
+   "tool": "is_valid_specifier",
+   "parameter": "specifier",
+   "type": "SpecifierString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "version_satisfies",
+   "parameter": "specifier",
+   "type": "SpecifierString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "filter_versions",
+   "parameter": "specifier",
+   "type": "SpecifierString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "combine_specifiers",
+   "parameter": "specifier_a",
+   "type": "SpecifierString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "combine_specifiers",
+   "parameter": "specifier_b",
+   "type": "SpecifierString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "is_satisfiable",
+   "parameter": "specifier",
+   "type": "SpecifierString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "specifier_is_subset",
+   "parameter": "specifier",
+   "type": "SpecifierString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "specifier_is_subset",
+   "parameter": "other",
+   "type": "SpecifierString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "specifiers_overlap",
+   "parameter": "specifier_a",
+   "type": "SpecifierString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "specifiers_overlap",
+   "parameter": "specifier_b",
+   "type": "SpecifierString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "parse_tag",
+   "parameter": "tag",
+   "type": "TagString",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  },
+  {
+   "tool": "is_valid_version",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 18,
+   "pairs_working": 14,
+   "kept": false
+  },
+  {
+   "tool": "normalize_version",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 18,
+   "pairs_working": 17,
+   "kept": true
+  },
+  {
+   "tool": "version_info",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 18,
+   "pairs_working": 17,
+   "kept": true
+  },
+  {
+   "tool": "base_version",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 18,
+   "pairs_working": 17,
+   "kept": true
+  },
+  {
+   "tool": "compare_versions",
+   "parameter": "version_a",
+   "type": "VersionString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "compare_versions",
+   "parameter": "version_b",
+   "type": "VersionString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "sort_versions",
+   "parameter": "versions",
+   "type": "VersionString",
+   "pairs": 18,
+   "pairs_working": 17,
+   "kept": true
+  },
+  {
+   "tool": "canonicalize_version",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 18,
+   "pairs_working": 17,
+   "kept": true
+  },
+  {
+   "tool": "version_satisfies",
+   "parameter": "version",
+   "type": "VersionString",
+   "pairs": 18,
+   "pairs_working": 18,
+   "kept": true
+  },
+  {
+   "tool": "filter_versions",
+   "parameter": "versions",
+   "type": "VersionString",
+   "pairs": 18,
+   "pairs_working": 17,
+   "kept": false
+  },
+  {
+   "tool": "parse_wheel_filename",
+   "parameter": "filename",
+   "type": "WheelFilename",
+   "pairs": 0,
+   "pairs_working": 0,
+   "kept": true
+  }
+ ],
+ "output_checks": [
+  {
+   "tool": "normalize_version",
+   "output": "NormalizedVersionString",
+   "tried": 12,
+   "worked": 12,
+   "kept": true,
+   "type": "VersionString",
+   "why": "no parameter has type NormalizedVersionString; works as VersionString"
+  },
+  {
+   "tool": "version_info",
+   "output": "VersionInfoObject",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "no parameter has this type",
+   "type": "VersionInfoObject"
+  },
+  {
+   "tool": "base_version",
+   "output": "BaseVersionString",
+   "tried": 6,
+   "worked": 6,
+   "kept": true,
+   "type": "VersionString",
+   "why": "no parameter has type BaseVersionString; works as VersionString"
+  },
+  {
+   "tool": "sort_versions",
+   "output": "list[VersionString]",
+   "tried": 12,
+   "worked": 12,
+   "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "canonicalize_version",
+   "output": "NormalizedVersionString",
+   "tried": 12,
+   "worked": 12,
+   "kept": true,
+   "type": "VersionString",
+   "why": "no parameter has type NormalizedVersionString; works as VersionString"
+  },
+  {
+   "tool": "filter_versions",
+   "output": "list[VersionString]",
+   "tried": 12,
+   "worked": 10,
+   "kept": true,
+   "type": "VersionString"
+  },
+  {
+   "tool": "combine_specifiers",
+   "output": "SpecifierString",
+   "tried": 9,
+   "worked": 9,
+   "kept": true,
+   "type": "SpecifierString"
+  },
+  {
+   "tool": "parse_requirement",
+   "output": "field specifier: SpecifierString",
+   "tried": 12,
+   "worked": 12,
+   "kept": true,
+   "type": "SpecifierString"
+  },
+  {
+   "tool": "canonicalize_name",
+   "output": "ProjectName",
+   "tried": 0,
+   "worked": 0,
+   "kept": false,
+   "why": "no parameter has this type",
+   "type": "ProjectName"
+  },
+  {
+   "tool": "parse_wheel_filename",
+   "output": "field name: WheelFilename",
+   "tried": 4,
+   "worked": 0,
+   "kept": false,
+   "type": "WheelFilename"
+  },
+  {
+   "tool": "parse_wheel_filename",
+   "output": "field tags: list[TagString]",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "TagString"
+  },
+  {
+   "tool": "parse_sdist_filename",
+   "output": "field name: SdistFilename",
+   "tried": 3,
+   "worked": 0,
+   "kept": false,
+   "type": "SdistFilename"
+  },
+  {
+   "tool": "parse_tag",
+   "output": "list[TagString]",
+   "tried": 3,
+   "worked": 3,
+   "kept": true,
+   "type": "TagString"
+  },
+  {
+   "tool": "supported_tags",
+   "output": "list[TagString]",
+   "tried": 4,
+   "worked": 4,
+   "kept": true,
+   "type": "TagString"
+  }
+ ],
+ "links_list": [
+  [
+   "base_version",
+   "base_version",
+   "direct"
+  ],
+  [
+   "base_version",
+   "canonicalize_version",
+   "direct"
+  ],
+  [
+   "base_version",
+   "compare_versions",
+   "direct"
+  ],
+  [
+   "base_version",
+   "normalize_version",
+   "direct"
+  ],
+  [
+   "base_version",
+   "version_info",
+   "direct"
+  ],
+  [
+   "base_version",
+   "version_satisfies",
+   "direct"
+  ],
+  [
+   "canonicalize_version",
+   "base_version",
+   "direct"
+  ],
+  [
+   "canonicalize_version",
+   "canonicalize_version",
+   "direct"
+  ],
+  [
+   "canonicalize_version",
+   "compare_versions",
+   "direct"
+  ],
+  [
+   "canonicalize_version",
+   "normalize_version",
+   "direct"
+  ],
+  [
+   "canonicalize_version",
+   "version_info",
+   "direct"
+  ],
+  [
+   "canonicalize_version",
+   "version_satisfies",
+   "direct"
+  ],
+  [
+   "combine_specifiers",
+   "combine_specifiers",
+   "direct"
+  ],
+  [
+   "combine_specifiers",
+   "filter_versions",
+   "direct"
+  ],
+  [
+   "combine_specifiers",
+   "is_satisfiable",
+   "direct"
+  ],
+  [
+   "combine_specifiers",
+   "is_valid_specifier",
+   "direct"
+  ],
+  [
+   "combine_specifiers",
+   "specifier_is_subset",
+   "direct"
+  ],
+  [
+   "combine_specifiers",
+   "specifiers_overlap",
+   "direct"
+  ],
+  [
+   "combine_specifiers",
+   "version_satisfies",
+   "direct"
+  ],
+  [
+   "filter_versions",
+   "base_version",
+   "first element"
+  ],
+  [
+   "filter_versions",
+   "canonicalize_version",
+   "first element"
+  ],
+  [
+   "filter_versions",
+   "compare_versions",
+   "first element"
+  ],
+  [
+   "filter_versions",
+   "normalize_version",
+   "first element"
+  ],
+  [
+   "filter_versions",
+   "sort_versions",
+   "direct"
+  ],
+  [
+   "filter_versions",
+   "version_info",
+   "first element"
+  ],
+  [
+   "filter_versions",
+   "version_satisfies",
+   "first element"
+  ],
+  [
+   "normalize_version",
+   "base_version",
+   "direct"
+  ],
+  [
+   "normalize_version",
+   "canonicalize_version",
+   "direct"
+  ],
+  [
+   "normalize_version",
+   "compare_versions",
+   "direct"
+  ],
+  [
+   "normalize_version",
+   "normalize_version",
+   "direct"
+  ],
+  [
+   "normalize_version",
+   "version_info",
+   "direct"
+  ],
+  [
+   "normalize_version",
+   "version_satisfies",
+   "direct"
+  ],
+  [
+   "parse_requirement",
+   "combine_specifiers",
+   "field specifier"
+  ],
+  [
+   "parse_requirement",
+   "filter_versions",
+   "field specifier"
+  ],
+  [
+   "parse_requirement",
+   "is_satisfiable",
+   "field specifier"
+  ],
+  [
+   "parse_requirement",
+   "is_valid_specifier",
+   "field specifier"
+  ],
+  [
+   "parse_requirement",
+   "specifier_is_subset",
+   "field specifier"
+  ],
+  [
+   "parse_requirement",
+   "specifiers_overlap",
+   "field specifier"
+  ],
+  [
+   "parse_requirement",
+   "version_satisfies",
+   "field specifier"
+  ],
+  [
+   "parse_tag",
+   "parse_tag",
+   "first element"
+  ],
+  [
+   "parse_wheel_filename",
+   "parse_tag",
+   "field tags, first element"
+  ],
+  [
+   "sort_versions",
+   "base_version",
+   "first element"
+  ],
+  [
+   "sort_versions",
+   "canonicalize_version",
+   "first element"
+  ],
+  [
+   "sort_versions",
+   "compare_versions",
+   "first element"
+  ],
+  [
+   "sort_versions",
+   "normalize_version",
+   "first element"
+  ],
+  [
+   "sort_versions",
+   "sort_versions",
+   "direct"
+  ],
+  [
+   "sort_versions",
+   "version_info",
+   "first element"
+  ],
+  [
+   "sort_versions",
+   "version_satisfies",
+   "first element"
+  ],
+  [
+   "supported_tags",
+   "parse_tag",
+   "first element"
+  ]
+ ]
+}

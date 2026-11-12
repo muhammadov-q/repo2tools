@@ -1,0 +1,16 @@
+T001 uuid=20c46270 passed=False steps=5 distractors=3 answer_chars=150 apertus_tools=9
+T002 uuid=f92380a1 passed=False steps=5 distractors=3 answer_chars=111 apertus_tools=9
+T003 uuid=f687207b passed=False steps=6 distractors=3 answer_chars=53 apertus_tools=10
+T004 uuid=c9b104da passed=False steps=5 distractors=3 answer_chars=40 apertus_tools=9
+T005 uuid=b5e787be passed=False steps=5 distractors=3 answer_chars=283 apertus_tools=9
+T006 uuid=431b6e35 passed=False steps=5 distractors=3 answer_chars=41 apertus_tools=9
+T007 uuid=1047791a passed=False steps=5 distractors=3 answer_chars=69 apertus_tools=9
+T008 uuid=82e4d998 passed=False steps=5 distractors=3 answer_chars=507 apertus_tools=9
+T009 uuid=4a7d76f2 passed=False steps=5 distractors=3 answer_chars=52 apertus_tools=9
+T010 uuid=de9b74bd passed=False steps=5 distractors=3 answer_chars=44 apertus_tools=9
+T011 uuid=429952fd passed=False steps=5 distractors=3 answer_chars=52 apertus_tools=9
+T012 uuid=9653fd89 passed=False steps=5 distractors=3 answer_chars=44 apertus_tools=9
+T013 uuid=b3d9fd98 passed=False steps=5 distractors=3 answer_chars=76 apertus_tools=9
+T014 uuid=e298aefa passed=False steps=6 distractors=3 answer_chars=311 apertus_tools=10
+T015 uuid=40d64190 passed=True steps=5 distractors=3 answer_chars=33 apertus_tools=9
+T016 uuid=367fd22a passed=True steps=5 distractors=3 answer_chars=55 apertus_tools=9

@@ -1,0 +1,13 @@
+{
+ "name": "v2-chained-short",
+ "started_at": "2026-11-12T14:24:53+00:00",
+ "finished_at": "2026-11-12T14:34:15+00:00",
+ "bindings": {
+  "endpoint": "http://127.0.0.1:18000/v1/",
+  "model": "qwen3-32b",
+  "seed": 42,
+  "target_entries": null,
+  "pool": null,
+  "pipeline_spec": null
+ }
+}
