@@ -473,9 +473,9 @@ def parse_proposal(text: str, callables: list[dict]) -> tuple[list[dict], str | 
             continue
         target = by_path.get(re.split(r"[( ]", str(item.get("function", "")).strip())[0])
         name = str(item.get("name", ""))
-        if target is None or (function_path(target) in used and target["kind"] != "class"):
+        if target is None or (function_path(target) in used and target.get("kind") != "class"):
             continue  # an invented function, or a second tool for the same one (a class may give several, one per operation)
-        if target["kind"] == "class" and sum(function_path(p["callable"]) == function_path(target) for p in picks) >= MAX_PER_CLASS:
+        if target.get("kind") == "class" and sum(function_path(p["callable"]) == function_path(target) for p in picks) >= MAX_PER_CLASS:
             continue
         if not TOOL_NAME.match(name) or name in names or not item.get("description"):
             continue
