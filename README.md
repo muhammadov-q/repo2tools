@@ -19,6 +19,7 @@ Author: Kobiljon Muhammadov. Supervisor: Roman Macháček.
 - [Results at a glance](#results-at-a-glance)
 - [Quick start](#quick-start)
 - [Stage 1: from a repo link to tools](#stage-1-from-a-repo-link-to-tools)
+- [Usability: can a small model call the tools](#usability-can-a-small-model-call-the-tools)
 - [Stage 2: chains and synthetic traces with ToolGym](#stage-2-chains-and-synthetic-traces-with-toolgym)
 - [Stage 3: exercises, traces and repetition](#stage-3-exercises-traces-and-repetition)
 - [What each check can and cannot tell](#what-each-check-can-and-cannot-tell)
@@ -142,6 +143,23 @@ Chaining, 12 November 2026. Qwen3-32B repairs and types the tools and runs ToolG
 | 20 long exercises with worked examples in the prompt, Qwen3-8B | No examples: 0 of 20. Three ToolGym chains: 0 of 20, and no run calls a tool. Two known-good solutions of other long tasks: 0 of 18, 1.9 calls of 17 needed |
 | The same with Qwen3-32B | No tools 4 of 20; tools 2 of 20; ToolGym chains 2 of 20 (0.8 calls per run); known-good solutions 2 of 18 (7.2 calls per run, 11 runs use every needed tool) |
 
+Usability, 12 November 2026. Qwen3-8B uses the 29 generated packaging tools; Qwen3-32B writes the tasks (135, one per checked sample call) and the new descriptions. One run; a second run of the same measurement differed by 1 or 2 tasks.
+
+| | Before | After the rewrite |
+| --- | --- | --- |
+| Right call with only the tool offered, all 135 tasks | 112 (83%) | 123 (91%) |
+| Right call with all 29 tools offered, all 135 tasks | 104 (77%) | 116 (86%) |
+| The same on the 58 held-out tasks: tool alone, whole set | 44, 43 | 49, 48 |
+| Held-out tasks of the 9 rewritten tools, both settings | 22 of 40 | 32 of 40 |
+| Held-out tasks of the 20 other tools, both settings | 65 of 76 | 65 of 76 |
+| 222 short exercises with known answers | 124 (56%) | 127 (57%) |
+
+- **Before the rewrite the model picks or calls a generated tool wrongly about one time in five.** In the whole set the main failure is choosing a similar tool (18 of 31 failures): `check_specifier_sets_disjoint` loses all five of its tasks to `check_version_ranges_disjoint`.
+- **Rewriting descriptions helps on the tools' own tasks and does not carry over to the exercises.** 124 to 127 of 222 is inside the run-to-run difference (two runs of the old set differed on 3 exercises).
+- **Where the exercise score is lost** (old set, hand-made tools in brackets): the needed function is wrapped directly, 76 of 82 (72); a tool could answer but not directly, 16 of 60 (59); the function is not wrapped, 32 of 80 (78). In the last two groups the generated tools score below no tools at all (33 and 54), because a similar tool attracts the call.
+- **A rewrite can make a description false.** In a first run the rewriter copied the library's return type ("returns a Version object") for tools that return text, and the exercise score fell to 117. The rewriter is now told what the tool returns, and a rewrite is dropped if the model's final answer matches the tool's result less often.
+- **Not fixed by words:** no rewrite helped `check_specifier_sets_disjoint` (a duplicate of another tool) or `generate_compatible_tags` (its output overflows the model's context).
+
 </details>
 
 ## Quick start
@@ -192,6 +210,30 @@ The result goes to `toolsets/generated/<repo>-<model>/` (one file per tool, `ser
 - Other systems have no such sandbox. The tool then warns, and the report says so. Only use repos you trust there.
 
 To score generated tools on exercises, use `run_model.py` with `run_server.sh` as the server command. `run_reference_calls.py` needs the hand-made tool names, so it doesn't work on generated tools.
+
+## Usability: can a small model call the tools
+
+A tool that agrees with the library is still of no use if the model can't pick it or call it. `usability.py` measures this per tool, with two models: a larger one writes, a small one uses the tools.
+
+```sh
+T=toolsets/generated/packaging-coder-60
+# one task per checked sample call, written from the library function, never from the tool's name or description
+uv run python usability.py tasks  $T --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
+# the small model gets each task with the tool alone, with the whole set, and with no tools
+uv run python usability.py check  $T --base-url http://127.0.0.1:18001/v1 --model qwen3-8b
+# rewrite names and descriptions of tools with a failed task; the result is the tool set <set>-usable
+uv run python usability.py repair $T --base-url http://127.0.0.1:18001/v1 --model qwen3-8b \
+    --writer-url http://127.0.0.1:18000/v1 --writer-model qwen3-32b
+```
+
+- **A task is right** when the model calls the tool the task was written for, with the task's arguments or with others that give the same result. A true/false result needs the arguments themselves. A right final answer without that call does not count: 51 of 135 answers can be guessed without tools.
+- **Half of each tool's tasks are held out.** The rewriter sees only the other half, with what the small model did on them.
+- **A rewrite is kept** only if the small model then gets more of the tool's tasks right and its final answer is the tool's result at least as often as before.
+- **The LLM never touches the code.** The script replaces the function name and the docstring, and the tool must pass the checks of `repo2tools.py` again. The new set is then measured through its own server.
+
+Reports: `out/generated/<set>/usability.md` and `out/generated/<set>-usable/usability_repair.md`.
+
+**Limits.** The tasks come from the tool's own sample calls, so they show whether a tool can be called, not whether it's the right tool to have. A final answer equal to the tool's result is a weak test of reading: some tasks ask the opposite of what the tool returns. The descriptions are fitted to one small model.
 
 ## Stage 2: chains and synthetic traces with ToolGym
 
@@ -294,6 +336,7 @@ A harness gives the model `task` plus a tool set (these tools, another granulari
 | Function named by full path, checked against the scanned API | A tool whose code wraps a different function than its name says | A name or description that is technically right but misleads a model |
 | Pairwise type check by execution | A parameter whose values the other parameters of its type reject | Values that are accepted but mean something else |
 | Output fed into consuming tools | Outputs that no tool can read (dead ends) | Chains that run but make no sense as a task |
+| A small model tries each tool on tasks from its own sample calls | A name or description the model can't pick or call from; similar tools that take each other's calls | Whether the tool set has the right tools; a description that is false about something the tasks don't touch |
 | Exercises with known answers | Whether a model, given the tools, gets the right answer | Why it failed; that needs the traces |
 
 Two of these rows exist because of failures in this project. In the first run with a real model, the LLM numbered its picks 1, 2, 3 and a tool named `evaluate_marker` wrapped `DirectUrl.from_dict`, passing every check: that is why functions are now named by path. And the dead-end range tools passed every single-tool check: that is why outputs are now fed into consumers.
@@ -324,6 +367,7 @@ No GPU or API key needed. The LLM and the endpoint are scripted.
 | `toolsets/generated/` | Generated tool sets, one file per tool. Not reviewed by a person. |
 | `generated_to_toolgym.py` | ToolGym types for a generated tool set, checked by running the tools; writes the catalog folder. |
 | `repair_chains.py` | Rewrites tools whose output no tool accepts, with three checks on every repair. |
+| `usability.py` | A small model tries each generated tool; names and descriptions of tools it gets wrong are rewritten and measured again. |
 | `toolgym_exercises.py` | ToolGym's synthetic tasks as exercises with known answers; `--compose` joins several into one long task. |
 | `toolgym_local.py`, `toolgym_traces.py` | Run ToolGym's chain check and pipeline on tools served from this computer; turn the results into traces. |
 | `tool_worker.py` | Checks one generated tool. It runs inside the tool set's environment and sandbox. |
