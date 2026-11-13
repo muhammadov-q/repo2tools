@@ -248,7 +248,7 @@ A third option, `--operators`, lists each operator the repo uses with a class (`
 
 - With `--classes`, all three runs beat the plain pick and the run without tools. The gain comes from tools for the parts of a version: `version_base` goes from 10 to 20 of 20 and `version_is_prerelease` from 4 to 20 of 20. The same two tools appear with `--usage docs`.
 - With `--classes` the LLM picks each class once and makes a constructor tool (`create_version`). It never made a comparison tool, although the prompt allows several tools per class.
-- `--usage docs` drops `parse_wheel_filename`, which the docs never call: `wheel_tags` falls from 8 to 0 of 8 in all six runs with that option. Usage in the docs is a useful hint, not a full ranking.
+- `--usage docs` drops `parse_wheel_filename`, which the docs never call: `wheel_tags` falls from 8 to 0 of 8 in all eight runs with that option. Usage in the docs is a useful hint, not a full ranking.
 - `--operators` does give comparison tools (`version_less_than`, `version_equality`, ...; `version_compare` 12 of 20 in one run, against 6 to 9), but up to 18 operator tools push out others and the total falls. Six small comparison tools are a worse fit than the one `compare_versions` of the hand-made set. That is a question of tool size, not of picking.
 - One run each for the last five rows, and the model that picks is not deterministic, so read those as single observations.
 
