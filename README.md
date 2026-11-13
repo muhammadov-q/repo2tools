@@ -393,6 +393,7 @@ Two of these rows exist because of failures in this project. In the first run wi
 - **"Accepted" by ToolGym means accepted by an LLM judge and an LLM challenger,** with the same model in every role.
 - **Compression savings are simulated** on recorded runs. Their effect on accuracy has not been measured.
 - **The sandbox is macOS only** (`sandbox-exec`). Elsewhere generated code runs in its own environment without network or file limits, and the tool says so.
+- **The sandbox hides the home folder**, and the API key file by its own path. If the checkout is outside the home folder, generated code can read the folders around it. Keep the checkout inside the home folder.
 
 ## Tests
 
