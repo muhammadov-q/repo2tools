@@ -1,6 +1,6 @@
 """Replay the exercises' known-good solutions through an MCP server, and save them as traces.
 
-    uv run python collect_reference_traces.py out/packaging/exercises.jsonl \\
+    uv run python src/collect_reference_traces.py out/packaging/exercises.jsonl \\
         -o out/traces/reference-function.jsonl -- uv run python toolsets/pypa_packaging/server.py
 
 No model is involved. The messages are the ones a model would see if it made exactly these calls,

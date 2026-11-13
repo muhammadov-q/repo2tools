@@ -1,6 +1,6 @@
 """Repair generated tools whose output no other tool can take.
 
-    uv run python repair_chains.py toolsets/generated/packaging-coder-60 --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
+    uv run python src/repair_chains.py toolsets/generated/packaging-coder-60 --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
 
 A tool can pass every check of repo2tools.py and still be a dead end in a chain. Example: a tool
 takes a version constraint such as ">=1.0" and returns "<VersionRange '[1.0, 2.0.dev0)'>", the

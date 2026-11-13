@@ -1,6 +1,6 @@
 """Write the pypa/packaging tools into ToolGym's catalog as one server folder.
 
-    uv run python export_toolgym_catalog.py --dest ../tool-gym/gym/tools/mcp_servers/catalog
+    uv run python src/export_toolgym_catalog.py --dest ../tool-gym/gym/tools/mcp_servers/catalog
 
 The folder gets mcp_server.json (each tool's MCP spec from our server plus its GYM_TYPES),
 types.py (a copy of toolsets/pypa_packaging/toolgym_types.py), samples.json (sample pools from
@@ -19,7 +19,7 @@ from packaging.markers import Marker
 from packaging.specifiers import SpecifierSet
 from packaging.utils import canonicalize_name, parse_sdist_filename, parse_wheel_filename
 
-HERE = Path(__file__).parent
+HERE = Path(__file__).resolve().parent.parent  # the repository's root
 TOOLSET = HERE / "toolsets" / "pypa_packaging"
 sys.path.insert(0, str(TOOLSET))
 from server import add_tools, mcp  # noqa: E402

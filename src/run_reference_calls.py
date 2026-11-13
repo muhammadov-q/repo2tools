@@ -5,7 +5,7 @@ built from the outputs must match the exercise's answer, which comes from the li
 tests or from direct library calls.
 
 Usage:
-    uv run python run_reference_calls.py out/packaging/exercises.jsonl \\
+    uv run python src/run_reference_calls.py out/packaging/exercises.jsonl \\
         -- uv run python toolsets/pypa_packaging/server.py
 Writes <exercises>.reference_run.json next to the exercises file.
 """

@@ -1,8 +1,8 @@
 """Set up ToolGym to run on tools served from this computer, and run its checks or its pipeline.
 
-    uv run python toolgym_local.py install ../tool-gym
-    uv run python toolgym_local.py chains ../tool-gym repo2tools_packaging_coder_60 --tool-server toolsets/generated/packaging-coder-60/run_server.sh
-    uv run python toolgym_local.py generate ../tool-gym repo2tools_packaging_coder_60 --tool-server ... \\
+    uv run python src/toolgym_local.py install ../tool-gym
+    uv run python src/toolgym_local.py chains ../tool-gym repo2tools_packaging_coder_60 --tool-server toolsets/generated/packaging-coder-60/run_server.sh
+    uv run python src/toolgym_local.py generate ../tool-gym repo2tools_packaging_coder_60 --tool-server ... \\
         --base-url http://127.0.0.1:18000/v1 --model qwen3-32b --min-length 2 --max-length 4 --chains 20
 
 ToolGym's tracked code runs tools in Podman containers or on the CSCS cluster. `install` makes
@@ -34,7 +34,7 @@ import sys
 import time
 from pathlib import Path
 
-HERE = Path(__file__).resolve().parent
+HERE = Path(__file__).resolve().parent.parent  # the repository's root
 PORT = 8765
 
 CHAIN_CHECK = [

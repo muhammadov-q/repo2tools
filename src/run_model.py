@@ -1,9 +1,9 @@
 """Run a model on the exercises, with the MCP tools or without tools, and score its answers.
 
-    uv run python run_model.py out/packaging/exercises.jsonl --mode tools \\
+    uv run python src/run_model.py out/packaging/exercises.jsonl --mode tools \\
         --base-url http://127.0.0.1:8000/v1 --model qwen3-8b \\
         -- uv run python toolsets/pypa_packaging/server.py
-    uv run python run_model.py out/packaging/exercises.jsonl --mode none --base-url ... --model ...
+    uv run python src/run_model.py out/packaging/exercises.jsonl --mode none --base-url ... --model ...
 
 The endpoint is any OpenAI-compatible server with tool calling (e.g. vLLM). The API key is read
 from $OPENAI_API_KEY. Writes one JSON line per exercise to out/runs/<model>-<mode>.jsonl and
@@ -40,7 +40,7 @@ from exercise_check import check
 from run_reference_calls import output_value
 from traces import add_request, new_trace, read_traces, write_traces
 
-HERE = Path(__file__).parent
+HERE = Path(__file__).resolve().parent.parent  # the repository's root
 SYSTEM = {
     "tools": "You solve tasks about Python package versions and dependencies. Use the tools whenever they help; "
              "do not guess what a tool would return. When you are done, reply with only the final answer as a "

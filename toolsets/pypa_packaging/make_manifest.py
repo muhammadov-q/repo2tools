@@ -1,6 +1,6 @@
 """Write manifest.json for the hand-made packaging tools, so the scripts for generated tool sets work on them too.
 
-    uv run python collect_reference_traces.py out/packaging/exercises.jsonl -o out/traces/reference-function.jsonl -- uv run python toolsets/pypa_packaging/server.py
+    uv run python src/collect_reference_traces.py out/packaging/exercises.jsonl -o out/traces/reference-function.jsonl -- uv run python toolsets/pypa_packaging/server.py
     python3 -I toolsets/pypa_packaging/make_manifest.py out/traces/reference-function.jsonl
 
 A manifest lists each tool with sample inputs. The samples come from the calls of the exercises'

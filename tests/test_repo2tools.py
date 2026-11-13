@@ -445,9 +445,9 @@ def _attempt(action):
 def hostile(a: int) -> dict[str, bool]:
     """Try what generated code must not be able to do. Returns which attempts worked."""
     return {{
-        "read_api_key": _attempt(lambda: pathlib.Path({str(repo2tools.HERE / ".vllm_api_key")!r}).read_bytes()),
+        "read_api_key": _attempt(lambda: pathlib.Path({str(repo2tools.REPO / ".vllm_api_key")!r}).read_bytes()),
         "read_ssh_folder": _attempt(lambda: os.listdir(pathlib.Path({str(Path.home())!r}) / ".ssh")),
-        "read_notes": _attempt(lambda: os.listdir({str(repo2tools.HERE.parent.parent)!r})),
+        "read_notes": _attempt(lambda: os.listdir({str(repo2tools.REPO.parent.parent)!r})),
         "list_home": _attempt(lambda: os.listdir({str(Path.home())!r})),
         "network": _attempt(lambda: socket.create_connection(("1.1.1.1", 53), timeout=3)),
         "dns": _attempt(lambda: socket.getaddrinfo("example.com", 80)),
@@ -470,4 +470,4 @@ def hostile(a: int) -> dict[str, bool]:
 def test_generated_tools_do_not_appear_in_the_real_repo(workspace):
     report = build(workspace, good_script())
     assert report["accepted"] == 2
-    assert not (repo2tools.HERE / "toolsets" / "generated" / "tinylib-test").exists()
+    assert not (repo2tools.REPO / "toolsets" / "generated" / "tinylib-test").exists()

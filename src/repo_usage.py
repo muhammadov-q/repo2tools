@@ -1,6 +1,6 @@
 """Count how often a repository's own documentation and tests use each function of its public API.
 
-    uv run python repo_usage.py out/generated/packaging-coder-60/api.json .cache/repos/packaging -o out/usage/packaging.json
+    uv run python src/repo_usage.py out/generated/packaging-coder-60/api.json .cache/repos/packaging -o out/usage/packaging.json
 
 Which functions should become tools? An LLM can guess from names and docstrings. The repository
 itself knows better: what its documentation shows in examples, and what its tests exercise, is what

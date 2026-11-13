@@ -1,9 +1,9 @@
 """Check that a small model can pick and call each generated tool, and rewrite the names and descriptions it gets wrong.
 
     T=toolsets/generated/packaging-coder-60
-    uv run python usability.py tasks  $T --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
-    uv run python usability.py check  $T --base-url http://127.0.0.1:18001/v1 --model qwen3-8b
-    uv run python usability.py repair $T --base-url http://127.0.0.1:18001/v1 --model qwen3-8b \\
+    uv run python src/usability.py tasks  $T --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
+    uv run python src/usability.py check  $T --base-url http://127.0.0.1:18001/v1 --model qwen3-8b
+    uv run python src/usability.py repair $T --base-url http://127.0.0.1:18001/v1 --model qwen3-8b \\
         --writer-url http://127.0.0.1:18000/v1 --writer-model qwen3-32b
 
 A tool can give the same result as the library and still be of no use, because the model that
