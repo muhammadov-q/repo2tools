@@ -211,6 +211,47 @@ The result goes to `toolsets/generated/<repo>-<model>/` (one file per tool, `ser
 
 To score generated tools on exercises, use `run_model.py` with `run_server.sh` as the server command. `run_reference_calls.py` needs the hand-made tool names, so it doesn't work on generated tools.
 
+### Which functions to wrap: how the repo itself uses its API
+
+By default the LLM picks functions from a plain list of the public API. Two options give it more to go on:
+
+```sh
+uv run python repo_usage.py out/generated/packaging-coder-60/api.json .cache/repos/packaging \
+    --package-dir .cache/repos/packaging/src/packaging -o out/usage/packaging.json
+uv run python repo2tools.py https://github.com/pypa/packaging --commit c1d2a9d \
+    --base-url http://127.0.0.1:18000/v1 --model qwen3-coder --usage docs --classes
+```
+
+- `repo_usage.py` counts how often each API function is used in the repo's own documentation (doctest lines, code blocks, docstring examples) and in its tests. It only reads the files with `ast`; nothing is run. It also counts, per class, how often the class is built and which operators (`<`, `==`, `in`, `&`, ...) are used on its objects.
+- `--usage docs|tests|both` sorts the list shown to the LLM by these counts and prints the counts next to each entry.
+- `--classes` adds each class as an entry. A class may be picked several times, once per operation, so a tool can wrap `Version(a) < Version(b)` or `version in SpecifierSet(spec)`, which no single function offers.
+
+On packaging (28 doc files, 35 test files, 92 API functions): 45 functions appear in the docs and 87 in the tests. The most used things are not functions at all: `Version` is built 17 times in the docs and 680 times in the tests, and operators are used on its objects about 340 times (mostly `in`, `==`, `<`, `not in`, `>`). 5 of the 13 exercise kinds (100 of 222 exercises) need exactly that, and a function-only list cannot offer it.
+
+`--usage tests` and `--usage both` are **circular** for the packaging exercises, because the exercises are built from the same tests. `--usage docs` is the independent signal.
+
+A third option, `--operators`, lists each operator the repo uses with a class (`Version <`, `SpecifierSet &`, ...) as its own entry, named like its method (`packaging.version.Version.__lt__`). The test of such a tool must use the operator itself.
+
+**Picking, 13 November 2026.** Qwen3-Coder writes the tools (`--max-tools 60`), Qwen3-8B solves the 222 short exercises. Every run is a new tool set from the same commit. For comparison: no tools 133, hand-made tools 209.
+
+| Options | Tools accepted | Exercises solved, per run | Mean |
+| --- | --- | --- | --- |
+| none (the LLM picks from a plain list) | 31, 31, 30 | 126, 125, 125 | 125 |
+| `--usage docs` | 39, 39, 38 | 138, 135, 137 | 137 |
+| `--classes` | 39, 37, 38 | 149, 146, 163 | **153** |
+| `--usage docs --classes` | 42, 43, 41 | 127, 137, 120 | 128 |
+| `--usage both --classes` (circular) | 46 | 127 | |
+| `--operators` | 41 | 103 | |
+| `--classes --operators` | 45 | 108 | |
+| `--usage docs --operators` | 33 | 107 | |
+| `--usage docs --classes --operators` | 48 | 124 | |
+
+- With `--classes`, all three runs beat the plain pick and the run without tools. The gain comes from tools for the parts of a version: `version_base` goes from 10 to 20 of 20 and `version_is_prerelease` from 4 to 20 of 20. The same two tools appear with `--usage docs`.
+- With `--classes` the LLM picks each class once and makes a constructor tool (`create_version`). It never made a comparison tool, although the prompt allows several tools per class.
+- `--usage docs` drops `parse_wheel_filename`, which the docs never call: `wheel_tags` falls from 8 to 0 of 8 in all six runs with that option. Usage in the docs is a useful hint, not a full ranking.
+- `--operators` does give comparison tools (`version_less_than`, `version_equality`, ...; `version_compare` 12 of 20 in one run, against 6 to 9), but up to 18 operator tools push out others and the total falls. Six small comparison tools are a worse fit than the one `compare_versions` of the hand-made set. That is a question of tool size, not of picking.
+- One run each for the last five rows, and the model that picks is not deterministic, so read those as single observations.
+
 ## Usability: can a small model call the tools
 
 A tool that agrees with the library is still of no use if the model can't pick it or call it. `usability.py` measures this per tool, with two models: a larger one writes, a small one uses the tools.
@@ -364,6 +405,7 @@ No GPU or API key needed. The LLM and the endpoint are scripted.
 | Path | What it does |
 | --- | --- |
 | `repo2tools.py` | Repo link to checked tools; see above. |
+| `repo_usage.py` | Counts how the repo's own docs and tests use each API function, class and operator. Static; runs nothing. |
 | `toolsets/generated/` | Generated tool sets, one file per tool. Not reviewed by a person. |
 | `generated_to_toolgym.py` | ToolGym types for a generated tool set, checked by running the tools; writes the catalog folder. |
 | `repair_chains.py` | Rewrites tools whose output no tool accepts, with three checks on every repair. |

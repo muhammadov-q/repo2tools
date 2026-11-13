@@ -1,0 +1,1053 @@
+{
+ "package": "packaging",
+ "files": {
+  "docs": 28,
+  "tests": 35
+ },
+ "unparsed_pieces": 0,
+ "callables": {
+  "packaging.dependency_groups.resolve_dependency_groups": {
+   "docs": 1,
+   "tests": 20,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.licenses.canonicalize_license_expression": {
+   "docs": 5,
+   "tests": 3,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.markers.default_environment": {
+   "docs": 0,
+   "tests": 3,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.metadata.parse_email": {
+   "docs": 1,
+   "tests": 16,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.pylock.is_valid_pylock_path": {
+   "docs": 1,
+   "tests": 1,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.parse_tag": {
+   "docs": 0,
+   "tests": 18,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.cpython_tags": {
+   "docs": 0,
+   "tests": 25,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.generic_tags": {
+   "docs": 0,
+   "tests": 7,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.pure_python_tags": {
+   "docs": 0,
+   "tests": 5,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.compatible_tags": {
+   "docs": 0,
+   "tests": 8,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.mac_platforms": {
+   "docs": 0,
+   "tests": 11,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.ios_platforms": {
+   "docs": 0,
+   "tests": 6,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.android_platforms": {
+   "docs": 0,
+   "tests": 13,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.platform_tags": {
+   "docs": 0,
+   "tests": 4,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.interpreter_name": {
+   "docs": 0,
+   "tests": 3,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.interpreter_version": {
+   "docs": 0,
+   "tests": 4,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.interpreter_abi": {
+   "docs": 0,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.sys_tags": {
+   "docs": 2,
+   "tests": 10,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.tags.create_compatible_tags_selector": {
+   "docs": 1,
+   "tests": 1,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.utils.canonicalize_name": {
+   "docs": 4,
+   "tests": 4,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.utils.is_normalized_name": {
+   "docs": 3,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.utils.canonicalize_version": {
+   "docs": 5,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.utils.parse_wheel_filename": {
+   "docs": 2,
+   "tests": 4,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.utils.parse_sdist_filename": {
+   "docs": 1,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.version.normalize_pre": {
+   "docs": 0,
+   "tests": 0,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.version.parse": {
+   "docs": 1,
+   "tests": 5,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.dependency_groups.DependencyGroupResolver.lookup": {
+   "docs": 1,
+   "tests": 7,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.dependency_groups.DependencyGroupResolver.resolve": {
+   "docs": 2,
+   "tests": 3,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.direct_url.DirectUrl.from_dict": {
+   "docs": 1,
+   "tests": 14,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.direct_url.DirectUrl.to_dict": {
+   "docs": 1,
+   "tests": 9,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.direct_url.DirectUrl.validate": {
+   "docs": 1,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.markers.Marker.evaluate": {
+   "docs": 2,
+   "tests": 39,
+   "guessed_docs": 0,
+   "guessed_tests": 2
+  },
+  "packaging.metadata.RFC822Policy.header_store_parse": {
+   "docs": 0,
+   "tests": 0,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.metadata.RFC822Message.as_bytes": {
+   "docs": 0,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.metadata.Metadata.from_raw": {
+   "docs": 1,
+   "tests": 54,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.metadata.Metadata.from_email": {
+   "docs": 0,
+   "tests": 15,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.metadata.Metadata.as_rfc822": {
+   "docs": 0,
+   "tests": 11,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.pylock.PackageSdist.filename": {
+   "docs": 0,
+   "tests": 1,
+   "guessed_docs": 0,
+   "guessed_tests": 2
+  },
+  "packaging.pylock.PackageWheel.filename": {
+   "docs": 0,
+   "tests": 1,
+   "guessed_docs": 0,
+   "guessed_tests": 2
+  },
+  "packaging.pylock.Package.is_direct": {
+   "docs": 0,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.pylock.Pylock.from_dict": {
+   "docs": 1,
+   "tests": 32,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.pylock.Pylock.to_dict": {
+   "docs": 1,
+   "tests": 4,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.pylock.Pylock.validate": {
+   "docs": 1,
+   "tests": 16,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.pylock.Pylock.select": {
+   "docs": 1,
+   "tests": 17,
+   "guessed_docs": 0,
+   "guessed_tests": 1
+  },
+  "packaging.ranges.VersionRange.empty": {
+   "docs": 1,
+   "tests": 30,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.ranges.VersionRange.full": {
+   "docs": 5,
+   "tests": 63,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.ranges.VersionRange.singleton": {
+   "docs": 1,
+   "tests": 26,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.ranges.VersionRange.intersection": {
+   "docs": 0,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 44
+  },
+  "packaging.ranges.VersionRange.union": {
+   "docs": 0,
+   "tests": 5,
+   "guessed_docs": 0,
+   "guessed_tests": 38
+  },
+  "packaging.ranges.VersionRange.complement": {
+   "docs": 0,
+   "tests": 8,
+   "guessed_docs": 0,
+   "guessed_tests": 50
+  },
+  "packaging.ranges.VersionRange.difference": {
+   "docs": 0,
+   "tests": 0,
+   "guessed_docs": 0,
+   "guessed_tests": 2
+  },
+  "packaging.ranges.VersionRange.is_subset": {
+   "docs": 1,
+   "tests": 15,
+   "guessed_docs": 0,
+   "guessed_tests": 21
+  },
+  "packaging.ranges.VersionRange.is_superset": {
+   "docs": 1,
+   "tests": 6,
+   "guessed_docs": 0,
+   "guessed_tests": 8
+  },
+  "packaging.ranges.VersionRange.is_disjoint": {
+   "docs": 1,
+   "tests": 6,
+   "guessed_docs": 0,
+   "guessed_tests": 18
+  },
+  "packaging.ranges.VersionRange.filter": {
+   "docs": 3,
+   "tests": 39,
+   "guessed_docs": 5,
+   "guessed_tests": 69
+  },
+  "packaging.ranges.VersionRange.to_specifier_set": {
+   "docs": 4,
+   "tests": 66,
+   "guessed_docs": 4,
+   "guessed_tests": 29
+  },
+  "packaging.ranges.VersionRange.is_empty": {
+   "docs": 1,
+   "tests": 19,
+   "guessed_docs": 1,
+   "guessed_tests": 39
+  },
+  "packaging.ranges.VersionRange.contains": {
+   "docs": 0,
+   "tests": 19,
+   "guessed_docs": 0,
+   "guessed_tests": 16
+  },
+  "packaging.specifiers.BaseSpecifier.prereleases": {
+   "docs": 0,
+   "tests": 0,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.specifiers.BaseSpecifier.contains": {
+   "docs": 0,
+   "tests": 0,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.specifiers.BaseSpecifier.filter": {
+   "docs": 0,
+   "tests": 0,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.specifiers.Specifier.prereleases": {
+   "docs": 0,
+   "tests": 11,
+   "guessed_docs": 0,
+   "guessed_tests": 31
+  },
+  "packaging.specifiers.Specifier.operator": {
+   "docs": 0,
+   "tests": 5,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.specifiers.Specifier.version": {
+   "docs": 0,
+   "tests": 11,
+   "guessed_docs": 0,
+   "guessed_tests": 3
+  },
+  "packaging.specifiers.Specifier.contains": {
+   "docs": 0,
+   "tests": 53,
+   "guessed_docs": 0,
+   "guessed_tests": 92
+  },
+  "packaging.specifiers.Specifier.filter": {
+   "docs": 0,
+   "tests": 4,
+   "guessed_docs": 1,
+   "guessed_tests": 87
+  },
+  "packaging.specifiers.SpecifierSet.prereleases": {
+   "docs": 0,
+   "tests": 7,
+   "guessed_docs": 0,
+   "guessed_tests": 31
+  },
+  "packaging.specifiers.SpecifierSet.is_unsatisfiable": {
+   "docs": 2,
+   "tests": 17,
+   "guessed_docs": 2,
+   "guessed_tests": 7
+  },
+  "packaging.specifiers.SpecifierSet.to_range": {
+   "docs": 33,
+   "tests": 87,
+   "guessed_docs": 0,
+   "guessed_tests": 88
+  },
+  "packaging.specifiers.SpecifierSet.is_subset": {
+   "docs": 1,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 21
+  },
+  "packaging.specifiers.SpecifierSet.is_superset": {
+   "docs": 1,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 8
+  },
+  "packaging.specifiers.SpecifierSet.is_disjoint": {
+   "docs": 1,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 18
+  },
+  "packaging.specifiers.SpecifierSet.contains": {
+   "docs": 0,
+   "tests": 22,
+   "guessed_docs": 0,
+   "guessed_tests": 97
+  },
+  "packaging.specifiers.SpecifierSet.filter": {
+   "docs": 0,
+   "tests": 20,
+   "guessed_docs": 6,
+   "guessed_tests": 104
+  },
+  "packaging.tags.Tag.interpreter": {
+   "docs": 0,
+   "tests": 3,
+   "guessed_docs": 0,
+   "guessed_tests": 1
+  },
+  "packaging.tags.Tag.abi": {
+   "docs": 0,
+   "tests": 6,
+   "guessed_docs": 0,
+   "guessed_tests": 1
+  },
+  "packaging.tags.Tag.platform": {
+   "docs": 0,
+   "tests": 5,
+   "guessed_docs": 0,
+   "guessed_tests": 1
+  },
+  "packaging.version.Version.from_parts": {
+   "docs": 0,
+   "tests": 3,
+   "guessed_docs": 0,
+   "guessed_tests": 0
+  },
+  "packaging.version.Version.epoch": {
+   "docs": 1,
+   "tests": 12,
+   "guessed_docs": 0,
+   "guessed_tests": 17
+  },
+  "packaging.version.Version.release": {
+   "docs": 1,
+   "tests": 9,
+   "guessed_docs": 0,
+   "guessed_tests": 31
+  },
+  "packaging.version.Version.pre": {
+   "docs": 1,
+   "tests": 12,
+   "guessed_docs": 0,
+   "guessed_tests": 11
+  },
+  "packaging.version.Version.post": {
+   "docs": 2,
+   "tests": 7,
+   "guessed_docs": 0,
+   "guessed_tests": 13
+  },
+  "packaging.version.Version.dev": {
+   "docs": 0,
+   "tests": 7,
+   "guessed_docs": 0,
+   "guessed_tests": 14
+  },
+  "packaging.version.Version.local": {
+   "docs": 0,
+   "tests": 5,
+   "guessed_docs": 0,
+   "guessed_tests": 20
+  },
+  "packaging.version.Version.public": {
+   "docs": 0,
+   "tests": 3,
+   "guessed_docs": 0,
+   "guessed_tests": 3
+  },
+  "packaging.version.Version.base_version": {
+   "docs": 0,
+   "tests": 1,
+   "guessed_docs": 0,
+   "guessed_tests": 1
+  },
+  "packaging.version.Version.is_prerelease": {
+   "docs": 2,
+   "tests": 6,
+   "guessed_docs": 0,
+   "guessed_tests": 11
+  },
+  "packaging.version.Version.is_postrelease": {
+   "docs": 2,
+   "tests": 4,
+   "guessed_docs": 0,
+   "guessed_tests": 9
+  },
+  "packaging.version.Version.is_devrelease": {
+   "docs": 0,
+   "tests": 3,
+   "guessed_docs": 0,
+   "guessed_tests": 10
+  },
+  "packaging.version.Version.major": {
+   "docs": 0,
+   "tests": 1,
+   "guessed_docs": 0,
+   "guessed_tests": 1
+  },
+  "packaging.version.Version.minor": {
+   "docs": 0,
+   "tests": 2,
+   "guessed_docs": 0,
+   "guessed_tests": 1
+  },
+  "packaging.version.Version.micro": {
+   "docs": 0,
+   "tests": 3,
+   "guessed_docs": 0,
+   "guessed_tests": 1
+  }
+ },
+ "classes": {
+  "DependencyGroupResolver": {
+   "built": {
+    "docs": 1,
+    "tests": 10
+   },
+   "operators": {}
+  },
+  "DirectUrl": {
+   "built": {
+    "docs": 3,
+    "tests": 9
+   },
+   "operators": {}
+  },
+  "Marker": {
+   "built": {
+    "docs": 12,
+    "tests": 110
+   },
+   "operators": {
+    "==": {
+     "docs": 1,
+     "tests": 18
+    },
+    "&": {
+     "docs": 1,
+     "tests": 10
+    },
+    "|": {
+     "docs": 1,
+     "tests": 3
+    },
+    "!=": {
+     "docs": 0,
+     "tests": 1
+    }
+   }
+  },
+  "RFC822Policy": {
+   "built": {
+    "docs": 0,
+    "tests": 0
+   },
+   "operators": {}
+  },
+  "RFC822Message": {
+   "built": {
+    "docs": 0,
+    "tests": 3
+   },
+   "operators": {}
+  },
+  "Metadata": {
+   "built": {
+    "docs": 0,
+    "tests": 0
+   },
+   "operators": {}
+  },
+  "PackageSdist": {
+   "built": {
+    "docs": 0,
+    "tests": 12
+   },
+   "operators": {}
+  },
+  "PackageWheel": {
+   "built": {
+    "docs": 1,
+    "tests": 17
+   },
+   "operators": {}
+  },
+  "Package": {
+   "built": {
+    "docs": 1,
+    "tests": 23
+   },
+   "operators": {}
+  },
+  "Pylock": {
+   "built": {
+    "docs": 1,
+    "tests": 18
+   },
+   "operators": {}
+  },
+  "VersionRange": {
+   "built": {
+    "docs": 0,
+    "tests": 1
+   },
+   "operators": {
+    "in": {
+     "docs": 4,
+     "tests": 59
+    },
+    "==": {
+     "docs": 9,
+     "tests": 72
+    },
+    "&": {
+     "docs": 11,
+     "tests": 38
+    },
+    "|": {
+     "docs": 10,
+     "tests": 34
+    },
+    "-": {
+     "docs": 3,
+     "tests": 36
+    },
+    "not in": {
+     "docs": 0,
+     "tests": 37
+    },
+    "!=": {
+     "docs": 0,
+     "tests": 11
+    },
+    "<": {
+     "docs": 0,
+     "tests": 6
+    },
+    ">": {
+     "docs": 0,
+     "tests": 6
+    },
+    "<=": {
+     "docs": 0,
+     "tests": 4
+    },
+    ">=": {
+     "docs": 0,
+     "tests": 4
+    }
+   }
+  },
+  "BaseSpecifier": {
+   "built": {
+    "docs": 0,
+    "tests": 0
+   },
+   "operators": {}
+  },
+  "Specifier": {
+   "built": {
+    "docs": 1,
+    "tests": 226
+   },
+   "operators": {
+    "==": {
+     "docs": 0,
+     "tests": 15
+    },
+    "!=": {
+     "docs": 0,
+     "tests": 4
+    },
+    "in": {
+     "docs": 0,
+     "tests": 54
+    },
+    "not in": {
+     "docs": 0,
+     "tests": 13
+    },
+    "&": {
+     "docs": 0,
+     "tests": 1
+    }
+   }
+  },
+  "SpecifierSet": {
+   "built": {
+    "docs": 47,
+    "tests": 233
+   },
+   "operators": {
+    "&": {
+     "docs": 3,
+     "tests": 16
+    },
+    "==": {
+     "docs": 0,
+     "tests": 30
+    },
+    "in": {
+     "docs": 0,
+     "tests": 58
+    },
+    "not in": {
+     "docs": 0,
+     "tests": 10
+    },
+    "!=": {
+     "docs": 0,
+     "tests": 1
+    }
+   }
+  },
+  "Tag": {
+   "built": {
+    "docs": 3,
+    "tests": 336
+   },
+   "operators": {
+    "in": {
+     "docs": 1,
+     "tests": 12
+    },
+    "==": {
+     "docs": 1,
+     "tests": 72
+    }
+   }
+  },
+  "Version": {
+   "built": {
+    "docs": 17,
+    "tests": 680
+   },
+   "operators": {
+    "in": {
+     "docs": 7,
+     "tests": 110
+    },
+    "<": {
+     "docs": 1,
+     "tests": 53
+    },
+    "==": {
+     "docs": 2,
+     "tests": 68
+    },
+    ">=": {
+     "docs": 0,
+     "tests": 7
+    },
+    "<=": {
+     "docs": 0,
+     "tests": 9
+    },
+    ">": {
+     "docs": 0,
+     "tests": 29
+    },
+    "not in": {
+     "docs": 0,
+     "tests": 51
+    },
+    "+": {
+     "docs": 0,
+     "tests": 1
+    },
+    "!=": {
+     "docs": 0,
+     "tests": 5
+    }
+   }
+  }
+ },
+ "ranking": {
+  "docs": [
+   "packaging.specifiers.SpecifierSet.to_range",
+   "packaging.utils.canonicalize_version",
+   "packaging.ranges.VersionRange.full",
+   "packaging.licenses.canonicalize_license_expression",
+   "packaging.ranges.VersionRange.to_specifier_set",
+   "packaging.utils.canonicalize_name",
+   "packaging.ranges.VersionRange.filter",
+   "packaging.utils.is_normalized_name",
+   "packaging.specifiers.SpecifierSet.is_unsatisfiable",
+   "packaging.version.Version.post",
+   "packaging.version.Version.is_prerelease",
+   "packaging.version.Version.is_postrelease",
+   "packaging.utils.parse_wheel_filename",
+   "packaging.tags.sys_tags",
+   "packaging.markers.Marker.evaluate",
+   "packaging.dependency_groups.DependencyGroupResolver.resolve",
+   "packaging.ranges.VersionRange.is_empty",
+   "packaging.version.parse",
+   "packaging.version.Version.release",
+   "packaging.version.Version.pre",
+   "packaging.version.Version.epoch",
+   "packaging.utils.parse_sdist_filename",
+   "packaging.tags.create_compatible_tags_selector",
+   "packaging.specifiers.SpecifierSet.is_superset",
+   "packaging.specifiers.SpecifierSet.is_subset",
+   "packaging.specifiers.SpecifierSet.is_disjoint",
+   "packaging.ranges.VersionRange.singleton",
+   "packaging.ranges.VersionRange.is_superset",
+   "packaging.ranges.VersionRange.is_subset",
+   "packaging.ranges.VersionRange.is_disjoint",
+   "packaging.ranges.VersionRange.empty",
+   "packaging.pylock.is_valid_pylock_path",
+   "packaging.pylock.Pylock.validate",
+   "packaging.pylock.Pylock.to_dict",
+   "packaging.pylock.Pylock.select",
+   "packaging.pylock.Pylock.from_dict",
+   "packaging.metadata.parse_email",
+   "packaging.metadata.Metadata.from_raw",
+   "packaging.direct_url.DirectUrl.validate",
+   "packaging.direct_url.DirectUrl.to_dict",
+   "packaging.direct_url.DirectUrl.from_dict",
+   "packaging.dependency_groups.resolve_dependency_groups",
+   "packaging.dependency_groups.DependencyGroupResolver.lookup",
+   "packaging.specifiers.SpecifierSet.filter",
+   "packaging.specifiers.Specifier.filter"
+  ],
+  "tests": [
+   "packaging.specifiers.SpecifierSet.to_range",
+   "packaging.ranges.VersionRange.to_specifier_set",
+   "packaging.ranges.VersionRange.full",
+   "packaging.metadata.Metadata.from_raw",
+   "packaging.specifiers.Specifier.contains",
+   "packaging.ranges.VersionRange.filter",
+   "packaging.markers.Marker.evaluate",
+   "packaging.pylock.Pylock.from_dict",
+   "packaging.ranges.VersionRange.empty",
+   "packaging.ranges.VersionRange.singleton",
+   "packaging.tags.cpython_tags",
+   "packaging.specifiers.SpecifierSet.contains",
+   "packaging.specifiers.SpecifierSet.filter",
+   "packaging.dependency_groups.resolve_dependency_groups",
+   "packaging.ranges.VersionRange.is_empty",
+   "packaging.ranges.VersionRange.contains",
+   "packaging.tags.parse_tag",
+   "packaging.specifiers.SpecifierSet.is_unsatisfiable",
+   "packaging.pylock.Pylock.select",
+   "packaging.pylock.Pylock.validate",
+   "packaging.metadata.parse_email",
+   "packaging.ranges.VersionRange.is_subset",
+   "packaging.metadata.Metadata.from_email",
+   "packaging.direct_url.DirectUrl.from_dict",
+   "packaging.tags.android_platforms",
+   "packaging.version.Version.epoch",
+   "packaging.version.Version.pre",
+   "packaging.specifiers.Specifier.prereleases",
+   "packaging.specifiers.Specifier.version",
+   "packaging.tags.mac_platforms",
+   "packaging.metadata.Metadata.as_rfc822",
+   "packaging.tags.sys_tags",
+   "packaging.version.Version.release",
+   "packaging.direct_url.DirectUrl.to_dict",
+   "packaging.ranges.VersionRange.complement",
+   "packaging.tags.compatible_tags",
+   "packaging.specifiers.SpecifierSet.prereleases",
+   "packaging.version.Version.dev",
+   "packaging.version.Version.post",
+   "packaging.tags.generic_tags",
+   "packaging.dependency_groups.DependencyGroupResolver.lookup",
+   "packaging.ranges.VersionRange.is_disjoint",
+   "packaging.version.Version.is_prerelease",
+   "packaging.ranges.VersionRange.is_superset",
+   "packaging.tags.Tag.abi",
+   "packaging.tags.ios_platforms",
+   "packaging.ranges.VersionRange.union",
+   "packaging.version.Version.local",
+   "packaging.tags.Tag.platform",
+   "packaging.version.parse",
+   "packaging.tags.pure_python_tags",
+   "packaging.specifiers.Specifier.operator",
+   "packaging.specifiers.Specifier.filter",
+   "packaging.version.Version.is_postrelease",
+   "packaging.utils.parse_wheel_filename",
+   "packaging.utils.canonicalize_name",
+   "packaging.tags.platform_tags",
+   "packaging.tags.interpreter_version",
+   "packaging.pylock.Pylock.to_dict",
+   "packaging.version.Version.is_devrelease",
+   "packaging.version.Version.public",
+   "packaging.version.Version.micro",
+   "packaging.tags.Tag.interpreter",
+   "packaging.version.Version.from_parts",
+   "packaging.tags.interpreter_name",
+   "packaging.markers.default_environment",
+   "packaging.licenses.canonicalize_license_expression",
+   "packaging.dependency_groups.DependencyGroupResolver.resolve",
+   "packaging.ranges.VersionRange.intersection",
+   "packaging.specifiers.SpecifierSet.is_subset",
+   "packaging.specifiers.SpecifierSet.is_disjoint",
+   "packaging.specifiers.SpecifierSet.is_superset",
+   "packaging.version.Version.minor",
+   "packaging.utils.parse_sdist_filename",
+   "packaging.utils.is_normalized_name",
+   "packaging.utils.canonicalize_version",
+   "packaging.tags.interpreter_abi",
+   "packaging.pylock.Package.is_direct",
+   "packaging.metadata.RFC822Message.as_bytes",
+   "packaging.direct_url.DirectUrl.validate",
+   "packaging.pylock.PackageWheel.filename",
+   "packaging.pylock.PackageSdist.filename",
+   "packaging.version.Version.major",
+   "packaging.version.Version.base_version",
+   "packaging.tags.create_compatible_tags_selector",
+   "packaging.pylock.is_valid_pylock_path",
+   "packaging.ranges.VersionRange.difference"
+  ],
+  "both": [
+   "packaging.specifiers.SpecifierSet.to_range",
+   "packaging.ranges.VersionRange.full",
+   "packaging.ranges.VersionRange.to_specifier_set",
+   "packaging.ranges.VersionRange.filter",
+   "packaging.metadata.Metadata.from_raw",
+   "packaging.markers.Marker.evaluate",
+   "packaging.specifiers.Specifier.contains",
+   "packaging.licenses.canonicalize_license_expression",
+   "packaging.utils.canonicalize_version",
+   "packaging.utils.canonicalize_name",
+   "packaging.pylock.Pylock.from_dict",
+   "packaging.ranges.VersionRange.empty",
+   "packaging.specifiers.SpecifierSet.is_unsatisfiable",
+   "packaging.ranges.VersionRange.singleton",
+   "packaging.utils.is_normalized_name",
+   "packaging.dependency_groups.resolve_dependency_groups",
+   "packaging.tags.sys_tags",
+   "packaging.ranges.VersionRange.is_empty",
+   "packaging.pylock.Pylock.select",
+   "packaging.version.Version.post",
+   "packaging.pylock.Pylock.validate",
+   "packaging.metadata.parse_email",
+   "packaging.version.Version.is_prerelease",
+   "packaging.tags.cpython_tags",
+   "packaging.ranges.VersionRange.is_subset",
+   "packaging.direct_url.DirectUrl.from_dict",
+   "packaging.version.Version.is_postrelease",
+   "packaging.utils.parse_wheel_filename",
+   "packaging.dependency_groups.DependencyGroupResolver.resolve",
+   "packaging.specifiers.SpecifierSet.contains",
+   "packaging.version.Version.epoch",
+   "packaging.version.Version.pre",
+   "packaging.specifiers.SpecifierSet.filter",
+   "packaging.ranges.VersionRange.contains",
+   "packaging.version.Version.release",
+   "packaging.direct_url.DirectUrl.to_dict",
+   "packaging.tags.parse_tag",
+   "packaging.dependency_groups.DependencyGroupResolver.lookup",
+   "packaging.ranges.VersionRange.is_disjoint",
+   "packaging.ranges.VersionRange.is_superset",
+   "packaging.metadata.Metadata.from_email",
+   "packaging.version.parse",
+   "packaging.pylock.Pylock.to_dict",
+   "packaging.tags.android_platforms",
+   "packaging.specifiers.SpecifierSet.is_subset",
+   "packaging.specifiers.SpecifierSet.is_disjoint",
+   "packaging.specifiers.SpecifierSet.is_superset",
+   "packaging.utils.parse_sdist_filename",
+   "packaging.direct_url.DirectUrl.validate",
+   "packaging.specifiers.Specifier.prereleases",
+   "packaging.specifiers.Specifier.version",
+   "packaging.tags.mac_platforms",
+   "packaging.metadata.Metadata.as_rfc822",
+   "packaging.tags.create_compatible_tags_selector",
+   "packaging.pylock.is_valid_pylock_path",
+   "packaging.ranges.VersionRange.complement",
+   "packaging.tags.compatible_tags",
+   "packaging.specifiers.SpecifierSet.prereleases",
+   "packaging.version.Version.dev",
+   "packaging.tags.generic_tags",
+   "packaging.tags.Tag.abi",
+   "packaging.tags.ios_platforms",
+   "packaging.ranges.VersionRange.union",
+   "packaging.version.Version.local",
+   "packaging.tags.Tag.platform",
+   "packaging.tags.pure_python_tags",
+   "packaging.specifiers.Specifier.operator",
+   "packaging.specifiers.Specifier.filter",
+   "packaging.tags.platform_tags",
+   "packaging.tags.interpreter_version",
+   "packaging.version.Version.is_devrelease",
+   "packaging.version.Version.public",
+   "packaging.version.Version.micro",
+   "packaging.tags.Tag.interpreter",
+   "packaging.version.Version.from_parts",
+   "packaging.tags.interpreter_name",
+   "packaging.markers.default_environment",
+   "packaging.ranges.VersionRange.intersection",
+   "packaging.version.Version.minor",
+   "packaging.tags.interpreter_abi",
+   "packaging.pylock.Package.is_direct",
+   "packaging.metadata.RFC822Message.as_bytes",
+   "packaging.pylock.PackageWheel.filename",
+   "packaging.pylock.PackageSdist.filename",
+   "packaging.version.Version.major",
+   "packaging.version.Version.base_version",
+   "packaging.ranges.VersionRange.difference"
+  ]
+ }
+}

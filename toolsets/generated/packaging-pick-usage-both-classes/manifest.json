@@ -1,0 +1,1452 @@
+{
+ "url": "https://github.com/pypa/packaging",
+ "commit": "c1d2a9d8f5ca7cc11b7d2e902ed5ee3e255e8560",
+ "package": "packaging",
+ "model": "qwen3-coder",
+ "thinking": false,
+ "set": "packaging-pick-usage-both-classes",
+ "toolset": "toolsets/generated/packaging-pick-usage-both-classes",
+ "sandbox": "macOS sandbox-exec: no network, home folder unreadable, one scratch folder writable",
+ "dependencies": [],
+ "dropped_proposals": 0,
+ "pick": {
+  "usage": "both",
+  "classes": true
+ },
+ "tools": [
+  {
+   "name": "parse_version",
+   "wraps": "packaging.version.Version",
+   "description": "Parse a version string into a Version object for comparison operations. version_string: A version string to parse, e.g. '1.0a5' -> '<Version('1.0a5')>'.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version_string)",
+   "samples": [
+    {
+     "version_string": "1.0a5"
+    },
+    {
+     "version_string": "1.0"
+    },
+    {
+     "version_string": "2.0.0rc1"
+    },
+    {
+     "version_string": "3.1.4.post2"
+    },
+    {
+     "version_string": "1.0.dev0"
+    },
+    {
+     "version_string": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "parse_specifier_set",
+   "wraps": "packaging.specifiers.SpecifierSet",
+   "description": "Parse a version specifier string into a SpecifierSet for checking version compatibility. specifiers: A version specifier string, e.g., '>=3.0,!=3.1', or a comma-separated list of specifiers -> string representation of the SpecifierSet object.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifiers)",
+   "samples": [
+    {
+     "specifiers": ">=3.0"
+    },
+    {
+     "specifiers": ">=3.0,!=3.1"
+    },
+    {
+     "specifiers": ""
+    },
+    {
+     "specifiers": "===3.0.0"
+    },
+    {
+     "specifiers": "invalid-specifier"
+    }
+   ]
+  },
+  {
+   "name": "specifier_set_contains",
+   "wraps": "packaging.specifiers.SpecifierSet.contains",
+   "description": "Check if a version is contained within a SpecifierSet. specifier_set: A string representation of the specifier set (e.g., '>=1.0.0,!=1.0.1'), version: The version string to check for containment in the specifier set, prereleases: Whether or not to match prereleases with this SpecifierSet. If set to None (the default), it will follow the recommendation from PEP 440.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifier_set, prereleases=prereleases).contains(version, prereleases=prereleases)",
+   "samples": [
+    {
+     "specifier_set": ">=1.0.0,!=1.0.1",
+     "version": "1.2.3",
+     "prereleases": null
+    },
+    {
+     "specifier_set": ">=1.0.0,!=1.0.1",
+     "version": "1.0.1",
+     "prereleases": null
+    },
+    {
+     "specifier_set": ">=1.0.0,!=1.0.1",
+     "version": "1.3.0a1",
+     "prereleases": false
+    },
+    {
+     "specifier_set": ">=1.0.0,!=1.0.1",
+     "version": "1.3.0a1",
+     "prereleases": true
+    },
+    {
+     "specifier_set": ">=1.0.0,!=1.0.1",
+     "version": "invalid.version",
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "is_specifier_set_unsatisfiable",
+   "wraps": "packaging.specifiers.SpecifierSet.is_unsatisfiable",
+   "description": "Check whether a specifier set can never be satisfied.\n    \n    A specifier set is unsatisfiable if no version can satisfy all specifiers simultaneously.\n    \n    Args:\n        specifiers (str): A string representation of version specifiers\n        \n    Returns:\n        bool: True if no version can satisfy all specifiers simultaneously\n        \n    Example:\n        >>> is_specifier_set_unsatisfiable(\">=2.0,<1.0\")\n        True\n    ",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifiers).is_unsatisfiable()",
+   "samples": [
+    {
+     "specifiers": ">=2.0,<1.0"
+    },
+    {
+     "specifiers": ">=1.0,<2.0"
+    },
+    {
+     "specifiers": ""
+    },
+    {
+     "specifiers": "==1.0,!=1.0"
+    },
+    {
+     "specifiers": ">=3.0,<2.0"
+    }
+   ]
+  },
+  {
+   "name": "specifier_set_to_range",
+   "wraps": "packaging.specifiers.SpecifierSet.to_range",
+   "description": "Convert a SpecifierSet to a VersionRange string representation. specifiers: A string representation of version specifiers, e.g. '>=1.0,<2.0' -> '<VersionRange '[1.0, 2.0.dev0)'>.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifiers).to_range()",
+   "samples": [
+    {
+     "specifiers": ">=1.0,<2.0"
+    },
+    {
+     "specifiers": ""
+    },
+    {
+     "specifiers": "===1.0.0"
+    },
+    {
+     "specifiers": ">=1.0,!=1.5,<2.0"
+    },
+    {
+     "specifiers": ">=2.0"
+    }
+   ]
+  },
+  {
+   "name": "range_contains_version",
+   "wraps": "packaging.ranges.VersionRange.contains",
+   "description": "Check if a specific version is contained within a VersionRange.\n    \n    Args:\n        version_range (str): A version range specifier compatible with packaging.specifiers.SpecifierSet\n        version (str): The version string to check for containment in the range\n        prereleases (bool | None, optional): Whether to match pre-releases. None (default) uses the range's own policy.\n        installed (bool | None, optional): When True, accept a pre-release item even if the range would not otherwise allow it.\n        \n    Returns:\n        bool: True if the version is contained in the range, False otherwise.\n        \n    Example:\n        >>> range_contains_version(\">=1.0,<2.0\", \"1.5\")\n        True\n    ",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(version_range).to_range().contains(version, prereleases, installed)",
+   "samples": [
+    {
+     "version_range": ">=1.0,<2.0",
+     "version": "1.5",
+     "prereleases": null,
+     "installed": null
+    },
+    {
+     "version_range": ">=1.0,<2.0",
+     "version": "2.0",
+     "prereleases": null,
+     "installed": null
+    },
+    {
+     "version_range": ">=1.0,<2.0",
+     "version": "1.0a1",
+     "prereleases": true,
+     "installed": null
+    },
+    {
+     "version_range": "==1.0.0",
+     "version": "1.0.0",
+     "prereleases": null,
+     "installed": null
+    },
+    {
+     "version_range": ">=1.0",
+     "version": "1.0.0.dev1",
+     "prereleases": false,
+     "installed": null
+    },
+    {
+     "version_range": ">=1.0,<2.0",
+     "version": "not_a_version",
+     "prereleases": null,
+     "installed": null
+    }
+   ]
+  },
+  {
+   "name": "get_empty_version_range",
+   "wraps": "packaging.ranges.VersionRange.empty",
+   "description": "Return an empty VersionRange that matches no versions. prereleases: whether prereleases should be considered when matching versions -> the empty VersionRange as a string representation.",
+   "verified": true,
+   "direct_call": "packaging.ranges.VersionRange.empty(prereleases=prereleases)",
+   "samples": [
+    {
+     "prereleases": true
+    },
+    {
+     "prereleases": false
+    },
+    {
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "get_singleton_version_range",
+   "wraps": "packaging.ranges.VersionRange.singleton",
+   "description": "Create a VersionRange that contains only a single specific version. version: A PEP 440 compliant version string, e.g. '1.0' -> VersionRange singleton for 1.0. prereleases: Whether to include pre-release versions; if None, uses the default behavior. Example: get_singleton_version_range('1.0') -> '{1.0}'.",
+   "verified": true,
+   "direct_call": "packaging.ranges.VersionRange.singleton(version, prereleases=prereleases)",
+   "samples": [
+    {
+     "version": "1.0.0",
+     "prereleases": null
+    },
+    {
+     "version": "2.0.0a1",
+     "prereleases": true
+    },
+    {
+     "version": "3.0.0+build.1",
+     "prereleases": false
+    },
+    {
+     "version": "0.1.0.dev0",
+     "prereleases": null
+    },
+    {
+     "version": "invalid.version",
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "is_version_range_subset",
+   "wraps": "packaging.ranges.VersionRange.is_subset",
+   "description": "Check if one VersionRange is a subset of another. self_range: A version range specifier string for the range to check if it's a subset, other_range: A version range specifier string for the range to check against.\n    \n    >>> is_version_range_subset('>=1.5,<1.8', '>=1.0,<2.0')\n    True\n    ",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(self_range).to_range().is_subset(packaging.specifiers.SpecifierSet(other_range).to_range())",
+   "samples": [
+    {
+     "self_range": ">=1.5,<1.8",
+     "other_range": ">=1.0,<2.0"
+    },
+    {
+     "self_range": ">=1.0,<2.0",
+     "other_range": ">=1.5,<1.8"
+    },
+    {
+     "self_range": "===1.5.0",
+     "other_range": ">=1.0,<2.0"
+    },
+    {
+     "self_range": ">=1.0,<2.0",
+     "other_range": "===1.5.0"
+    },
+    {
+     "self_range": "",
+     "other_range": ">=1.0,<2.0"
+    },
+    {
+     "self_range": ">=1.0,<2.0",
+     "other_range": "invalid-range"
+    }
+   ]
+  },
+  {
+   "name": "intersect_version_ranges",
+   "wraps": "packaging.ranges.VersionRange.intersection",
+   "description": "Compute the intersection of two version range specifiers. range1: first version range specifier, range2: second version range specifier. e.g. intersect_version_ranges('>=1.0', '<2.0') -> '>=1.0,<2.0'.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(range1).to_range().intersection(packaging.specifiers.SpecifierSet(range2).to_range())",
+   "samples": [
+    {
+     "range1": ">=1.0",
+     "range2": "<2.0"
+    },
+    {
+     "range1": ">1.0,<3.0",
+     "range2": ">=2.0,<4.0"
+    },
+    {
+     "range1": "==1.0.0",
+     "range2": ">=1.0.0"
+    },
+    {
+     "range1": ">=1.0.0,<2.0.0",
+     "range2": ">=1.5.0,<2.5.0"
+    },
+    {
+     "range1": ">=1.0.0",
+     "range2": "<1.0.0"
+    }
+   ]
+  },
+  {
+   "name": "difference_version_ranges",
+   "wraps": "packaging.ranges.VersionRange.difference",
+   "description": "Compute the difference between two VersionRanges, returning versions in the first but not the second.\n    \n    Args:\n        version_range_a (string): The first version range, expressed as a specifier set string\n        version_range_b (string): The second version range to subtract from the first, expressed as a specifier set string\n    \n    Returns:\n        string: The resulting version range as a specifier set string\n    \n    Example:\n        >>> difference_version_ranges(\">=1.0\", \">=2.0\")\n        '>=1.0,<2.0'\n    ",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(version_range_a).to_range().difference(packaging.specifiers.SpecifierSet(version_range_b).to_range())",
+   "samples": [
+    {
+     "version_range_a": ">=1.0",
+     "version_range_b": ">=2.0"
+    },
+    {
+     "version_range_a": ">=1.0,<3.0",
+     "version_range_b": ">=2.0,<3.0"
+    },
+    {
+     "version_range_a": "==1.0.0",
+     "version_range_b": "==1.0.0"
+    },
+    {
+     "version_range_a": ">=1.0",
+     "version_range_b": ">=1.0"
+    },
+    {
+     "version_range_a": ">=1.0,<2.0",
+     "version_range_b": "<1.5"
+    },
+    {
+     "version_range_a": "invalid-specifier",
+     "version_range_b": ">=1.0"
+    }
+   ]
+  },
+  {
+   "name": "filter_versions_by_range",
+   "wraps": "packaging.ranges.VersionRange.filter",
+   "description": "Yield items from iterable whose version falls inside the given version range.\n    \n    Args:\n        version_range_spec: A version range specifier compatible with packaging.specifiers.SpecifierSet\n        iterable: An iterable of version strings\n        prereleases: Whether to include pre-release versions; None uses PEP 440 default behavior\n        \n    Returns:\n        List of version strings that fall within the specified range\n        \n    Example:\n        >>> filter_versions_by_range(\">=1.0,<2.0\", [\"0.9\", \"1.5\", \"2.0\"])\n        ['1.5']\n    ",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(version_range_spec).to_range().filter(iterable, prereleases)",
+   "samples": [
+    {
+     "version_range_spec": ">=1.0,<2.0",
+     "iterable": [
+      "0.9",
+      "1.5",
+      "2.0"
+     ],
+     "prereleases": null
+    },
+    {
+     "version_range_spec": ">=1.0,<2.0",
+     "iterable": [
+      "1.0a1",
+      "1.0b1",
+      "1.0rc1",
+      "1.0",
+      "1.1"
+     ],
+     "prereleases": true
+    },
+    {
+     "version_range_spec": ">=1.0,<2.0",
+     "iterable": [
+      "1.0a1",
+      "1.0b1",
+      "1.0rc1",
+      "1.0",
+      "1.1"
+     ],
+     "prereleases": false
+    },
+    {
+     "version_range_spec": "==1.0.0",
+     "iterable": [
+      "0.9.0",
+      "1.0.0",
+      "1.0.1"
+     ],
+     "prereleases": null
+    },
+    {
+     "version_range_spec": ">=1.0",
+     "iterable": [
+      "0.9",
+      "1.0",
+      "1.1",
+      "2.0"
+     ],
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "parse_version_string",
+   "wraps": "packaging.version.parse",
+   "description": "Parse the given version string.\n    \n    This is identical to the Version constructor.\n    \n    >>> parse_version_string('1.0.dev1')\n    '1.0.dev1'\n    \n    :param version: The version string to parse.\n    :raises ValueError: When the version string is not a valid version.\n    ",
+   "verified": true,
+   "direct_call": "packaging.version.parse(version)",
+   "samples": [
+    {
+     "version": "1.0.0"
+    },
+    {
+     "version": "2.1.3.dev1"
+    },
+    {
+     "version": "1.0.0-alpha.1"
+    },
+    {
+     "version": "3.2.1+build.123"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "canonicalize_version_string",
+   "wraps": "packaging.utils.canonicalize_version",
+   "description": "Return a canonical form of a version string. version: A version string to canonicalize, e.g. '1.0.0' -> '1'. strip_trailing_zero: Whether to strip trailing zeros from the release segment, e.g. '1.0.0' with strip_trailing_zero=False -> '1.0.0'.",
+   "verified": true,
+   "direct_call": "packaging.utils.canonicalize_version(version, strip_trailing_zero=strip_trailing_zero)",
+   "samples": [
+    {
+     "version": "1.0.1"
+    },
+    {
+     "version": "1.0.0"
+    },
+    {
+     "version": "1.0.0",
+     "strip_trailing_zero": false
+    },
+    {
+     "version": "1.4.0.0.0"
+    },
+    {
+     "version": "foo bar baz"
+    },
+    {
+     "version": "2.0.0.0",
+     "strip_trailing_zero": false
+    }
+   ]
+  },
+  {
+   "name": "canonicalize_package_name",
+   "wraps": "packaging.utils.canonicalize_name",
+   "description": "Normalize a Python package name to its canonical form. name: The name to normalize. validate: Check whether the name is a valid distribution name. >>> canonicalize_package_name('Django') 'django'",
+   "verified": true,
+   "direct_call": "packaging.utils.canonicalize_name(name, validate=validate)",
+   "samples": [
+    {
+     "name": "Django"
+    },
+    {
+     "name": "oslo.concurrency"
+    },
+    {
+     "name": "requests"
+    },
+    {
+     "name": "My_Package_Name"
+    },
+    {
+     "name": "invalid..package"
+    },
+    {
+     "name": "valid-package-name",
+     "validate": true
+    }
+   ]
+  },
+  {
+   "name": "is_version_prerelease",
+   "wraps": "packaging.version.Version.is_prerelease",
+   "description": "Check if a version is a pre-release version. version: A version string to check if it is a pre-release version -> true if pre-release, false otherwise.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).is_prerelease",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3a1"
+    },
+    {
+     "version": "1.2.3b1"
+    },
+    {
+     "version": "1.2.3rc1"
+    },
+    {
+     "version": "1.2.3dev1"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "get_version_release",
+   "wraps": "packaging.version.Version.release",
+   "description": "Get the release components of a version as a tuple. version: A version string to parse, e.g. '1.2.3' -> (1, 2, 3).",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).release",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "2.0.0"
+    },
+    {
+     "version": "1!2.0.0.post0"
+    },
+    {
+     "version": "3.1.0a1"
+    },
+    {
+     "version": "0.1.0.dev0"
+    },
+    {
+     "version": "not.a.version"
+    }
+   ]
+  },
+  {
+   "name": "get_version_pre_release",
+   "wraps": "packaging.version.Version.pre",
+   "description": "Get the pre-release segment of a version. version: A version string to parse and extract the pre-release segment from -> The pre-release segment as a tuple of (letter, number) or None if no pre-release segment exists.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).pre",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3a1"
+    },
+    {
+     "version": "1.2.3b1"
+    },
+    {
+     "version": "1.2.3rc1"
+    },
+    {
+     "version": "2.0.0rc2"
+    },
+    {
+     "version": "3.1.4"
+    }
+   ]
+  },
+  {
+   "name": "get_version_post_release",
+   "wraps": "packaging.version.Version.post",
+   "description": "Get the post-release number of a version. version: A version string to parse and extract the post-release number from\n    \n    >>> print(get_version_post_release(\"1.2.3\"))\n    None\n    >>> get_version_post_release(\"1.2.3.post1\")\n    1\n    ",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).post",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3.post1"
+    },
+    {
+     "version": "2.0.0.post0"
+    },
+    {
+     "version": "1.0.0.post10"
+    },
+    {
+     "version": "3.5.0"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "get_version_dev_number",
+   "wraps": "packaging.version.Version.dev",
+   "description": "Get the development number of a version. version: A version string to parse and extract the development number from -> The development number of the version, or None if not a development version.\n    \n    >>> print(get_version_dev_number(\"1.2.3\"))\n    None\n    >>> get_version_dev_number(\"1.2.3.dev1\")\n    1\n    ",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).dev",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3.dev1"
+    },
+    {
+     "version": "2.0.0.dev0"
+    },
+    {
+     "version": "1.0.0a1"
+    },
+    {
+     "version": "3.5.2.dev10"
+    }
+   ]
+  },
+  {
+   "name": "get_version_local_segment",
+   "wraps": "packaging.version.Version.local",
+   "description": "Get the local version segment of a version. version: A version string to parse and extract the local version segment from\n    \n    >>> print(get_version_local_segment(\"1.2.3\"))\n    None\n    >>> get_version_local_segment(\"1.2.3+abc\")\n    'abc'\n    ",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).local",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3+abc"
+    },
+    {
+     "version": "2.0.0+build.123"
+    },
+    {
+     "version": "1.0.0-alpha+001"
+    },
+    {
+     "version": "3.5.0-beta.2+exp.sha.5114f85"
+    }
+   ]
+  },
+  {
+   "name": "get_version_epoch",
+   "wraps": "packaging.version.Version.epoch",
+   "description": "Get the epoch of a version. version: A version string to parse and extract the epoch from -> The epoch of the version.\n    \n    >>> get_version_epoch(\"2.0.0\")\n    0\n    >>> get_version_epoch(\"1!2.0.0\")\n    1\n    ",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).epoch",
+   "samples": [
+    {
+     "version": "2.0.0"
+    },
+    {
+     "version": "1!2.0.0"
+    },
+    {
+     "version": "3.1.0a1"
+    },
+    {
+     "version": "0!1.0.0"
+    },
+    {
+     "version": "2!5.6.7rc1"
+    }
+   ]
+  },
+  {
+   "name": "get_version_base",
+   "wraps": "packaging.version.Version.base_version",
+   "description": "Get the base version of a version string. version: A version string to extract the base version from e.g. '1.2.3+abc' -> '1.2.3'.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).base_version",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3+abc"
+    },
+    {
+     "version": "1!1.2.3dev1+abc"
+    },
+    {
+     "version": "2.0.0rc1"
+    },
+    {
+     "version": "3.1.0.post1"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "get_version_public",
+   "wraps": "packaging.version.Version.public",
+   "description": "Get the public portion of a version string. version: A version string to extract the public portion from e.g. '1.2.3+abc' -> '1.2.3'.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).public",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3+abc"
+    },
+    {
+     "version": "1!1.2.3dev1+abc"
+    },
+    {
+     "version": "2.0.0-beta.1"
+    },
+    {
+     "version": "3.0.0+build.12345"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "is_version_postrelease",
+   "wraps": "packaging.version.Version.is_postrelease",
+   "description": "Check if a version is a post-release version. version: A version string to check if it is a post-release version -> true if post-release, false otherwise.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).is_postrelease",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3.post1"
+    },
+    {
+     "version": "2.0.0.post2"
+    },
+    {
+     "version": "1.0.0a1"
+    },
+    {
+     "version": "3.0.0b2"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "is_version_devrelease",
+   "wraps": "packaging.version.Version.is_devrelease",
+   "description": "Check if a version is a development release version. version: A version string to check if it's a development release -> true if development release, false otherwise.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).is_devrelease",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3.dev1"
+    },
+    {
+     "version": "2.0.0a1"
+    },
+    {
+     "version": "3.1.0rc2"
+    },
+    {
+     "version": "1.0.0.dev0"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "get_version_major",
+   "wraps": "packaging.version.Version.major",
+   "description": "Get the major version component. version: A version string to parse and extract the major version from, e.g. '1.2.3' -> 1.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).major",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "0.1.0"
+    },
+    {
+     "version": "10.20.30"
+    },
+    {
+     "version": "2.0.0a1"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "get_version_minor",
+   "wraps": "packaging.version.Version.minor",
+   "description": "Get the minor version component. version: A version string to parse and extract the minor version from\n    \n    >>> get_version_minor(\"1.2.3\")\n    2\n    >>> get_version_minor(\"1\")\n    0\n    ",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).minor",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1"
+    },
+    {
+     "version": "10.20.30"
+    },
+    {
+     "version": "0.1"
+    },
+    {
+     "version": "2.0.0"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "get_version_micro",
+   "wraps": "packaging.version.Version.micro",
+   "description": "Get the micro version component. version: A version string to parse, e.g. '1.2.3' -> 3.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).micro",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1"
+    },
+    {
+     "version": "1.2"
+    },
+    {
+     "version": "1.2.3.4"
+    },
+    {
+     "version": "2.0.0rc1"
+    }
+   ]
+  },
+  {
+   "name": "parse_specifier",
+   "wraps": "packaging.specifiers.Specifier",
+   "description": "Parse a version specifier string into a Specifier object. specifier: A version specifier string to parse, e.g. '>=1.0.0' -> Specifier object. prereleases: Whether to allow pre-release versions.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.Specifier(specifier, prereleases)",
+   "samples": [
+    {
+     "specifier": ">=1.0.0",
+     "prereleases": null
+    },
+    {
+     "specifier": "==2.0.0",
+     "prereleases": true
+    },
+    {
+     "specifier": "<3.0.0",
+     "prereleases": false
+    },
+    {
+     "specifier": "~=1.4.2",
+     "prereleases": null
+    },
+    {
+     "specifier": "invalid specifier",
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "specifier_contains",
+   "wraps": "packaging.specifiers.Specifier.contains",
+   "description": "Check if a version is contained within a Specifier. specifier: A version specifier string, e.g., '>=1.2.3'. version: The version string to check against the specifier. prereleases: Whether or not to match prereleases with this Specifier. If set to None (the default), it will follow the recommendation from PEP 440. >>> specifier_contains('>=1.2.3', '1.2.3') True",
+   "verified": true,
+   "direct_call": "packaging.specifiers.Specifier(specifier, prereleases).contains(version, prereleases)",
+   "samples": [
+    {
+     "specifier": ">=1.2.3",
+     "version": "1.2.3",
+     "prereleases": null
+    },
+    {
+     "specifier": ">=1.2.3",
+     "version": "1.0.0",
+     "prereleases": null
+    },
+    {
+     "specifier": ">=1.2.3",
+     "version": "1.3.0a1",
+     "prereleases": null
+    },
+    {
+     "specifier": ">=1.2.3",
+     "version": "1.3.0a1",
+     "prereleases": false
+    },
+    {
+     "specifier": "===1.2.3",
+     "version": "1.2.3",
+     "prereleases": null
+    },
+    {
+     "specifier": ">=1.2.3",
+     "version": "invalid.version",
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "filter_versions_by_specifier",
+   "wraps": "packaging.specifiers.Specifier.filter",
+   "description": "Filter items in the given iterable, that match the specifier.\n    \n    :param specifier: A version specifier string (e.g., '>=1.2.3')\n    :param iterable: An iterable of version strings or dictionaries with version info\n    :param prereleases: Whether to include prerelease versions; if None, follows PEP 440 defaults\n    :return: List of items that match the specifier\n    \n    >>> filter_versions_by_specifier(\">=1.2.3\", [{\"ver\": \"1.2\"}, {\"ver\": \"1.3\"}], key=lambda x: x[\"ver\"])\n    [{'ver': '1.3'}]\n    ",
+   "verified": true,
+   "direct_call": "packaging.specifiers.Specifier(specifier, prereleases).filter(iterable, prereleases)",
+   "samples": [
+    {
+     "specifier": ">=1.2.3",
+     "iterable": [
+      "1.2",
+      "1.3",
+      "1.5a1"
+     ],
+     "prereleases": null
+    },
+    {
+     "specifier": ">=1.2.3",
+     "iterable": [
+      "1.2",
+      "1.2.3",
+      "1.3",
+      "1.4"
+     ],
+     "prereleases": null
+    },
+    {
+     "specifier": ">=1.2.3",
+     "iterable": [
+      "1.2",
+      "1.5a1"
+     ],
+     "prereleases": true
+    },
+    {
+     "specifier": "==1.2.3",
+     "iterable": [
+      "1.2.3",
+      "1.2.4",
+      "1.2.3a1"
+     ],
+     "prereleases": null
+    },
+    {
+     "specifier": ">=1.2.3",
+     "iterable": [
+      {
+       "ver": "1.2"
+      },
+      {
+       "ver": "1.3"
+      }
+     ],
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "filter_versions_by_specifier_set",
+   "wraps": "packaging.specifiers.SpecifierSet.filter",
+   "description": "Filter an iterable of version strings to only those matching the given specifiers.\n    \n    Args:\n        specifiers: A string representing version specifiers (e.g., '>=1.2.3')\n        iterable: An iterable containing version strings or objects with version info\n        prereleases: Whether to include prereleases; if None, follows PEP 440 recommendation\n        \n    Returns:\n        A list of items that match the specifiers\n        \n    Example:\n        >>> filter_versions_by_specifier_set(\">=1.2.3\", [\"1.2\", \"1.3\", \"1.5a1\"])\n        ['1.3']\n    ",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifiers, prereleases).filter(iterable, prereleases)",
+   "samples": [
+    {
+     "specifiers": ">=1.2.3",
+     "iterable": [
+      "1.2",
+      "1.3",
+      "1.5a1"
+     ],
+     "prereleases": null
+    },
+    {
+     "specifiers": ">=1.2.3",
+     "iterable": [
+      "1.2",
+      "1.3",
+      "1.4"
+     ],
+     "prereleases": null
+    },
+    {
+     "specifiers": ">=1.2.3",
+     "iterable": [
+      "1.3",
+      "1.5a1"
+     ],
+     "prereleases": true
+    },
+    {
+     "specifiers": "",
+     "iterable": [
+      "1.3",
+      "1.5a1"
+     ],
+     "prereleases": null
+    },
+    {
+     "specifiers": ">=1.2.3",
+     "iterable": [
+      {
+       "ver": "1.2"
+      },
+      {
+       "ver": "1.3"
+      }
+     ],
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "parse_marker",
+   "wraps": "packaging.markers.Marker",
+   "description": "Parse a dependency marker expression into a Marker object. marker: The string representation of a marker expression, e.g. 'python_version > \"3.6\"' -> \"<Marker('python_version > \"3.6\"')>\".",
+   "verified": true,
+   "direct_call": "packaging.markers.Marker(marker)",
+   "samples": [
+    {
+     "marker": "python_version >= \"3.6\""
+    },
+    {
+     "marker": "os_name == \"posix\" and python_version >= \"3.6\""
+    },
+    {
+     "marker": "sys_platform == \"win32\" or sys_platform == \"darwin\""
+    },
+    {
+     "marker": "extra == \"dev\""
+    },
+    {
+     "marker": "invalid marker expression"
+    }
+   ]
+  },
+  {
+   "name": "evaluate_marker",
+   "wraps": "packaging.markers.Marker.evaluate",
+   "description": "Evaluate a marker expression against an environment.\n    \n    Args:\n        marker (str): A marker expression to evaluate\n        environment (dict, optional): Mapping containing keys and values to override the detected environment\n        context (str, optional): The context in which the marker is evaluated, \n                                one of \"metadata\", \"lock_file\", or \"requirement\"\n    \n    Returns:\n        bool: True if the marker matches, otherwise False\n    \n    Example:\n        >>> evaluate_marker('python_version >= \"3.6\"', {\"python_version\": \"3.8\"})\n        True\n    ",
+   "verified": true,
+   "direct_call": "packaging.markers.Marker(marker).evaluate(environment, context)",
+   "samples": [
+    {
+     "marker": "python_version >= '3.6'",
+     "environment": null,
+     "context": "metadata"
+    },
+    {
+     "marker": "sys_platform == 'win32'",
+     "environment": {
+      "sys_platform": "linux"
+     },
+     "context": "requirement"
+    },
+    {
+     "marker": "extra == 'dev'",
+     "environment": {
+      "extra": "dev"
+     },
+     "context": "lock_file"
+    },
+    {
+     "marker": "platform_machine != 'x86_64'",
+     "environment": null,
+     "context": "metadata"
+    },
+    {
+     "marker": "implementation_name == 'cpython'",
+     "environment": {
+      "implementation_name": "pypy"
+     },
+     "context": "requirement"
+    },
+    {
+     "marker": "invalid_marker_syntax",
+     "environment": null,
+     "context": "metadata"
+    }
+   ]
+  },
+  {
+   "name": "parse_metadata_from_email",
+   "wraps": "packaging.metadata.Metadata.from_email",
+   "description": "Parse metadata from email headers.\n    \n    Args:\n        data: Email headers containing distribution metadata\n        validate: Whether to validate the parsed metadata\n    \n    Returns:\n        Dictionary containing parsed metadata fields\n    \n    Example:\n        >>> parse_metadata_from_email('Name: mypackage\\nVersion: 1.0\\n', True)\n        {'name': 'mypackage', 'version': '1.0'}\n    ",
+   "verified": false,
+   "direct_call": "packaging.metadata.Metadata.from_email(data, validate=validate)",
+   "samples": [
+    {
+     "data": "Metadata-Version: 2.1\nName: example-package\nVersion: 1.0.0\nSummary: An example package\n",
+     "validate": true
+    },
+    {
+     "data": "Metadata-Version: 2.1\nName: another-package\nVersion: 2.0.0\n",
+     "validate": false
+    },
+    {
+     "data": "Metadata-Version: 2.1\nName: test-package\nVersion: 0.1.0\nAuthor: Test User\n",
+     "validate": true
+    },
+    {
+     "data": "Invalid metadata content without proper headers",
+     "validate": true
+    },
+    {
+     "data": "Metadata-Version: 2.1\nName: malformed-package\nVersion: 1.0.0\nInvalid-Field: some value\n",
+     "validate": true
+    }
+   ]
+  },
+  {
+   "name": "create_tag",
+   "wraps": "packaging.tags.Tag",
+   "description": "Create a Tag object representing a wheel tag triple. interpreter: The interpreter name, e.g. \"py\". abi: The ABI that a wheel supports, e.g. \"cp37m\". platform: The OS/platform the wheel supports, e.g. \"win_amd64\". Example: create_tag(\"py\", \"cp37m\", \"win_amd64\") -> \"py-cp37m-win_amd64\".",
+   "verified": true,
+   "direct_call": "packaging.tags.Tag(interpreter, abi, platform)",
+   "samples": [
+    {
+     "interpreter": "cp39",
+     "abi": "cp39m",
+     "platform": "linux_x86_64"
+    },
+    {
+     "interpreter": "py3",
+     "abi": "none",
+     "platform": "any"
+    },
+    {
+     "interpreter": "pp38",
+     "abi": "pp38",
+     "platform": "win32"
+    },
+    {
+     "interpreter": "cp310",
+     "abi": "cp310",
+     "platform": "macosx_10_9_x86_64"
+    },
+    {
+     "interpreter": "invalid",
+     "abi": "",
+     "platform": ""
+    }
+   ]
+  },
+  {
+   "name": "generate_cpython_tags",
+   "wraps": "packaging.tags.cpython_tags",
+   "description": "Generate CPython interpreter tags for wheel compatibility. python_version: target Python version as [major, minor], e.g. [3, 9]. abis: compatible ABIs like ['cp39', 'abi3'], defaults to system ABIs. platforms: compatible platforms like ['linux_x86_64'], defaults to system platforms. Example: generate_cpython_tags([3, 9]) -> ['cp39-cp39-linux_x86_64', 'cp39-abi3-linux_x86_64', ...]",
+   "verified": true,
+   "direct_call": "packaging.tags.cpython_tags(python_version, abis, platforms)",
+   "samples": [
+    {
+     "python_version": [
+      3,
+      9
+     ]
+    },
+    {
+     "python_version": [
+      3
+     ],
+     "abis": [
+      "cp39",
+      "abi3"
+     ]
+    },
+    {
+     "python_version": [
+      3,
+      10
+     ],
+     "platforms": [
+      "linux_x86_64",
+      "win_amd64"
+     ]
+    },
+    {
+     "python_version": [
+      3,
+      11
+     ],
+     "abis": [
+      "cp311"
+     ],
+     "platforms": [
+      "macosx_10_9_x86_64"
+     ]
+    },
+    {
+     "python_version": [
+      3,
+      12
+     ],
+     "abis": [
+      "cp312",
+      "abi3t"
+     ],
+     "platforms": [
+      "linux_aarch64"
+     ]
+    }
+   ]
+  },
+  {
+   "name": "generate_system_tags",
+   "wraps": "packaging.tags.sys_tags",
+   "description": "Generate tags for the running interpreter. warn: whether warnings should be logged -> list of tag strings in format 'interpreter-abi-platform'",
+   "verified": true,
+   "direct_call": "packaging.tags.sys_tags(warn=warn)",
+   "samples": [
+    {
+     "warn": false
+    },
+    {
+     "warn": true
+    },
+    {
+     "warn": false
+    },
+    {
+     "warn": true
+    }
+   ]
+  },
+  {
+   "name": "generate_compatible_tags",
+   "wraps": "packaging.tags.compatible_tags",
+   "description": "Generate tags for an interpreter compatible with a specified Python version. python_version: A one- or two-item sequence representing the compatible version of Python, e.g. [3, 8]. interpreter: The name of the interpreter (if known), e.g. 'cp38'. -> A list of tag strings.",
+   "verified": true,
+   "direct_call": "packaging.tags.compatible_tags(python_version, interpreter)",
+   "samples": [
+    {
+     "python_version": [
+      3,
+      9
+     ],
+     "interpreter": "cp39"
+    },
+    {
+     "python_version": [
+      3,
+      8
+     ],
+     "interpreter": null
+    },
+    {
+     "python_version": null,
+     "interpreter": "cp310"
+    },
+    {
+     "python_version": [
+      2,
+      7
+     ],
+     "interpreter": "cp27"
+    },
+    {
+     "python_version": [],
+     "interpreter": "py39"
+    }
+   ]
+  },
+  {
+   "name": "generate_platform_tags",
+   "wraps": "packaging.tags.platform_tags",
+   "description": "Generate platform tags for the running interpreter. Returns a list of platform tag strings.",
+   "verified": true,
+   "direct_call": "packaging.tags.platform_tags()",
+   "samples": [
+    {},
+    {}
+   ]
+  },
+  {
+   "name": "get_interpreter_name",
+   "wraps": "packaging.tags.interpreter_name",
+   "description": "Get the name of the running interpreter. Returns a string identifier for the current Python implementation, such as 'cp' for CPython or 'pp' for PyPy.",
+   "verified": true,
+   "direct_call": "packaging.tags.interpreter_name()",
+   "samples": [
+    {},
+    {},
+    {},
+    {}
+   ]
+  },
+  {
+   "name": "get_interpreter_version",
+   "wraps": "packaging.tags.interpreter_version",
+   "description": "Get the version of the running interpreter. warn: whether warnings should be logged -> e.g. '311'",
+   "verified": true,
+   "direct_call": "packaging.tags.interpreter_version(warn=warn)",
+   "samples": [
+    {
+     "warn": false
+    },
+    {
+     "warn": true
+    },
+    {
+     "warn": false
+    },
+    {
+     "warn": true
+    },
+    {
+     "warn": false
+    }
+   ]
+  },
+  {
+   "name": "get_interpreter_abi",
+   "wraps": "packaging.tags.interpreter_abi",
+   "description": "Get the ABI tag of the running interpreter. Returns a string representing the ABI tag, e.g. 'cp39'.",
+   "verified": true,
+   "direct_call": "packaging.tags.interpreter_abi()",
+   "samples": [
+    {},
+    {}
+   ]
+  },
+  {
+   "name": "resolve_dependency_group",
+   "wraps": "packaging.dependency_groups.DependencyGroupResolver.resolve",
+   "description": "\n    Resolve a dependency group to a list of requirements.\n    \n    :param dependency_groups: Mapping of dependency group names to their requirements\n    :param group: the name of the group to resolve\n    :example: resolve_dependency_group({\"dev\": [\"pytest\", \"black\"]}, \"dev\") -> [\"pytest\", \"black\"]\n    ",
+   "verified": true,
+   "direct_call": "packaging.dependency_groups.DependencyGroupResolver(dependency_groups).resolve(group)",
+   "samples": [
+    {
+     "dependency_groups": {
+      "dev": [
+       "pytest",
+       "black"
+      ],
+      "prod": [
+       "requests",
+       "click"
+      ]
+     },
+     "group": "dev"
+    },
+    {
+     "dependency_groups": {
+      "test": [
+       "pytest>=6.0",
+       "coverage"
+      ],
+      "docs": [
+       "sphinx",
+       "readthedocs"
+      ]
+     },
+     "group": "test"
+    },
+    {
+     "dependency_groups": {
+      "optional": [
+       "numpy",
+       "pandas"
+      ]
+     },
+     "group": "optional"
+    },
+    {
+     "dependency_groups": {
+      "main": [
+       "flask",
+       "gunicorn"
+      ]
+     },
+     "group": "MAIN"
+    },
+    {
+     "dependency_groups": {
+      "build": [
+       "setuptools",
+       "wheel"
+      ]
+     },
+     "group": "nonexistent"
+    }
+   ]
+  },
+  {
+   "name": "lookup_dependency_group",
+   "wraps": "packaging.dependency_groups.DependencyGroupResolver.lookup",
+   "description": "\n    Lookup a group name, returning the parsed dependency data for that group.\n    This will not resolve includes.\n    \n    :param dependency_groups: Mapping of dependency group names to their dependencies\n    :param group: the name of the group to lookup\n    :example: lookup_dependency_group({\"dev\": [\"pytest\", \"black\"]}, \"dev\") -> [\"pytest\", \"black\"]\n    ",
+   "verified": true,
+   "direct_call": "packaging.dependency_groups.DependencyGroupResolver(dependency_groups).lookup(group)",
+   "samples": [
+    {
+     "dependency_groups": {
+      "dev": [
+       "pytest",
+       "black"
+      ],
+      "prod": [
+       "requests"
+      ]
+     },
+     "group": "dev"
+    },
+    {
+     "dependency_groups": {
+      "test": [
+       "pytest >= 6.0",
+       "coverage"
+      ],
+      "docs": [
+       "sphinx"
+      ]
+     },
+     "group": "test"
+    },
+    {
+     "dependency_groups": {
+      "optional": [
+       "numpy",
+       "pandas"
+      ]
+     },
+     "group": "optional"
+    },
+    {
+     "dependency_groups": {
+      "main": [
+       "flask",
+       "gunicorn"
+      ]
+     },
+     "group": "MAIN"
+    },
+    {
+     "dependency_groups": {
+      "build": [
+       "setuptools",
+       "wheel"
+      ]
+     },
+     "group": "nonexistent"
+    }
+   ]
+  }
+ ]
+}

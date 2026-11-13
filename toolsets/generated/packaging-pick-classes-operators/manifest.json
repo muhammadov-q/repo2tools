@@ -1,0 +1,1412 @@
+{
+ "url": "https://github.com/pypa/packaging",
+ "commit": "c1d2a9d8f5ca7cc11b7d2e902ed5ee3e255e8560",
+ "package": "packaging",
+ "model": "qwen3-coder",
+ "thinking": false,
+ "set": "packaging-pick-classes-operators",
+ "toolset": "toolsets/generated/packaging-pick-classes-operators",
+ "sandbox": "macOS sandbox-exec: no network, home folder unreadable, one scratch folder writable",
+ "dependencies": [],
+ "dropped_proposals": 0,
+ "pick": {
+  "usage": null,
+  "classes": true,
+  "operators": true
+ },
+ "tools": [
+  {
+   "name": "marker_equality",
+   "wraps": "packaging.markers.Marker.__eq__",
+   "description": "Compare two marker expressions for equality. left: The left-hand side marker expression to compare, right: The right-hand side marker expression to compare. Example: marker_equality('python_version >= \"3.6\"', 'python_version >= \"3.6\"') -> True.",
+   "verified": true,
+   "direct_call": "packaging.markers.Marker(left) == packaging.markers.Marker(right)",
+   "samples": [
+    {
+     "left": "python_version >= '3.6'",
+     "right": "python_version >= '3.6'"
+    },
+    {
+     "left": "sys_platform == 'win32'",
+     "right": "sys_platform == 'linux'"
+    },
+    {
+     "left": "python_version < '3.0' or os_name == 'posix'",
+     "right": "os_name == 'posix' or python_version < '3.0'"
+    },
+    {
+     "left": "extra == 'dev'",
+     "right": "extra == 'dev'"
+    },
+    {
+     "left": "platform_machine != 'x86_64'",
+     "right": "platform_machine == 'arm64'"
+    },
+    {
+     "left": "invalid marker expression",
+     "right": "python_version >= '3.6'"
+    }
+   ]
+  },
+  {
+   "name": "marker_inequality",
+   "wraps": "packaging.markers.Marker.__ne__",
+   "description": "The `!=` operator with Marker objects, as in `left != right`. It is an operator, not a function: use it as an expression with `!=`, never as a call of `__ne__`. At least one side is a Marker object.\n    \n    Example: marker_inequality('python_version >= \"3.6\"', 'python_version < \"3.6\"') -> True\n    ",
+   "verified": true,
+   "direct_call": "packaging.markers.Marker(left) != packaging.markers.Marker(right)",
+   "samples": [
+    {
+     "left": "python_version >= '3.6'",
+     "right": "python_version < '3.6'"
+    },
+    {
+     "left": "sys_platform == 'win32'",
+     "right": "sys_platform == 'linux'"
+    },
+    {
+     "left": "extra == 'dev'",
+     "right": "extra == 'dev'"
+    },
+    {
+     "left": "os_name == 'posix'",
+     "right": "platform_machine == 'x86_64'"
+    },
+    {
+     "left": "python_version >= '3.6'",
+     "right": "not_a_valid_marker"
+    }
+   ]
+  },
+  {
+   "name": "marker_intersection",
+   "wraps": "packaging.markers.Marker.__and__",
+   "description": "Combine two marker expressions with logical AND. left: The left-hand side marker expression, right: The right-hand side marker expression. Example: marker_intersection('python_version >= \"3.6\"', 'os_name == \"posix\"') -> 'python_version >= \"3.6\" and os_name == \"posix\"'.",
+   "verified": true,
+   "direct_call": "packaging.markers.Marker(left) & packaging.markers.Marker(right)",
+   "samples": [
+    {
+     "left": "python_version >= '3.6'",
+     "right": "os_name == 'posix'"
+    },
+    {
+     "left": "platform_machine == 'x86_64'",
+     "right": "sys_platform == 'linux'"
+    },
+    {
+     "left": "extra == 'dev'",
+     "right": "python_version < '3.8'"
+    },
+    {
+     "left": "os_name == 'windows'",
+     "right": "platform_system == 'Windows'"
+    },
+    {
+     "left": "python_version >= '3.7'",
+     "right": "python_version < '3.10'"
+    },
+    {
+     "left": "invalid marker expression",
+     "right": "os_name == 'posix'"
+    }
+   ]
+  },
+  {
+   "name": "marker_union",
+   "wraps": "packaging.markers.Marker.__or__",
+   "description": "Combine two marker expressions with logical OR. left: The left-hand side marker expression, right: The right-hand side marker expression. Example: marker_union('python_version >= \"3.6\"', 'sys_platform == \"win32\"') -> 'python_version >= \"3.6\" or sys_platform == \"win32\"'.",
+   "verified": true,
+   "direct_call": "packaging.markers.Marker(left) | packaging.markers.Marker(right)",
+   "samples": [
+    {
+     "left": "python_version >= '3.6'",
+     "right": "sys_platform == 'win32'"
+    },
+    {
+     "left": "os_name == 'posix'",
+     "right": "os_name == 'nt'"
+    },
+    {
+     "left": "platform_machine == 'x86_64'",
+     "right": "platform_machine == 'aarch64'"
+    },
+    {
+     "left": "implementation_name == 'cpython'",
+     "right": "implementation_name == 'pypy'"
+    },
+    {
+     "left": "extra == 'dev'",
+     "right": "extra == 'test'"
+    },
+    {
+     "left": "python_version < '3.0'",
+     "right": "invalid marker expression"
+    }
+   ]
+  },
+  {
+   "name": "evaluate_marker",
+   "wraps": "packaging.markers.Marker.evaluate",
+   "description": "Evaluate a marker expression against an environment. marker: A marker expression to evaluate, e.g. 'python_version >= \"3.6\"' -> True. environment: Mapping containing keys and values to override the detected environment. context: The context in which the marker is evaluated, which influences what marker names are considered valid. Accepted values are \"metadata\" (default), \"lock_file\", and \"requirement\". ",
+   "verified": true,
+   "direct_call": "packaging.markers.Marker(marker).evaluate(environment, context)",
+   "samples": [
+    {
+     "marker": "python_version >= '3.6'",
+     "environment": null,
+     "context": "metadata"
+    },
+    {
+     "marker": "sys_platform == 'win32'",
+     "environment": {
+      "sys_platform": "linux"
+     },
+     "context": "requirement"
+    },
+    {
+     "marker": "extra == 'dev'",
+     "environment": {
+      "extra": "dev"
+     },
+     "context": "lock_file"
+    },
+    {
+     "marker": "platform_machine != 'x86_64'",
+     "environment": null,
+     "context": "metadata"
+    },
+    {
+     "marker": "python_version < '3.0'",
+     "environment": {
+      "python_version": "3.9"
+     },
+     "context": "requirement"
+    },
+    {
+     "marker": "invalid_marker_syntax",
+     "environment": null,
+     "context": "metadata"
+    }
+   ]
+  },
+  {
+   "name": "create_empty_version_range",
+   "wraps": "packaging.ranges.VersionRange.empty",
+   "description": "Create an empty version range that accepts no versions. prereleases: whether prereleases should be considered when checking version inclusion -> the created empty version range.",
+   "verified": true,
+   "direct_call": "packaging.ranges.VersionRange.empty(prereleases=prereleases)",
+   "samples": [
+    {
+     "prereleases": true
+    },
+    {
+     "prereleases": false
+    },
+    {
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "create_full_version_range",
+   "wraps": "packaging.ranges.VersionRange.full",
+   "description": "Create a full version range that accepts all versions. admit_arbitrary: whether to admit arbitrary strings as versions; prereleases: whether to include pre-release versions.",
+   "verified": true,
+   "direct_call": "packaging.ranges.VersionRange.full(admit_arbitrary=admit_arbitrary, prereleases=prereleases)",
+   "samples": [
+    {
+     "admit_arbitrary": true,
+     "prereleases": null
+    },
+    {
+     "admit_arbitrary": false,
+     "prereleases": null
+    },
+    {
+     "admit_arbitrary": true,
+     "prereleases": true
+    },
+    {
+     "admit_arbitrary": false,
+     "prereleases": false
+    },
+    {
+     "admit_arbitrary": true,
+     "prereleases": false
+    }
+   ]
+  },
+  {
+   "name": "create_singleton_version_range",
+   "wraps": "packaging.ranges.VersionRange.singleton",
+   "description": "Create a version range that contains only a single version. version: A PEP 440 compliant version string, e.g. '1.0' -> '{1.0}'. prereleases: Whether to include pre-release versions; if None, uses the default behavior.",
+   "verified": true,
+   "direct_call": "packaging.ranges.VersionRange.singleton(version, prereleases=prereleases)",
+   "samples": [
+    {
+     "version": "1.0.0"
+    },
+    {
+     "version": "2.0.0a1"
+    },
+    {
+     "version": "1.0.0+local"
+    },
+    {
+     "version": "invalid.version"
+    },
+    {
+     "version": "3.0.0",
+     "prereleases": true
+    },
+    {
+     "version": "4.0.0",
+     "prereleases": false
+    }
+   ]
+  },
+  {
+   "name": "intersect_version_ranges",
+   "wraps": "packaging.ranges.VersionRange.intersection",
+   "description": "Compute the intersection of two version ranges. range1: First version range specifier, range2: Second version range specifier. Example: intersect_version_ranges(\">=1.0\", \"<2.0\") -> \">=1.0,<2.0\".",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(range1).to_range().intersection(packaging.specifiers.SpecifierSet(range2).to_range())",
+   "samples": [
+    {
+     "range1": ">=1.0",
+     "range2": "<2.0"
+    },
+    {
+     "range1": ">1.0,<3.0",
+     "range2": ">=2.0,<4.0"
+    },
+    {
+     "range1": "==1.0.0",
+     "range2": ">=1.0.0"
+    },
+    {
+     "range1": ">=1.0.0,<2.0.0",
+     "range2": ">=1.5.0,<1.9.0"
+    },
+    {
+     "range1": ">=1.0.0",
+     "range2": "<1.0.0"
+    }
+   ]
+  },
+  {
+   "name": "union_version_ranges",
+   "wraps": "packaging.ranges.VersionRange.union",
+   "description": "Compute the union of two version ranges. version_range_a: First version range in PEP 440 format. version_range_b: Second version range in PEP 440 format. Example: union_version_ranges(\">=1.0\", \"<2.0\") -> \">=1.0,<2.0\".",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(version_range_a).to_range().union(packaging.specifiers.SpecifierSet(version_range_b).to_range())",
+   "samples": [
+    {
+     "version_range_a": ">=1.0,<2.0",
+     "version_range_b": ">=2.0,<3.0"
+    },
+    {
+     "version_range_a": "==1.0",
+     "version_range_b": "==2.0"
+    },
+    {
+     "version_range_a": ">=1.0",
+     "version_range_b": "<2.0"
+    },
+    {
+     "version_range_a": "~=1.0",
+     "version_range_b": "~=2.0"
+    },
+    {
+     "version_range_a": ">=1.0,<1.5",
+     "version_range_b": ">=1.7,<2.0"
+    }
+   ]
+  },
+  {
+   "name": "complement_version_range",
+   "wraps": "packaging.ranges.VersionRange.complement",
+   "description": "Compute the complement of a version range. version_range: A version range specifier compatible with packaging.specifiers.SpecifierSet, e.g. '>=1.0' -> '<1.0'.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(version_range).to_range().complement()",
+   "samples": [
+    {
+     "version_range": ">=1.0"
+    },
+    {
+     "version_range": "<2.0"
+    },
+    {
+     "version_range": "==1.0.0"
+    },
+    {
+     "version_range": "!=1.0.0"
+    },
+    {
+     "version_range": ">=1.0,<2.0"
+    }
+   ]
+  },
+  {
+   "name": "check_version_range_subset",
+   "wraps": "packaging.ranges.VersionRange.is_subset",
+   "description": "Check if one version range is a subset of another. range1: First version range specifier, range2: Second version range specifier to check if range1 is a subset of this. >>> check_version_range_subset('>=1.5,<1.8', '>=1.0,<2.0') -> True",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(range1).to_range().is_subset(packaging.specifiers.SpecifierSet(range2).to_range())",
+   "samples": [
+    {
+     "range1": ">=1.5,<1.8",
+     "range2": ">=1.0,<2.0"
+    },
+    {
+     "range1": ">=1.0,<2.0",
+     "range2": ">=1.5,<1.8"
+    },
+    {
+     "range1": "==1.5.0",
+     "range2": ">=1.0,<2.0"
+    },
+    {
+     "range1": ">=1.0,<2.0",
+     "range2": "==1.5.0"
+    },
+    {
+     "range1": ">=1.0,<2.0",
+     "range2": ">=1.0,<2.0"
+    },
+    {
+     "range1": "invalid-range",
+     "range2": ">=1.0,<2.0"
+    }
+   ]
+  },
+  {
+   "name": "check_version_range_superset",
+   "wraps": "packaging.ranges.VersionRange.is_superset",
+   "description": "Check if one version range is a superset of another. outer_range: A version range specifier string for the outer range. inner_range: A version range specifier string for the inner range. >>> check_version_range_superset('>=1.0,<2.0', '>=1.5,<1.8') True",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(outer_range).to_range().is_superset(packaging.specifiers.SpecifierSet(inner_range).to_range())",
+   "samples": [
+    {
+     "outer_range": ">=1.0,<2.0",
+     "inner_range": ">=1.5,<1.8"
+    },
+    {
+     "outer_range": ">=1.0,<3.0",
+     "inner_range": ">=1.0,<2.0"
+    },
+    {
+     "outer_range": "==1.0.0",
+     "inner_range": "==1.0.0"
+    },
+    {
+     "outer_range": ">=1.0",
+     "inner_range": "<2.0"
+    },
+    {
+     "outer_range": ">=1.0,<2.0",
+     "inner_range": ">=2.0,<3.0"
+    }
+   ]
+  },
+  {
+   "name": "check_version_ranges_disjoint",
+   "wraps": "packaging.ranges.VersionRange.is_disjoint",
+   "description": "Check if two version ranges are disjoint. range1: First version range specifier, e.g. '>=1.0,<2.0'. range2: Second version range specifier, e.g. '>=2.0,<3.0'. -> True if ranges don't overlap, False otherwise.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(range1).to_range().is_disjoint(packaging.specifiers.SpecifierSet(range2).to_range())",
+   "samples": [
+    {
+     "range1": ">=1.0,<2.0",
+     "range2": ">=2.0,<3.0"
+    },
+    {
+     "range1": ">=1.5,<2.5",
+     "range2": ">=1.0,<2.0"
+    },
+    {
+     "range1": "==1.0.0",
+     "range2": ">=1.0.1"
+    },
+    {
+     "range1": ">=1.0.0,<2.0.0",
+     "range2": "<1.0.0"
+    },
+    {
+     "range1": ">=1.0.0",
+     "range2": "<1.0.0"
+    }
+   ]
+  },
+  {
+   "name": "check_version_in_range",
+   "wraps": "packaging.ranges.VersionRange.contains",
+   "description": "Check if a version is contained in a version range.\n    \n    :param version_range: A version range specifier compatible with packaging.specifiers.SpecifierSet\n    :param version: The version string to check against the range\n    :return: True if the version is contained in the range, False otherwise\n    \n    >>> check_version_in_range(\">=1.0,<2.0\", \"1.5\")\n    True\n    >>> check_version_in_range(\">=1.0,<2.0\", \"2.0\")\n    False\n    ",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(version_range).to_range().contains(version)",
+   "samples": [
+    {
+     "version_range": ">=1.0,<2.0",
+     "version": "1.5"
+    },
+    {
+     "version_range": ">=1.0,<2.0",
+     "version": "2.0"
+    },
+    {
+     "version_range": "==1.0.0",
+     "version": "1.0.0"
+    },
+    {
+     "version_range": ">=1.0",
+     "version": "0.9.0"
+    },
+    {
+     "version_range": ">=1.0,<2.0",
+     "version": "not_a_version"
+    }
+   ]
+  },
+  {
+   "name": "convert_range_to_specifier_set",
+   "wraps": "packaging.ranges.VersionRange.to_specifier_set",
+   "description": "Convert a version range to a specifier set. specifier_set: A specifier set string that can be parsed into a SpecifierSet, e.g. '>=1.0,<2.0' -> '<2.0,>=1.0'.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifier_set).to_range().to_specifier_set()",
+   "samples": [
+    {
+     "specifier_set": ">=1.0,<2.0"
+    },
+    {
+     "specifier_set": "==1.0"
+    },
+    {
+     "specifier_set": "!=1.0"
+    },
+    {
+     "specifier_set": ">=1.0,!=1.5"
+    },
+    {
+     "specifier_set": ">=1.0,<2.0,!=1.5"
+    }
+   ]
+  },
+  {
+   "name": "specifier_equality",
+   "wraps": "packaging.specifiers.Specifier.__eq__",
+   "description": "The `==` operator with Specifier objects, as in `left == right`. It is an operator, not a function: use it as an expression with `==`, never as a call of `__eq__`. At least one side is a Specifier object.\n    \n    Example: specifier_equality(\">=1.0\", \">=1.0\") -> True",
+   "verified": true,
+   "direct_call": "packaging.specifiers.Specifier(left) == packaging.specifiers.Specifier(right)",
+   "samples": [
+    {
+     "left": ">=1.0.0",
+     "right": ">=1.0.0"
+    },
+    {
+     "left": "==1.2.3",
+     "right": "==1.2.3"
+    },
+    {
+     "left": "<2.0.0",
+     "right": ">=1.0.0"
+    },
+    {
+     "left": "~=1.4.2",
+     "right": "~=1.4.2"
+    },
+    {
+     "left": "!=1.0.0",
+     "right": "!=1.0.0"
+    },
+    {
+     "left": "invalid specifier",
+     "right": ">=1.0.0"
+    }
+   ]
+  },
+  {
+   "name": "specifier_inequality",
+   "wraps": "packaging.specifiers.Specifier.__ne__",
+   "description": "The `!=` operator with Specifier objects, as in `left != right`. It is an operator, not a function: use it as an expression with `!=`, never as a call of `__ne__`. At least one side is a Specifier object.\n    \n    Example: specifier_inequality(\">=1.0\", \"<2.0\") -> True",
+   "verified": true,
+   "direct_call": "packaging.specifiers.Specifier(left) != packaging.specifiers.Specifier(right)",
+   "samples": [
+    {
+     "left": ">=1.0",
+     "right": "<2.0"
+    },
+    {
+     "left": "==1.0.0",
+     "right": "==1.0.0"
+    },
+    {
+     "left": "!=1.0.0",
+     "right": "!=1.0.1"
+    },
+    {
+     "left": "~=1.4.2",
+     "right": ">=1.4.2,<1.5.0"
+    },
+    {
+     "left": ">=1.0",
+     "right": ">=1.0"
+    },
+    {
+     "left": "invalid-specifier",
+     "right": ">=1.0"
+    }
+   ]
+  },
+  {
+   "name": "version_in_specifier",
+   "wraps": "packaging.specifiers.Specifier.__contains__",
+   "description": "Check if a version is contained within a specifier. version: A version string to check against the specifier, e.g. '1.2.3' -> true for specifier '>=1.0'. specifier: A version specifier string (e.g., '>=1.0', '==1.2.3').",
+   "verified": true,
+   "direct_call": "version in packaging.specifiers.Specifier(specifier)",
+   "samples": [
+    {
+     "version": "1.2.3",
+     "specifier": ">=1.0"
+    },
+    {
+     "version": "2.0.0",
+     "specifier": "==1.2.3"
+    },
+    {
+     "version": "1.0.0",
+     "specifier": "<2.0.0"
+    },
+    {
+     "version": "1.2.3",
+     "specifier": "~=1.2"
+    },
+    {
+     "version": "1.2.3.post1",
+     "specifier": ">=1.2.3"
+    },
+    {
+     "version": "invalid-version",
+     "specifier": ">=1.0"
+    }
+   ]
+  },
+  {
+   "name": "specifier_set_equality",
+   "wraps": "packaging.specifiers.SpecifierSet.__eq__",
+   "description": "The `==` operator with SpecifierSet objects, as in `left == right`. It is an operator, not a function: use it as an expression with `==`, never as a call of `__eq__`. At least one side is a SpecifierSet object.\n    \n    Example: specifier_set_equality('>=3.0', '>=3.0') -> True",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(left) == packaging.specifiers.SpecifierSet(right)",
+   "samples": [
+    {
+     "left": ">=3.0",
+     "right": ">=3.0"
+    },
+    {
+     "left": ">=3.0,!=3.1",
+     "right": ">=3.0,!=3.1"
+    },
+    {
+     "left": ">=3.0,!=3.1",
+     "right": "!=3.1,>=3.0"
+    },
+    {
+     "left": ">=3.0",
+     "right": ">=3.1"
+    },
+    {
+     "left": "",
+     "right": ""
+    },
+    {
+     "left": "===3.0.0",
+     "right": "===3.0.0"
+    }
+   ]
+  },
+  {
+   "name": "specifier_set_inequality",
+   "wraps": "packaging.specifiers.SpecifierSet.__ne__",
+   "description": "The `!=` operator with SpecifierSet objects, as in `left != right`. It is an operator, not a function: use it as an expression with `!=`, never as a call of `__ne__`. At least one side is a SpecifierSet object.\n    \n    Example: specifier_set_inequality(\">=1.0\", \"<2.0\") -> True",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(left) != packaging.specifiers.SpecifierSet(right)",
+   "samples": [
+    {
+     "left": ">=3.0",
+     "right": ">=3.0"
+    },
+    {
+     "left": ">=3.0",
+     "right": ">=3.1"
+    },
+    {
+     "left": ">=3.0,!=3.1",
+     "right": ">=3.0"
+    },
+    {
+     "left": "",
+     "right": ">=3.0"
+    },
+    {
+     "left": ">=3.0,!=3.1",
+     "right": ">=3.0,!=3.1"
+    },
+    {
+     "left": "invalid spec",
+     "right": ">=3.0"
+    }
+   ]
+  },
+  {
+   "name": "version_in_specifier_set",
+   "wraps": "packaging.specifiers.SpecifierSet.__contains__",
+   "description": "Check if a version is contained within a specifier set. version: A version string to check against the specifier set, e.g. '3.2' specifier_set: A string representation of a version specifier set, e.g. '>=3.0,!=3.1' -> true.",
+   "verified": true,
+   "direct_call": "version in packaging.specifiers.SpecifierSet(specifier_set)",
+   "samples": [
+    {
+     "version": "3.5.0",
+     "specifier_set": ">=3.0"
+    },
+    {
+     "version": "3.1.0",
+     "specifier_set": ">=3.0,!=3.1"
+    },
+    {
+     "version": "2.9.0",
+     "specifier_set": ">=3.0"
+    },
+    {
+     "version": "4.0.0",
+     "specifier_set": ">=3.0,<5.0"
+    },
+    {
+     "version": "3.0.0a1",
+     "specifier_set": ">=3.0"
+    }
+   ]
+  },
+  {
+   "name": "specifier_set_intersection",
+   "wraps": "packaging.specifiers.SpecifierSet.__and__",
+   "description": "Combine two specifier sets with logical AND. left: A string representation of the left specifier set, right: A string representation of the right specifier set. Example: specifier_set_intersection('>=1.0,<2.0', '<1.5') -> '>=1.0,<1.5'.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(left) & packaging.specifiers.SpecifierSet(right)",
+   "samples": [
+    {
+     "left": ">=3.0",
+     "right": "<4.0"
+    },
+    {
+     "left": ">=3.0,!=3.1",
+     "right": ">=3.2"
+    },
+    {
+     "left": "==3.0",
+     "right": "==3.0"
+    },
+    {
+     "left": "",
+     "right": ">=2.0"
+    },
+    {
+     "left": ">=3.0",
+     "right": ""
+    },
+    {
+     "left": "invalid<spec",
+     "right": ">=2.0"
+    }
+   ]
+  },
+  {
+   "name": "check_specifier_set_unsatisfiable",
+   "wraps": "packaging.specifiers.SpecifierSet.is_unsatisfiable",
+   "description": "Check whether this specifier set can never be satisfied.\n    \n    Returns True if no version can satisfy all specifiers simultaneously.\n    \n    Args:\n        specifiers (str): A string representation of version specifiers\n        \n    Returns:\n        bool: True if the specifier set is unsatisfiable, False otherwise\n        \n    Example:\n        >>> check_specifier_set_unsatisfiable(\">=2.0,<1.0\")\n        True\n    ",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifiers).is_unsatisfiable()",
+   "samples": [
+    {
+     "specifiers": ">=2.0,<1.0"
+    },
+    {
+     "specifiers": ">=1.0,<2.0"
+    },
+    {
+     "specifiers": ""
+    },
+    {
+     "specifiers": "==1.0,!=1.0"
+    },
+    {
+     "specifiers": ">=3.0,<2.0"
+    }
+   ]
+  },
+  {
+   "name": "convert_specifier_set_to_range",
+   "wraps": "packaging.specifiers.SpecifierSet.to_range",
+   "description": "Convert a specifier set to a version range. specifiers: A string representation of version specifiers, e.g. '>=1.0,<2.0' -> '[1.0, 2.0.dev0)'.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifiers).to_range()",
+   "samples": [
+    {
+     "specifiers": ">=1.0,<2.0"
+    },
+    {
+     "specifiers": ""
+    },
+    {
+     "specifiers": "===1.0.0"
+    },
+    {
+     "specifiers": ">=1.0,!=1.5,<2.0"
+    },
+    {
+     "specifiers": "invalid-specifier"
+    }
+   ]
+  },
+  {
+   "name": "check_specifier_set_subset",
+   "wraps": "packaging.specifiers.SpecifierSet.is_subset",
+   "description": "Check if one specifier set is a subset of another. specifier_set1: The first specifier set to check. specifier_set2: The second specifier set to check against. >>> check_specifier_set_subset('>=3.12,<3.13', '>=3.12') True",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifier_set1).is_subset(packaging.specifiers.SpecifierSet(specifier_set2))",
+   "samples": [
+    {
+     "specifier_set1": ">=3.12,<3.13",
+     "specifier_set2": ">=3.12"
+    },
+    {
+     "specifier_set1": ">=3.12",
+     "specifier_set2": ">=3.12,<3.13"
+    },
+    {
+     "specifier_set1": "==3.12.0",
+     "specifier_set2": ">=3.12"
+    },
+    {
+     "specifier_set1": ">=3.10",
+     "specifier_set2": ">=3.11"
+    },
+    {
+     "specifier_set1": "~=3.12",
+     "specifier_set2": ">=3.12,<3.14"
+    }
+   ]
+  },
+  {
+   "name": "check_specifier_set_superset",
+   "wraps": "packaging.specifiers.SpecifierSet.is_superset",
+   "description": "Check if one specifier set is a superset of another. specifier_set1: The first specifier set to check. specifier_set2: The second specifier set to check. >>> check_specifier_set_superset('>=3.12', '>=3.12,<3.13') True",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifier_set1).is_superset(packaging.specifiers.SpecifierSet(specifier_set2))",
+   "samples": [
+    {
+     "specifier_set1": ">=3.12",
+     "specifier_set2": ">=3.12,<3.13"
+    },
+    {
+     "specifier_set1": ">=3.12,<3.15",
+     "specifier_set2": ">=3.12"
+    },
+    {
+     "specifier_set1": "==3.12.0",
+     "specifier_set2": "==3.12.0"
+    },
+    {
+     "specifier_set1": "<3.12",
+     "specifier_set2": ">=3.12"
+    },
+    {
+     "specifier_set1": ">=3.12",
+     "specifier_set2": ">=3.13"
+    }
+   ]
+  },
+  {
+   "name": "check_specifier_sets_disjoint",
+   "wraps": "packaging.specifiers.SpecifierSet.is_disjoint",
+   "description": "Check if two specifier sets are disjoint. specifier_set1: First specifier set string, specifier_set2: Second specifier set string. >>> check_specifier_sets_disjoint('<3.12', '>=3.12') True",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifier_set1).is_disjoint(packaging.specifiers.SpecifierSet(specifier_set2))",
+   "samples": [
+    {
+     "specifier_set1": "<3.12",
+     "specifier_set2": ">=3.12"
+    },
+    {
+     "specifier_set1": "<3.12",
+     "specifier_set2": ">=3.11"
+    },
+    {
+     "specifier_set1": ">=2.0,<3.0",
+     "specifier_set2": ">3.0,<4.0"
+    },
+    {
+     "specifier_set1": "==1.0.0",
+     "specifier_set2": "==1.0.0"
+    },
+    {
+     "specifier_set1": ">=1.0.0",
+     "specifier_set2": "<1.0.0"
+    }
+   ]
+  },
+  {
+   "name": "check_version_in_specifier_set",
+   "wraps": "packaging.specifiers.SpecifierSet.contains",
+   "description": "Check if a version is contained in a specifier set. specifier_set: A string representing the version specifier set (e.g., '>=1.0.0,!=1.0.1'), version: The version string to check against the specifier set, prereleases: Whether or not to match prereleases with this SpecifierSet. If set to None (the default), it will follow the recommendation from PEP 440.",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifier_set, prereleases=prereleases).contains(version, prereleases=prereleases)",
+   "samples": [
+    {
+     "specifier_set": ">=1.0.0,!=1.0.1",
+     "version": "1.2.3",
+     "prereleases": null
+    },
+    {
+     "specifier_set": ">=1.0.0,!=1.0.1",
+     "version": "1.0.1",
+     "prereleases": null
+    },
+    {
+     "specifier_set": ">=1.0.0,!=1.0.1",
+     "version": "1.3.0a1",
+     "prereleases": false
+    },
+    {
+     "specifier_set": ">=1.0.0,!=1.0.1",
+     "version": "1.3.0a1",
+     "prereleases": true
+    },
+    {
+     "specifier_set": ">=1.0.0,!=1.0.1",
+     "version": "invalid.version",
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "filter_versions_by_specifier_set",
+   "wraps": "packaging.specifiers.SpecifierSet.filter",
+   "description": "Filter a list of versions based on a specifier set.\n    \n    :param specifiers: A string representing version specifiers (e.g., '>=1.2.3')\n    :param versions: List of version strings or objects to filter\n    :param prereleases: Whether to include prerelease versions\n    \n    >>> filter_versions_by_specifier_set(\">=1.2.3\", [\"1.2\", \"1.3\", \"1.5a1\"])\n    ['1.3']\n    ",
+   "verified": true,
+   "direct_call": "packaging.specifiers.SpecifierSet(specifiers, prereleases).filter(versions, prereleases)",
+   "samples": [
+    {
+     "specifiers": ">=1.2.3",
+     "versions": [
+      "1.2",
+      "1.3",
+      "1.5a1"
+     ],
+     "prereleases": null
+    },
+    {
+     "specifiers": ">=1.2.3",
+     "versions": [
+      "1.2",
+      "1.3",
+      "1.4"
+     ],
+     "prereleases": null
+    },
+    {
+     "specifiers": ">=1.2.3",
+     "versions": [
+      "1.3",
+      "1.5a1"
+     ],
+     "prereleases": true
+    },
+    {
+     "specifiers": "",
+     "versions": [
+      "1.3",
+      "1.5a1"
+     ],
+     "prereleases": null
+    },
+    {
+     "specifiers": ">=1.2.3",
+     "versions": [
+      {
+       "ver": "1.2"
+      },
+      {
+       "ver": "1.3"
+      }
+     ],
+     "prereleases": null
+    }
+   ]
+  },
+  {
+   "name": "tag_equality",
+   "wraps": "packaging.tags.Tag.__eq__",
+   "description": "The `==` operator with Tag objects, as in `left == right`. It is an operator, not a function: use it as an expression with `==`, never as a call of `__eq__`. At least one side is a Tag object.\n    \n    Example:\n    >>> tag1 = Tag('cp39', 'cp39m', 'linux_x86_64')\n    >>> tag2 = Tag('cp39', 'cp39m', 'linux_x86_64')\n    >>> tag_equality(tag1, tag2)\n    True\n    ",
+   "verified": true,
+   "direct_call": "packaging.tags.Tag(left['interpreter'], left['abi'], left['platform']) == packaging.tags.Tag(right['interpreter'], right['abi'], right['platform'])",
+   "samples": [
+    {
+     "left": {
+      "interpreter": "cp39",
+      "abi": "cp39m",
+      "platform": "linux_x86_64"
+     },
+     "right": {
+      "interpreter": "cp39",
+      "abi": "cp39m",
+      "platform": "linux_x86_64"
+     }
+    },
+    {
+     "left": {
+      "interpreter": "cp38",
+      "abi": "cp38",
+      "platform": "win_amd64"
+     },
+     "right": {
+      "interpreter": "cp39",
+      "abi": "cp39m",
+      "platform": "win_amd64"
+     }
+    },
+    {
+     "left": {
+      "interpreter": "py3",
+      "abi": "none",
+      "platform": "any"
+     },
+     "right": {
+      "interpreter": "py3",
+      "abi": "none",
+      "platform": "any"
+     }
+    },
+    {
+     "left": {
+      "interpreter": "cp37",
+      "abi": "cp37m",
+      "platform": "macosx_10_9_x86_64"
+     },
+     "right": {
+      "interpreter": "cp37",
+      "abi": "cp37m",
+      "platform": "macosx_10_10_x86_64"
+     }
+    },
+    {
+     "left": {
+      "interpreter": "pp37",
+      "abi": "pp37m",
+      "platform": "linux_armv7l"
+     },
+     "right": {
+      "interpreter": "pp37",
+      "abi": "pp37m",
+      "platform": "linux_armv7l"
+     }
+    }
+   ]
+  },
+  {
+   "name": "version_less_than",
+   "wraps": "packaging.version.Version.__lt__",
+   "description": "Check if one version is less than another. version1: The first version string to compare, version2: The second version string to compare.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version1) < packaging.version.Version(version2)",
+   "samples": [
+    {
+     "version1": "1.0a5",
+     "version2": "1.0"
+    },
+    {
+     "version1": "2.0",
+     "version2": "1.9.9"
+    },
+    {
+     "version1": "1.0",
+     "version2": "1.0"
+    },
+    {
+     "version1": "1.0.0",
+     "version2": "1.0.1"
+    },
+    {
+     "version1": "1.0.post1",
+     "version2": "1.0"
+    },
+    {
+     "version1": "invalid-version",
+     "version2": "1.0"
+    }
+   ]
+  },
+  {
+   "name": "version_less_equal",
+   "wraps": "packaging.version.Version.__le__",
+   "description": "Check if one version is less than or equal to another. left: The left-hand version string to compare, right: The right-hand version string to compare.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(left) <= packaging.version.Version(right)",
+   "samples": [
+    {
+     "left": "1.0a5",
+     "right": "1.0"
+    },
+    {
+     "left": "2.0",
+     "right": "1.5"
+    },
+    {
+     "left": "1.0",
+     "right": "1.0"
+    },
+    {
+     "left": "1.0b1",
+     "right": "1.0a1"
+    },
+    {
+     "left": "1.0.dev1",
+     "right": "1.0"
+    },
+    {
+     "left": "invalid.version",
+     "right": "1.0"
+    }
+   ]
+  },
+  {
+   "name": "version_greater_than",
+   "wraps": "packaging.version.Version.__gt__",
+   "description": "Check if one version is greater than another. left_version: The left-hand version string to compare, right_version: The right-hand version string to compare.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(left_version) > packaging.version.Version(right_version)",
+   "samples": [
+    {
+     "left_version": "1.0a5",
+     "right_version": "1.0"
+    },
+    {
+     "left_version": "2.0",
+     "right_version": "1.9.9"
+    },
+    {
+     "left_version": "1.0.0",
+     "right_version": "1.0.0"
+    },
+    {
+     "left_version": "3.0.0",
+     "right_version": "2.9.9"
+    },
+    {
+     "left_version": "1.0b1",
+     "right_version": "1.0a1"
+    },
+    {
+     "left_version": "invalid-version",
+     "right_version": "1.0"
+    }
+   ]
+  },
+  {
+   "name": "version_greater_equal",
+   "wraps": "packaging.version.Version.__ge__",
+   "description": "Check if one version is greater than or equal to another. version1: The first version string to compare, version2: The second version string to compare.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version1) >= packaging.version.Version(version2)",
+   "samples": [
+    {
+     "version1": "1.0",
+     "version2": "0.9"
+    },
+    {
+     "version1": "2.0.0",
+     "version2": "2.0.0"
+    },
+    {
+     "version1": "1.0a5",
+     "version2": "1.0"
+    },
+    {
+     "version1": "3.0.0",
+     "version2": "2.9.9"
+    },
+    {
+     "version1": "1.0b1",
+     "version2": "1.0a1"
+    }
+   ]
+  },
+  {
+   "name": "version_equality",
+   "wraps": "packaging.version.Version.__eq__",
+   "description": "The `==` operator with Version objects, as in `left == right`. It is an operator, not a function: use it as an expression with `==`, never as a call of `__eq__`. At least one side is a Version object.\n    \n    Example: version_equality(\"1.0\", \"1.0\") -> True",
+   "verified": true,
+   "direct_call": "packaging.version.Version(left) == packaging.version.Version(right)",
+   "samples": [
+    {
+     "left": "1.0a5",
+     "right": "1.0"
+    },
+    {
+     "left": "2.0",
+     "right": "2.0"
+    },
+    {
+     "left": "1.0.0",
+     "right": "1.0"
+    },
+    {
+     "left": "1.0.0.dev0",
+     "right": "1.0.0"
+    },
+    {
+     "left": "1.0+local",
+     "right": "1.0"
+    },
+    {
+     "left": "invalid.version",
+     "right": "1.0"
+    }
+   ]
+  },
+  {
+   "name": "version_inequality",
+   "wraps": "packaging.version.Version.__ne__",
+   "description": "The `!=` operator with Version objects, as in `left != right`. It is an operator, not a function: use it as an expression with `!=`, never as a call of `__ne__`. At least one side is a Version object.\n    \n    Example: version_inequality(\"1.0\", \"1.1\") -> True",
+   "verified": true,
+   "direct_call": "packaging.version.Version(left) != packaging.version.Version(right)",
+   "samples": [
+    {
+     "left": "1.0a5",
+     "right": "1.0"
+    },
+    {
+     "left": "2.0",
+     "right": "2.0"
+    },
+    {
+     "left": "1.0.0",
+     "right": "1.0.1"
+    },
+    {
+     "left": "3.0.0",
+     "right": "2.9.9"
+    },
+    {
+     "left": "1.0.dev1",
+     "right": "1.0"
+    },
+    {
+     "left": "invalid.version",
+     "right": "1.0"
+    }
+   ]
+  },
+  {
+   "name": "get_version_epoch",
+   "wraps": "packaging.version.Version.epoch",
+   "description": "Get the epoch component of a version. version: A version string to parse and extract the epoch from -> The epoch of the version.\n    \n    >>> get_version_epoch(\"2.0.0\")\n    0\n    >>> get_version_epoch(\"1!2.0.0\")\n    1\n    ",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).epoch",
+   "samples": [
+    {
+     "version": "2.0.0"
+    },
+    {
+     "version": "1!2.0.0"
+    },
+    {
+     "version": "3.1.0a1"
+    },
+    {
+     "version": "0!1.0.0"
+    },
+    {
+     "version": "2!5.6.7-rc1"
+    }
+   ]
+  },
+  {
+   "name": "get_version_release",
+   "wraps": "packaging.version.Version.release",
+   "description": "Get the release component of a version. version: A version string to parse, e.g. '1.2.3' -> [1, 2, 3].",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).release",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "2.0.0"
+    },
+    {
+     "version": "1!2.0.0.post0"
+    },
+    {
+     "version": "1.0.0a1"
+    },
+    {
+     "version": "3.5.0.dev0"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "get_version_pre",
+   "wraps": "packaging.version.Version.pre",
+   "description": "Get the pre-release component of a version. version: A version string to parse, e.g. '1.2.3a1' -> ('a', 1).",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).pre",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3a1"
+    },
+    {
+     "version": "1.2.3b1"
+    },
+    {
+     "version": "1.2.3rc1"
+    },
+    {
+     "version": "2.0.0.dev1"
+    }
+   ]
+  },
+  {
+   "name": "get_version_post",
+   "wraps": "packaging.version.Version.post",
+   "description": "Get the post-release component of a version. version: A version string to parse and extract the post-release component from\n    \n    >>> print(Version(\"1.2.3\").post)\n    None\n    >>> Version(\"1.2.3.post1\").post\n    1\n    ",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).post",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3.post1"
+    },
+    {
+     "version": "2.0.0.post0"
+    },
+    {
+     "version": "1.0.0.post15"
+    },
+    {
+     "version": "3.5.2"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "get_version_dev",
+   "wraps": "packaging.version.Version.dev",
+   "description": "Get the development component of a version. version: A version string to parse -> The development number or None.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).dev",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3.dev1"
+    },
+    {
+     "version": "2.0.0.dev0"
+    },
+    {
+     "version": "3.1.4.dev123"
+    },
+    {
+     "version": "1.0.0a1"
+    }
+   ]
+  },
+  {
+   "name": "get_version_local",
+   "wraps": "packaging.version.Version.local",
+   "description": "Get the local version segment of the version. version: A version string to parse, e.g. '1.2.3+abc' -> 'abc'.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).local",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3+abc"
+    },
+    {
+     "version": "2.0.0+build.123"
+    },
+    {
+     "version": "1.0.0-alpha+001"
+    },
+    {
+     "version": "3.5.0-beta.2+rc.1"
+    }
+   ]
+  },
+  {
+   "name": "get_version_public",
+   "wraps": "packaging.version.Version.public",
+   "description": "Get the public portion of a version. version: A version string to extract the public portion from -> e.g. '1.2.3+abc' -> '1.2.3'.",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).public",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3+abc"
+    },
+    {
+     "version": "1!1.2.3dev1+abc"
+    },
+    {
+     "version": "2.0.0-beta.1+build.123"
+    },
+    {
+     "version": "3.0.0rc1"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  },
+  {
+   "name": "get_version_base",
+   "wraps": "packaging.version.Version.base_version",
+   "description": "Get the base version of a version. version: A version string to extract the base version from -> The base version string.\n    \n    >>> get_version_base(\"1.2.3\")\n    '1.2.3'\n    >>> get_version_base(\"1.2.3+abc\")\n    '1.2.3'\n    >>> get_version_base(\"1!1.2.3dev1+abc\")\n    '1!1.2.3'\n    ",
+   "verified": true,
+   "direct_call": "packaging.version.Version(version).base_version",
+   "samples": [
+    {
+     "version": "1.2.3"
+    },
+    {
+     "version": "1.2.3+abc"
+    },
+    {
+     "version": "1!1.2.3dev1+abc"
+    },
+    {
+     "version": "2.0.0rc1"
+    },
+    {
+     "version": "3.1.0.post1"
+    },
+    {
+     "version": "invalid.version"
+    }
+   ]
+  }
+ ]
+}
