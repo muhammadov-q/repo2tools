@@ -277,6 +277,8 @@ def format_param(p: dict) -> str:
 
 
 def signature(c: dict) -> str:
+    if c.get("operator"):
+        return f"{c['module']}.{c['qualname']} (written `{c['operator']}`)"
     return f"{c['module']}.{c['qualname']}({', '.join(map(format_param, c['params']))}) -> {c['returns']}"
 
 
@@ -291,10 +293,42 @@ def class_callables(classes: dict) -> list[dict]:
              "loc": info["loc"], "n_overloads": 0, "decorators": []} for name, info in classes.items() if info.get("file")]
 
 
+OPERATOR_METHODS = {"<": "__lt__", "<=": "__le__", ">": "__gt__", ">=": "__ge__", "==": "__eq__", "!=": "__ne__", "in": "__contains__",
+                    "&": "__and__", "|": "__or__", "^": "__xor__", "-": "__sub__", "+": "__add__"}
+
+
+OPERATOR_NODES = {"<": ast.Lt, "<=": ast.LtE, ">": ast.Gt, ">=": ast.GtE, "==": ast.Eq, "!=": ast.NotEq, "in": (ast.In, ast.NotIn),
+                  "&": ast.BitAnd, "|": ast.BitOr, "^": ast.BitXor, "-": ast.Sub, "+": ast.Add}
+
+
+def operator_callables(classes: dict, usage: dict, by: str | None) -> list[dict]:
+    """One entry per operator that the repository itself uses with objects of a class, for example `Version <`.
+
+    A class entry alone was not enough: with it the LLM made one tool per class, the constructor, and
+    never a comparison (runs of 2026-11-13). The entry is named like the operator's method, so its path
+    is unique, but the test and the tool write the operator itself.
+    """
+    sources = ("docs", "tests") if by in (None, "both") else (by,)
+    entries = []
+    for c in class_callables(classes):
+        seen = usage["classes"].get(c["qualname"], {}).get("operators", {})
+        for op, method in OPERATOR_METHODS.items():
+            if sum(seen.get(op, {}).get(s, 0) for s in sources):
+                summary = f"The `{op}` operator with {c['qualname']} objects, as in `left {op} right`."
+                entries.append({**c, "kind": "operator", "operator": op, "owner": c["qualname"], "qualname": f"{c['qualname']}.{method}",
+                                "returns": "", "summary": summary,
+                                "docstring": f"{summary} It is an operator, not a function: use it as an expression with `{op}`, "
+                                             f"never as a call of `{method}`. At least one side is a {c['qualname']} object.\n\n"
+                                             f"The class {c['qualname']}: {c['docstring']}"})
+    return entries
+
+
 def usage_note(c: dict, usage: dict, by: str) -> str:
     """How often the repository's own documentation or tests use this entry, as text for the listing."""
     sources = ("docs", "tests") if by == "both" else (by,)
     count = lambda row: sum(row.get(s, 0) for s in sources)  # noqa: E731
+    if c["kind"] == "operator":
+        return f"used {count(usage['classes'].get(c['owner'], {}).get('operators', {}).get(c['operator'], {}))} times"
     if c["kind"] != "class":
         return f"used {count(usage['callables'].get(function_path(c), {}))} times"
     info = usage["classes"].get(c["qualname"], {"built": {}, "operators": {}})
@@ -308,7 +342,9 @@ def usage_score(c: dict, usage: dict, by: str) -> float:
     total = 0.0
     for s in sources:
         everything = sum(r[s] for r in usage["callables"].values()) + sum(k["built"][s] for k in usage["classes"].values()) or 1
-        if c["kind"] == "class":
+        if c["kind"] == "operator":
+            mine = usage["classes"].get(c["owner"], {}).get("operators", {}).get(c["operator"], {}).get(s, 0)
+        elif c["kind"] == "class":
             info = usage["classes"].get(c["qualname"])
             mine = (info["built"][s] + sum(n[s] for n in info["operators"].values())) if info else 0
         else:
@@ -325,6 +361,7 @@ def propose_messages(package: str, callables: list[dict], max_tools: int, usage:
     where = {"docs": "documentation examples", "tests": "tests", "both": "documentation examples and tests"}[by]
     listing = "\n".join(f"- {c['kind']} {signature(c)} | {c['summary'][:110]}" + (f" | {usage_note(c, usage, by)}" if usage else "") for c in callables)
     has_classes = any(c["kind"] == "class" for c in callables)
+    has_operators = any(c["kind"] == "operator" for c in callables)
     extra = ""
     if usage:
         extra += (f" After each entry you see how often the repository's own {where} use it. Prefer what is used often: that is what the "
@@ -333,8 +370,12 @@ def propose_messages(package: str, callables: list[dict], max_tools: int, usage:
         extra += (" A `class` entry stands for uses that have no function of their own: building the object from text, which also checks "
                   "the text and gives its normal form, and operators such as <, == or `in`. You may make several tools from one class, one "
                   "per operation: give each its own name, and say the operation in the description.")
+    if has_operators:
+        extra += (" An `operator` entry stands for one operator used with objects of a class, for example comparing two of them with `<`. "
+                  "A tool for it takes the values as text, builds the objects and returns the result of the operator. Operators are often "
+                  "what the library is used for most, so do not skip them.")
     one_each = "Make one tool per library function." if not has_classes else "For all other entries, make one tool per library function."
-    if usage or has_classes:
+    if usage or has_classes or has_operators:
         return [
             {"role": "system", "content": "You design tools for an AI agent. A tool is one Python function that wraps "
                                           "one function of a library and takes and returns plain JSON values. "
@@ -500,10 +541,13 @@ def parse_spec(text: str, pick: dict) -> tuple[dict | None, str | None]:
         if not isinstance(p, dict) or not TOOL_NAME.match(str(p.get("name", ""))) or p.get("type") not in JSON_TYPES:
             return None, f"this parameter needs a snake_case name and a JSON type: {json.dumps(p)[:200]}"
     names = [p["name"] for p in parameters]
-    target = pick["callable"]["qualname"].split(".")[-1]
+    operator = pick["callable"].get("operator")
+    target = pick["callable"]["owner"] if operator else pick["callable"]["qualname"].split(".")[-1]
     problem = direct_call_problem(spec["direct_call"], names, target)
     if problem:
         return None, problem
+    if operator and not any(isinstance(node, OPERATOR_NODES[operator]) for node in ast.walk(ast.parse(spec["direct_call"], mode="eval"))):
+        return None, f"direct_call must use the operator `{operator}` between the objects, as in `left {operator} right`"
     if len(samples) < (3 if names else 1):
         return None, "give at least 3 different samples"
     return spec, None
@@ -822,12 +866,17 @@ async def generate(args, llm=None) -> dict:
     # which functions become tools; big APIs are asked about in parts, so they fit the model's context
     items = [asdict(c) for c in callables]
     usage, by = None, getattr(args, "usage", None)
+    operators = bool(getattr(args, "operators", False))
     if getattr(args, "classes", False):
         items = class_callables(classes) + items
-    if by:  # what the repository's own documentation and tests use, counted without running anything
-        usage = count_usage(json.loads((out / "api.json").read_text()), root, base / package).as_json()
-        (out / "usage.json").write_text(json.dumps(usage, indent=1), encoding="utf-8")
-        items.sort(key=lambda c: usage_score(c, usage, by), reverse=True)
+    if by or operators:  # what the repository's own documentation and tests use, counted without running anything
+        counted = count_usage(json.loads((out / "api.json").read_text()), root, base / package).as_json()
+        (out / "usage.json").write_text(json.dumps(counted, indent=1), encoding="utf-8")
+        if operators:  # which operators exist comes from the counts; the counts are shown only with --usage
+            items = operator_callables(classes, counted, by) + items
+        if by:
+            usage = counted
+            items.sort(key=lambda c: usage_score(c, usage, by), reverse=True)
     chunks = [items[i:i + LISTING_CHUNK] for i in range(0, len(items), LISTING_CHUNK)]
     picks: list[dict] = []
     dropped_picks = 0
@@ -861,7 +910,7 @@ async def generate(args, llm=None) -> dict:
         else "NONE: this system has no sandbox-exec, only a separate environment"
     meta = {"url": url, "commit": commit, "package": package, "model": getattr(llm, "model", "unknown"), "thinking": getattr(llm, "thinking", False),
             "set": set_name, "toolset": str(toolset.relative_to(ROOT)), "sandbox": sandbox, "dependencies": dependencies,
-            "dropped_proposals": dropped_picks, "pick": {"usage": by, "classes": bool(getattr(args, "classes", False))}}
+            "dropped_proposals": dropped_picks, "pick": {"usage": by, "classes": bool(getattr(args, "classes", False)), "operators": operators}}
     write_toolset(toolset, set_name, tag, meta, accepted)
 
     # the finished server, over real MCP; anything that fails here leaves the tool set
@@ -896,6 +945,8 @@ def main() -> None:
                         help="show the LLM how often the repository's own documentation examples, tests or both use each function (repo_usage.py)")
     parser.add_argument("--classes", action="store_true",
                         help="let the LLM also make tools from a class itself: building the object, and its operators")
+    parser.add_argument("--operators", action="store_true",
+                        help="also list each operator the repo uses with a class (e.g. Version <) as its own entry that can become a tool")
     parser.add_argument("--env-only", action="store_true", help="only (re)build the environment of an existing tool set")
     args = parser.parse_args()
     if not args.env_only and not (args.base_url and args.model):

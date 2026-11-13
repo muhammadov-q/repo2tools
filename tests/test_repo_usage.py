@@ -238,7 +238,7 @@ def test_generate_with_usage_and_classes_builds_a_tool_from_an_operator(repo, tm
     llm = ScriptedLLM({("propose", "money"): [json.dumps([{"function": "money.Amount", "name": "is_smaller_amount", "description": "Compare two amounts with <."}])],
                        ("spec", "is_smaller_amount"): [json.dumps(spec)], ("code", "is_smaller_amount"): [code]})
     report = asyncio.run(repo2tools.generate(options(repo, usage="docs", classes=True), llm=llm))
-    assert report["accepted"] == 1 and report["pick"] == {"usage": "docs", "classes": True}
+    assert report["accepted"] == 1 and report["pick"] == {"usage": "docs", "classes": True, "operators": False}
     tool = report["tools"][0]
     assert tool["wraps"] == "money.Amount" and [r["result"] for r in tool["check"]["samples"]] == ["same", "same", "same", "both_error"]
     prompt = llm.chats[0][2][1]["content"]
@@ -247,3 +247,52 @@ def test_generate_with_usage_and_classes_builds_a_tool_from_an_operator(repo, tm
     assert usage["classes"]["Amount"]["built"]["docs"] == 4
     # the test writer sees the class it has to use
     assert "class Amount:" in llm.chats[1][2][1]["content"]
+
+
+def test_each_operator_the_repo_uses_is_its_own_entry(repo):
+    api = api_of(repo)
+    usage = count_usage(api, repo, repo / "money").as_json()
+    docs = repo2tools.operator_callables(api["classes"], usage, "docs")
+    assert [(c["kind"], repo2tools.function_path(c)) for c in docs] == [("operator", "money.Amount.__lt__")]  # the docs only compare with <
+    both = {repo2tools.function_path(c) for c in repo2tools.operator_callables(api["classes"], usage, None)}
+    assert both == {"money.Amount.__lt__", "money.Amount.__eq__"}
+    items = docs + api["callables"]
+    text = repo2tools.propose_messages("money", items, 5, usage, "docs")[1]["content"]
+    assert "- operator money.Amount.__lt__ (written `<`) | The `<` operator with Amount objects, as in `left < right`. | used 2 times" in text
+    assert "An `operator` entry stands for one operator" in text
+    # an operator entry gives one tool, like a function
+    proposal = [{"function": "money.Amount.__lt__", "name": "is_smaller_amount", "description": "Compare two amounts with <."},
+                {"function": "money.Amount.__lt__", "name": "is_smaller_again", "description": "Compare two amounts with <, again."}]
+    picks, problem, dropped = repo2tools.parse_proposal(json.dumps(proposal), items)
+    assert problem is None and [p["name"] for p in picks] == ["is_smaller_amount"] and dropped == 1
+    # its test must use the operator itself, on the library's class
+    plan = {"parameters": [{"name": "first", "type": "string", "description": "an amount", "required": True},
+                           {"name": "second", "type": "string", "description": "an amount", "required": True}],
+            "samples": [{"first": "1 EUR", "second": "2 EUR"}, {"first": "5 EUR", "second": "2 EUR"}, {"first": "2 EUR", "second": "2 EUR"}]}
+    good, problem = repo2tools.parse_spec(json.dumps({**plan, "direct_call": "money.Amount(first) < money.Amount(second)"}), picks[0])
+    assert problem is None and good["direct_call"].count("<") == 1
+    assert "must use the operator `<`" in repo2tools.parse_spec(json.dumps({**plan, "direct_call": "money.Amount(first) == money.Amount(second)"}), picks[0])[1]
+    assert "may not use __lt__" in repo2tools.parse_spec(json.dumps({**plan, "direct_call": "money.Amount(first).__lt__(money.Amount(second))"}), picks[0])[1]
+
+
+def test_generate_with_operators_builds_a_comparison_tool(repo, tmp_path, monkeypatch):
+    root = tmp_path / "root"
+    monkeypatch.setattr(repo2tools, "ROOT", root)
+    monkeypatch.setattr(repo2tools, "CACHE", root / ".cache")
+    root.mkdir()
+    spec = {"parameters": [{"name": "first", "type": "string", "description": "an amount", "required": True},
+                           {"name": "second", "type": "string", "description": "an amount", "required": True}],
+            "direct_call": "money.Amount(first) < money.Amount(second)",
+            "samples": [{"first": "1 EUR", "second": "2 EUR"}, {"first": "5 EUR", "second": "2 EUR"}, {"first": "2 EUR", "second": "2 EUR"}, {"first": "x", "second": "2 EUR"}]}
+    code = ('```python\nfrom money import Amount\n\n\ndef is_smaller_amount(first: str, second: str) -> bool:\n'
+            '    """Check whether the first amount is smaller than the second. first, second: amounts such as \'12.50 EUR\'."""\n'
+            '    return Amount(first) < Amount(second)\n```')
+    llm = ScriptedLLM({("propose", "money"): [json.dumps([{"function": "money.Amount.__lt__", "name": "is_smaller_amount", "description": "Compare two amounts with <."}])],
+                       ("spec", "is_smaller_amount"): [json.dumps(spec)], ("code", "is_smaller_amount"): [code]})
+    report = asyncio.run(repo2tools.generate(options(repo, operators=True), llm=llm))
+    assert report["accepted"] == 1 and report["pick"] == {"usage": None, "classes": False, "operators": True}
+    tool = report["tools"][0]
+    assert tool["wraps"] == "money.Amount.__lt__" and [r["result"] for r in tool["check"]["samples"]] == ["same", "same", "same", "both_error"]
+    prompt = llm.chats[0][2][1]["content"]
+    assert "operator money.Amount.__lt__ (written `<`)" in prompt and "used 2 times" not in prompt  # no counts without --usage
+    assert "It is an operator, not a function" in llm.chats[1][2][1]["content"] and "class Amount:" in llm.chats[1][2][1]["content"]

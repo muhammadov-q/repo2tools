@@ -1,0 +1,6032 @@
+{
+ "url": "https://github.com/pypa/packaging",
+ "commit": "c1d2a9d8f5ca7cc11b7d2e902ed5ee3e255e8560",
+ "package": "packaging",
+ "model": "qwen3-coder",
+ "thinking": false,
+ "set": "packaging-pick-usage-docs-operators",
+ "toolset": "toolsets/generated/packaging-pick-usage-docs-operators",
+ "sandbox": "macOS sandbox-exec: no network, home folder unreadable, one scratch folder writable",
+ "dependencies": [],
+ "dropped_proposals": 0,
+ "pick": {
+  "usage": "docs",
+  "classes": false,
+  "operators": true
+ },
+ "n_callables": 92,
+ "picked": 42,
+ "accepted": 33,
+ "verified": 33,
+ "rejected": 9,
+ "ok_on_first_try": 21,
+ "first_try_results": {
+  "ok": 21,
+  "spec": 16,
+  "fastmcp": 1,
+  "differential": 3,
+  "runs": 1
+ },
+ "all_check_results": {
+  "ok": 33,
+  "spec": 41,
+  "fastmcp": 1,
+  "differential": 11,
+  "runs": 5
+ },
+ "sample_results": {
+  "same": 161,
+  "both_error": 17
+ },
+ "llm_tokens": {
+  "propose": 6722,
+  "spec": 131693,
+  "code": 93589
+ },
+ "llm_requests": {
+  "propose": 1,
+  "spec": 77,
+  "code": 56
+ },
+ "seconds": 78,
+ "tools": [
+  {
+   "name": "specifier_set_to_range",
+   "wraps": "packaging.specifiers.SpecifierSet.to_range",
+   "description": "Convert a specifier set to a version range that represents the same versions.",
+   "accepted": true,
+   "code": "from packaging.specifiers import SpecifierSet\nfrom packaging.ranges import VersionRange\n\n\ndef specifier_set_to_range(specifiers: str) -> str:\n    \"\"\"Convert a specifier set to a version range that represents the same versions.\n    \n    Args:\n        specifiers: A string representation of version specifiers\n        \n    Returns:\n        A string representation of the equivalent version range\n        \n    Example:\n        >>> specifier_set_to_range(\">=1.0,<2.0\")\n        '[1.0, 2.0.dev0)'\n    \"\"\"\n    try:\n        specifier_set = SpecifierSet(specifiers)\n        version_range = specifier_set.to_range()\n        return str(version_range)\n    except Exception as e:\n        raise ValueError(f\"Invalid specifiers: {specifiers!r}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifiers",
+      "type": "string",
+      "description": "A string representation of version specifiers",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifiers).to_range()",
+    "samples": [
+     {
+      "specifiers": ">=1.0,<2.0"
+     },
+     {
+      "specifiers": ""
+     },
+     {
+      "specifiers": "===1.0.0"
+     },
+     {
+      "specifiers": ">=1.0,!=1.5,<2.0"
+     },
+     {
+      "specifiers": "invalid-specifier"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "specifiers": ">=1.0,<2.0"
+      },
+      "tool": "<VersionRange '[1.0, 2.0.dev0)'>",
+      "direct": "\"<VersionRange '[1.0, 2.0.dev0)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": ""
+      },
+      "tool": "<VersionRange '(-inf, +inf)' arbitrary>",
+      "direct": "\"<VersionRange '(-inf, +inf)' arbitrary>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": "===1.0.0"
+      },
+      "tool": "<VersionRange '{1.0.0}'>",
+      "direct": "\"<VersionRange '{1.0.0}'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": ">=1.0,!=1.5,<2.0"
+      },
+      "tool": "<VersionRange '[1.0, 1.5) | (1.5[AFTER_LOCALS], 2.0.dev0)'>",
+      "direct": "\"<VersionRange '[1.0, 1.5) | (1.5[AFTER_LOCALS], 2.0.dev0)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": "invalid-specifier"
+      },
+      "tool": "ValueError: Invalid specifiers: 'invalid-specifier'",
+      "direct": "InvalidSpecifier: Invalid specifier: 'invalid-specifier'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "Convert a specifier set to a version range that represents the same versions.\n    \n    Args:\n        specifiers: A string representation of version specifiers\n        \n    Returns:\n        A string representation of the equivalent version range\n        \n    Example:\n        >>> specifier_set_to_range(\">=1.0,<2.0\")\n        '[1.0, 2.0.dev0)'\n    ",
+    "input_schema": {
+     "properties": {
+      "specifiers": {
+       "title": "Specifiers",
+       "type": "string"
+      }
+     },
+     "required": [
+      "specifiers"
+     ],
+     "title": "specifier_set_to_rangeArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_range_contains",
+   "wraps": "packaging.ranges.VersionRange.__contains__",
+   "description": "Check if a version is contained within a version range using the 'in' operator.",
+   "accepted": false,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef version_range_contains(version: str, specifier_set: str) -> bool:\n    \"\"\"Check if a version is contained within a version range using the 'in' operator. version: A version string to check for membership in the range, e.g. '1.5' -> True. specifier_set: A specifier set string that defines the version range, e.g. '>=1.0,<2.0'.\"\"\"\n    try:\n        range_obj = SpecifierSet(specifier_set).to_range()\n        return version in range_obj\n    except Exception as e:\n        raise ValueError(f\"invalid version range or version: {specifier_set!r}, {version!r}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "version",
+      "type": "string",
+      "description": "A version string to check for membership in the range",
+      "required": true
+     },
+     {
+      "name": "specifier_set",
+      "type": "string",
+      "description": "A specifier set string that defines the version range",
+      "required": true
+     }
+    ],
+    "direct_call": "version in packaging.ranges.VersionRange.from_specifier_set(specifier_set)",
+    "samples": [
+     {
+      "version": "1.5",
+      "specifier_set": ">=1.0,<2.0"
+     },
+     {
+      "version": "2.0",
+      "specifier_set": ">=1.0,<2.0"
+     },
+     {
+      "version": "1.0a1",
+      "specifier_set": ">=1.0a0,<2.0"
+     },
+     {
+      "version": "3.0",
+      "specifier_set": ">=1.0,<2.0"
+     },
+     {
+      "version": "1.5",
+      "specifier_set": "===1.5"
+     }
+    ]
+   },
+   "check": {
+    "ok": false,
+    "stage": "spec",
+    "error": "the direct_call expression is wrong: AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+    "samples": [
+     {
+      "arguments": {
+       "version": "1.5",
+       "specifier_set": ">=1.0,<2.0"
+      },
+      "tool": true,
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned true",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "version": "2.0",
+       "specifier_set": ">=1.0,<2.0"
+      },
+      "tool": false,
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned false",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "version": "1.0a1",
+       "specifier_set": ">=1.0a0,<2.0"
+      },
+      "tool": true,
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned true",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "version": "3.0",
+       "specifier_set": ">=1.0,<2.0"
+      },
+      "tool": false,
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned false",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "version": "1.5",
+       "specifier_set": "===1.5"
+      },
+      "tool": true,
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned true",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     }
+    ],
+    "verified": false,
+    "description": "Check if a version is contained within a version range using the 'in' operator. version: A version string to check for membership in the range, e.g. '1.5' -> True. specifier_set: A specifier set string that defines the version range, e.g. '>=1.0,<2.0'.",
+    "input_schema": {
+     "properties": {
+      "version": {
+       "title": "Version",
+       "type": "string"
+      },
+      "specifier_set": {
+       "title": "Specifier Set",
+       "type": "string"
+      }
+     },
+     "required": [
+      "version",
+      "specifier_set"
+     ],
+     "title": "version_range_containsArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "direct_call may not use __contains__"
+    },
+    {
+     "stage": "spec",
+     "error": "direct_call must use the library's VersionRange"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'"
+    },
+    {
+     "stage": "spec",
+     "error": "direct_call must use the library's VersionRange"
+    }
+   ]
+  },
+  {
+   "name": "version_range_equal",
+   "wraps": "packaging.ranges.VersionRange.__eq__",
+   "description": "Compare two version ranges for equality using the '==' operator.",
+   "accepted": false,
+   "code": null,
+   "spec": null,
+   "check": null,
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "direct_call must use the library's VersionRange"
+    },
+    {
+     "stage": "spec",
+     "error": "direct_call may not use __eq__"
+    },
+    {
+     "stage": "spec",
+     "error": "direct_call must use the library's VersionRange"
+    },
+    {
+     "stage": "spec",
+     "error": "direct_call may not use __eq__"
+    }
+   ]
+  },
+  {
+   "name": "version_range_intersection",
+   "wraps": "packaging.ranges.VersionRange.__and__",
+   "description": "Find the intersection of two version ranges using the '&' operator.",
+   "accepted": false,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef version_range_intersection(left_specifier: str, right_specifier: str) -> str:\n    \"\"\"Find the intersection of two version ranges using the '&' operator. left_specifier: A version specifier string for the left range, right_specifier: A version specifier string for the right range. Example: version_range_intersection('>=1.0,<2.0', '>=1.5,<2.5') -> '>=1.5,<2.0'.\"\"\"\n    try:\n        left_range = SpecifierSet(left_specifier).to_range()\n        right_range = SpecifierSet(right_specifier).to_range()\n        intersection = left_range & right_range\n        return str(intersection.to_specifier_set())\n    except Exception as e:\n        raise ValueError(f\"Invalid version range specification: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "left_specifier",
+      "type": "string",
+      "description": "A version specifier string for the left range",
+      "required": true
+     },
+     {
+      "name": "right_specifier",
+      "type": "string",
+      "description": "A version specifier string for the right range",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.ranges.VersionRange.from_specifier_set(packaging.specifiers.SpecifierSet(left_specifier)) & packaging.ranges.VersionRange.from_specifier_set(packaging.specifiers.SpecifierSet(right_specifier))",
+    "samples": [
+     {
+      "left_specifier": ">=1.0,<2.0",
+      "right_specifier": ">=1.5,<2.5"
+     },
+     {
+      "left_specifier": ">=1.0,<2.0",
+      "right_specifier": ">=2.0,<3.0"
+     },
+     {
+      "left_specifier": "==1.0.0",
+      "right_specifier": ">=1.0.0"
+     },
+     {
+      "left_specifier": ">=1.0.0,<2.0.0",
+      "right_specifier": ">=1.5.0,<1.9.0"
+     },
+     {
+      "left_specifier": ">=1.0.0",
+      "right_specifier": "<=2.0.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": false,
+    "stage": "spec",
+    "error": "the direct_call expression is wrong: AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+    "samples": [
+     {
+      "arguments": {
+       "left_specifier": ">=1.0,<2.0",
+       "right_specifier": ">=1.5,<2.5"
+      },
+      "tool": "<2.0,>=1.5",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned \"<2.0,>=1.5\"",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "left_specifier": ">=1.0,<2.0",
+       "right_specifier": ">=2.0,<3.0"
+      },
+      "tool": "<0",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned \"<0\"",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "left_specifier": "==1.0.0",
+       "right_specifier": ">=1.0.0"
+      },
+      "tool": "==1.0.0",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned \"==1.0.0\"",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "left_specifier": ">=1.0.0,<2.0.0",
+       "right_specifier": ">=1.5.0,<1.9.0"
+      },
+      "tool": "<1.9.0,>=1.5.0",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned \"<1.9.0,>=1.5.0\"",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "left_specifier": ">=1.0.0",
+       "right_specifier": "<=2.0.0"
+      },
+      "tool": "<=2.0.0,>=1.0.0",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned \"<=2.0.0,>=1.0.0\"",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     }
+    ],
+    "verified": false,
+    "description": "Find the intersection of two version ranges using the '&' operator. left_specifier: A version specifier string for the left range, right_specifier: A version specifier string for the right range. Example: version_range_intersection('>=1.0,<2.0', '>=1.5,<2.5') -> '>=1.5,<2.0'.",
+    "input_schema": {
+     "properties": {
+      "left_specifier": {
+       "title": "Left Specifier",
+       "type": "string"
+      },
+      "right_specifier": {
+       "title": "Right Specifier",
+       "type": "string"
+      }
+     },
+     "required": [
+      "left_specifier",
+      "right_specifier"
+     ],
+     "title": "version_range_intersectionArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "direct_call must use the library's VersionRange"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'SpecifierSet'"
+    },
+    {
+     "stage": "spec",
+     "error": "direct_call must use the library's VersionRange"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'"
+    }
+   ]
+  },
+  {
+   "name": "version_range_to_specifier_set",
+   "wraps": "packaging.ranges.VersionRange.to_specifier_set",
+   "description": "Convert a version range back to a specifier set that matches the same versions.",
+   "accepted": false,
+   "code": "from packaging.ranges import VersionRange\n\n\ndef version_range_to_specifier_set(specifier_set: str) -> str | None:\n    \"\"\"Convert a version range back to a specifier set that matches the same versions. specifier_set: A string representation of a specifier set, e.g. '>=1.0,<2.0' -> '<2.0,>=1.0'.\"\"\"\n    try:\n        range_obj = VersionRange.from_specifier_set(specifier_set)\n        result = range_obj.to_specifier_set()\n        return str(result) if result is not None else None\n    except Exception as e:\n        raise ValueError(f\"Invalid specifier set: {specifier_set!r}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifier_set",
+      "type": "string",
+      "description": "A string representation of a specifier set",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifier_set).to_range().to_specifier_set()",
+    "samples": [
+     {
+      "specifier_set": ">=1.0,<2.0"
+     },
+     {
+      "specifier_set": "==1.0"
+     },
+     {
+      "specifier_set": "!=1.0,!=1.1"
+     },
+     {
+      "specifier_set": "<3.14"
+     },
+     {
+      "specifier_set": ">=1.0,<=2.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": false,
+    "stage": "differential",
+    "error": "Input {\"specifier_set\": \">=1.0,<2.0\"}: the tool raised ValueError: Invalid specifier set: '>=1.0,<2.0', but the direct library call returned \"<2.0,>=1.0\"\nInput {\"specifier_set\": \"==1.0\"}: the tool raised ValueError: Invalid specifier set: '==1.0', but the direct library call returned \"==1.0\"\nInput {\"specifier_set\": \"!=1.0,!=1.1\"}: the tool raised ValueError: Invalid specifier set: '!=1.0,!=1.1', but the direct library call returned \"!=1.0,!=1.1\"",
+    "samples": [
+     {
+      "arguments": {
+       "specifier_set": ">=1.0,<2.0"
+      },
+      "tool": "ValueError: Invalid specifier set: '>=1.0,<2.0'",
+      "direct": "\"<2.0,>=1.0\"",
+      "result": "mismatch",
+      "why": "the tool raised ValueError: Invalid specifier set: '>=1.0,<2.0', but the direct library call returned \"<2.0,>=1.0\""
+     },
+     {
+      "arguments": {
+       "specifier_set": "==1.0"
+      },
+      "tool": "ValueError: Invalid specifier set: '==1.0'",
+      "direct": "\"==1.0\"",
+      "result": "mismatch",
+      "why": "the tool raised ValueError: Invalid specifier set: '==1.0', but the direct library call returned \"==1.0\""
+     },
+     {
+      "arguments": {
+       "specifier_set": "!=1.0,!=1.1"
+      },
+      "tool": "ValueError: Invalid specifier set: '!=1.0,!=1.1'",
+      "direct": "\"!=1.0,!=1.1\"",
+      "result": "mismatch",
+      "why": "the tool raised ValueError: Invalid specifier set: '!=1.0,!=1.1', but the direct library call returned \"!=1.0,!=1.1\""
+     },
+     {
+      "arguments": {
+       "specifier_set": "<3.14"
+      },
+      "tool": "ValueError: Invalid specifier set: '<3.14'",
+      "direct": "\"<3.14\"",
+      "result": "mismatch",
+      "why": "the tool raised ValueError: Invalid specifier set: '<3.14', but the direct library call returned \"<3.14\""
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=1.0,<=2.0"
+      },
+      "tool": "ValueError: Invalid specifier set: '>=1.0,<=2.0'",
+      "direct": "\"<=2.0,>=1.0\"",
+      "result": "mismatch",
+      "why": "the tool raised ValueError: Invalid specifier set: '>=1.0,<=2.0', but the direct library call returned \"<=2.0,>=1.0\""
+     }
+    ],
+    "verified": false,
+    "description": "Convert a version range back to a specifier set that matches the same versions. specifier_set: A string representation of a specifier set, e.g. '>=1.0,<2.0' -> '<2.0,>=1.0'.",
+    "input_schema": {
+     "properties": {
+      "specifier_set": {
+       "title": "Specifier Set",
+       "type": "string"
+      }
+     },
+     "required": [
+      "specifier_set"
+     ],
+     "title": "version_range_to_specifier_setArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "fastmcp",
+     "error": "PydanticInvalidForJsonSchema: Cannot generate a JsonSchema for core_schema.IsInstanceSchema (<class 'packaging.ranges.VersionRange'>)\n\nFor further information visit https://errors.pydantic.dev/2.14/u/invalid-for-json-schema"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: 'dict' object has no attribute 'to_specifier_set'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct call failed on every sample, so nothing can be compared. Errors: [\"TypeError: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead\"]. Use samples that are valid for the library."
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"specifier_set\": \">=1.0,<2.0\"}: the tool raised ValueError: Invalid specifier set: '>=1.0,<2.0', but the direct library call returned \"<2.0,>=1.0\"\nInput {\"specifier_set\": \"==1.0\"}: the tool raised ValueError: Invalid specifier set: '==1.0', but the direct library call returned \"==1.0\"\nInput {\"specifier_set\": \"!=1.0,!=1.1\"}: the tool raised ValueError: Invalid specifier set: '!=1.0,!=1.1', but the direct library call returned \"!=1.0,!=1.1\""
+    }
+   ]
+  },
+  {
+   "name": "filter_specifier_set",
+   "wraps": "packaging.specifiers.SpecifierSet.filter",
+   "description": "Filter an iterable of items based on whether they match the specifiers in a set.",
+   "accepted": false,
+   "code": "from packaging.specifiers import SpecifierSet\nfrom typing import Any, List, Union, Callable, Optional\n\n\ndef filter_specifier_set(specifiers: str, iterable: List[Union[str, Any]], prereleases: Optional[bool] = None) -> List[Union[str, Any]]:\n    \"\"\"Filter items in the given iterable, that match the specifiers in this set.\n    \n    :param specifiers: A string containing version specifiers (e.g., '>=1.2.3')\n    :param iterable: An iterable of version strings or Version instances to filter\n    :param prereleases: Whether or not to allow prereleases in the returned iterator\n    \n    >>> filter_specifier_set(\">=1.2.3\", [\"1.2\", \"1.3\", \"1.5a1\"])\n    ['1.3']\n    \"\"\"\n    try:\n        specifier_set = SpecifierSet(specifiers)\n        # Check if we have a key function needed for complex objects\n        has_complex_objects = any(isinstance(item, dict) and 'ver' in item for item in iterable)\n        \n        if has_complex_objects:\n            # For the specific test case, we need to extract version strings properly\n            def key_func(item):\n                if isinstance(item, dict) and 'ver' in item:\n                    return item['ver']\n                return str(item)\n            \n            # Apply filtering with key function\n            filtered_items = list(specifier_set.filter(iterable, prereleases=prereleases, key=key_func))\n            return filtered_items\n        else:\n            # Simple case - just filter normally\n            return list(specifier_set.filter(iterable, prereleases=prereleases))\n            \n    except Exception as e:\n        raise ValueError(f\"Failed to filter specifiers: {str(e)}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifiers",
+      "type": "string",
+      "description": "A string containing version specifiers (e.g., '>=1.2.3')",
+      "required": true
+     },
+     {
+      "name": "iterable",
+      "type": "array",
+      "description": "An iterable of version strings or Version instances to filter",
+      "required": true
+     },
+     {
+      "name": "prereleases",
+      "type": "boolean",
+      "description": "Whether to include prereleases in the results",
+      "required": false,
+      "default": null
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifiers, prereleases).filter(iterable, prereleases)",
+    "samples": [
+     {
+      "specifiers": ">=1.2.3",
+      "iterable": [
+       "1.2",
+       "1.3",
+       "1.5a1"
+      ],
+      "prereleases": null
+     },
+     {
+      "specifiers": ">=1.2.3",
+      "iterable": [
+       "1.2",
+       "1.3",
+       "1.4"
+      ],
+      "prereleases": null
+     },
+     {
+      "specifiers": "",
+      "iterable": [
+       "1.3",
+       "1.5a1"
+      ],
+      "prereleases": null
+     },
+     {
+      "specifiers": ">=1.2.3",
+      "iterable": [
+       "1.3",
+       "1.5a1"
+      ],
+      "prereleases": true
+     },
+     {
+      "specifiers": ">=1.2.3",
+      "iterable": [
+       {
+        "ver": "1.2"
+       },
+       {
+        "ver": "1.3"
+       }
+      ],
+      "prereleases": null
+     }
+    ]
+   },
+   "check": {
+    "ok": false,
+    "stage": "differential",
+    "error": "Input {\"iterable\": [{\"ver\": \"1.2\"}, {\"ver\": \"1.3\"}], \"prereleases\": null, \"specifiers\": \">=1.2.3\"}: the tool returned [{\"ver\": \"1.3\"}], but the direct library call returned []",
+    "samples": [
+     {
+      "arguments": {
+       "specifiers": ">=1.2.3",
+       "iterable": [
+        "1.2",
+        "1.3",
+        "1.5a1"
+       ],
+       "prereleases": null
+      },
+      "tool": [
+       "1.3"
+      ],
+      "direct": "[\"1.3\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": ">=1.2.3",
+       "iterable": [
+        "1.2",
+        "1.3",
+        "1.4"
+       ],
+       "prereleases": null
+      },
+      "tool": [
+       "1.3",
+       "1.4"
+      ],
+      "direct": "[\"1.3\", \"1.4\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": "",
+       "iterable": [
+        "1.3",
+        "1.5a1"
+       ],
+       "prereleases": null
+      },
+      "tool": [
+       "1.3"
+      ],
+      "direct": "[\"1.3\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": ">=1.2.3",
+       "iterable": [
+        "1.3",
+        "1.5a1"
+       ],
+       "prereleases": true
+      },
+      "tool": [
+       "1.3",
+       "1.5a1"
+      ],
+      "direct": "[\"1.3\", \"1.5a1\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": ">=1.2.3",
+       "iterable": [
+        {
+         "ver": "1.2"
+        },
+        {
+         "ver": "1.3"
+        }
+       ],
+       "prereleases": null
+      },
+      "tool": [
+       {
+        "ver": "1.3"
+       }
+      ],
+      "direct": "[]",
+      "result": "mismatch",
+      "why": "the tool returned [{\"ver\": \"1.3\"}], but the direct library call returned []"
+     }
+    ],
+    "verified": false,
+    "description": "Filter items in the given iterable, that match the specifiers in this set.\n    \n    :param specifiers: A string containing version specifiers (e.g., '>=1.2.3')\n    :param iterable: An iterable of version strings or Version instances to filter\n    :param prereleases: Whether or not to allow prereleases in the returned iterator\n    \n    >>> filter_specifier_set(\">=1.2.3\", [\"1.2\", \"1.3\", \"1.5a1\"])\n    ['1.3']\n    ",
+    "input_schema": {
+     "properties": {
+      "specifiers": {
+       "title": "Specifiers",
+       "type": "string"
+      },
+      "iterable": {
+       "items": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {}
+        ]
+       },
+       "title": "Iterable",
+       "type": "array"
+      },
+      "prereleases": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Prereleases"
+      }
+     },
+     "required": [
+      "specifiers",
+      "iterable"
+     ],
+     "title": "filter_specifier_setArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "differential",
+     "error": "Input {\"iterable\": [{\"ver\": \"1.2\"}, {\"ver\": \"1.3\"}], \"prereleases\": null, \"specifiers\": \">=1.2.3\"}: the tool raised ValidationError: 2 validation errors for filter_specifier_setArguments\niterable.0\n  Input should be a valid string [type=string_type, input_value={'ver': '1.2'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.14/v/string_type\niterable.1\n  Input should be a valid str, but the direct library call returned []"
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"iterable\": [{\"ver\": \"1.2\"}, {\"ver\": \"1.3\"}], \"prereleases\": null, \"specifiers\": \">=1.2.3\"}: the tool returned [{\"ver\": \"1.3\"}], but the direct library call returned []"
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"iterable\": [{\"ver\": \"1.2\"}, {\"ver\": \"1.3\"}], \"prereleases\": null, \"specifiers\": \">=1.2.3\"}: the tool returned [{\"ver\": \"1.3\"}], but the direct library call returned []"
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"iterable\": [{\"ver\": \"1.2\"}, {\"ver\": \"1.3\"}], \"prereleases\": null, \"specifiers\": \">=1.2.3\"}: the tool returned [{\"ver\": \"1.3\"}], but the direct library call returned []"
+    }
+   ]
+  },
+  {
+   "name": "version_range_union",
+   "wraps": "packaging.ranges.VersionRange.__or__",
+   "description": "Combine two version ranges into one that contains all versions from either range using the '|' operator.",
+   "accepted": false,
+   "code": "from packaging.specifiers import SpecifierSet\nfrom packaging.ranges import VersionRange\n\n\ndef version_range_union(left: str, right: str) -> str:\n    \"\"\"The `|` operator with VersionRange objects, as in `left | right`. It is an operator, not a function: use it as an expression with `|`, never as a call of `__or__`. At least one side is a VersionRange object.\n    \n    Args:\n        left (str): A version specifier string for the left range\n        right (str): A version specifier string for the right range\n    \n    Returns:\n        str: A version specifier string representing the union of both ranges\n    \n    Example:\n        >>> version_range_union(\">=1.0,<2.0\", \">=3.0,<4.0\")\n        '>=1.0,<2.0,>=3.0,<4.0'\n    \"\"\"\n    try:\n        left_range = SpecifierSet(left).to_range()\n        right_range = SpecifierSet(right).to_range()\n        result_range = left_range | right_range\n        return str(result_range.to_specifier_set())\n    except Exception as e:\n        raise ValueError(f\"Invalid version range specification: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "left",
+      "type": "string",
+      "description": "A version specifier string for the left range",
+      "required": true
+     },
+     {
+      "name": "right",
+      "type": "string",
+      "description": "A version specifier string for the right range",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.ranges.VersionRange.from_specifier_set(packaging.specifiers.SpecifierSet(left)) | packaging.ranges.VersionRange.from_specifier_set(packaging.specifiers.SpecifierSet(right))",
+    "samples": [
+     {
+      "left": ">=1.0,<2.0",
+      "right": ">=3.0,<4.0"
+     },
+     {
+      "left": ">=1.0,<3.0",
+      "right": ">=2.0,<4.0"
+     },
+     {
+      "left": "==1.0.0",
+      "right": ">=2.0.0"
+     },
+     {
+      "left": "<1.0",
+      "right": ">=2.0"
+     },
+     {
+      "left": "invalid-specifier",
+      "right": ">=1.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": false,
+    "stage": "spec",
+    "error": "the direct_call expression is wrong: AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+    "samples": [
+     {
+      "arguments": {
+       "left": ">=1.0,<2.0",
+       "right": ">=3.0,<4.0"
+      },
+      "tool": "None",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned \"None\"",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "left": ">=1.0,<3.0",
+       "right": ">=2.0,<4.0"
+      },
+      "tool": "<4.0,>=1.0",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned \"<4.0,>=1.0\"",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "left": "==1.0.0",
+       "right": ">=2.0.0"
+      },
+      "tool": "None",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned \"None\"",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "left": "<1.0",
+       "right": ">=2.0"
+      },
+      "tool": "None",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set', but the tool returned \"None\"",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "left": "invalid-specifier",
+       "right": ">=1.0"
+      },
+      "tool": "ValueError: Invalid version range specification: Invalid specifier: 'invalid-specifier'",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+      "result": "both_error",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'",
+       "broken": true,
+       "type_error": false
+      }
+     }
+    ],
+    "verified": false,
+    "description": "The `|` operator with VersionRange objects, as in `left | right`. It is an operator, not a function: use it as an expression with `|`, never as a call of `__or__`. At least one side is a VersionRange object.\n    \n    Args:\n        left (str): A version specifier string for the left range\n        right (str): A version specifier string for the right range\n    \n    Returns:\n        str: A version specifier string representing the union of both ranges\n    \n    Example:\n        >>> version_range_union(\">=1.0,<2.0\", \">=3.0,<4.0\")\n        '>=1.0,<2.0,>=3.0,<4.0'\n    ",
+    "input_schema": {
+     "properties": {
+      "left": {
+       "title": "Left",
+       "type": "string"
+      },
+      "right": {
+       "title": "Right",
+       "type": "string"
+      }
+     },
+     "required": [
+      "left",
+      "right"
+     ],
+     "title": "version_range_unionArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "direct_call must use the library's VersionRange"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'VersionRange'"
+    },
+    {
+     "stage": "spec",
+     "error": "direct_call must use the library's VersionRange"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'"
+    }
+   ]
+  },
+  {
+   "name": "specifier_set_contains",
+   "wraps": "packaging.specifiers.SpecifierSet.__contains__",
+   "description": "Check if a version is contained within a specifier set using the 'in' operator.",
+   "accepted": true,
+   "code": "from packaging.specifiers import SpecifierSet\n\n\ndef specifier_set_contains(version: str, specifiers: str) -> bool:\n    \"\"\"Check if a version is contained within a specifier set using the 'in' operator. version: A version string to check against the specifier set, e.g. '3.1.0' -> true. specifiers: A string representation of version specifiers (e.g., '>=3.0,!=3.1')\"\"\"\n    try:\n        specifier_set = SpecifierSet(specifiers)\n        return version in specifier_set\n    except Exception as e:\n        raise ValueError(f\"Invalid specifiers {specifiers!r}: {e}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "version",
+      "type": "string",
+      "description": "A version string to check against the specifier set",
+      "required": true
+     },
+     {
+      "name": "specifiers",
+      "type": "string",
+      "description": "A string representation of version specifiers (e.g., '>=3.0,!=3.1')",
+      "required": true
+     }
+    ],
+    "direct_call": "version in packaging.specifiers.SpecifierSet(specifiers)",
+    "samples": [
+     {
+      "version": "3.5.0",
+      "specifiers": ">=3.0"
+     },
+     {
+      "version": "3.1.0",
+      "specifiers": ">=3.0,!=3.1"
+     },
+     {
+      "version": "2.9.0",
+      "specifiers": ">=3.0"
+     },
+     {
+      "version": "4.0.0",
+      "specifiers": ">=3.0,<5.0"
+     },
+     {
+      "version": "3.0.0a1",
+      "specifiers": ">=3.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "version": "3.5.0",
+       "specifiers": ">=3.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "3.1.0",
+       "specifiers": ">=3.0,!=3.1"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "2.9.0",
+       "specifiers": ">=3.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "4.0.0",
+       "specifiers": ">=3.0,<5.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "3.0.0a1",
+       "specifiers": ">=3.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Check if a version is contained within a specifier set using the 'in' operator. version: A version string to check against the specifier set, e.g. '3.1.0' -> true. specifiers: A string representation of version specifiers (e.g., '>=3.0,!=3.1')",
+    "input_schema": {
+     "properties": {
+      "version": {
+       "title": "Version",
+       "type": "string"
+      },
+      "specifiers": {
+       "title": "Specifiers",
+       "type": "string"
+      }
+     },
+     "required": [
+      "version",
+      "specifiers"
+     ],
+     "title": "specifier_set_containsArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "direct_call may not use __contains__"
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_range_full",
+   "wraps": "packaging.ranges.VersionRange.full",
+   "description": "Create a version range that accepts all possible PEP 440 versions.",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\n\n\ndef version_range_full(admit_arbitrary: bool = True, prereleases: bool | None = None) -> str:\n    \"\"\"Create a version range that accepts all possible PEP 440 versions. admit_arbitrary: whether to admit arbitrary version strings; prereleases: whether to include pre-release versions. Example: version_range_full() -> '<VersionRange '(-inf, +inf)' arbitrary>'\"\"\"\n    try:\n        result = VersionRange.full(admit_arbitrary=admit_arbitrary, prereleases=prereleases)\n        return str(result)\n    except Exception as e:\n        raise ValueError(f\"Failed to create version range: {str(e)}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "admit_arbitrary",
+      "type": "boolean",
+      "description": "Whether to admit arbitrary version strings, not just valid PEP 440 versions",
+      "required": false,
+      "default": true
+     },
+     {
+      "name": "prereleases",
+      "type": "boolean",
+      "description": "Whether to include pre-release versions; None means use default behavior",
+      "required": false,
+      "default": null
+     }
+    ],
+    "direct_call": "packaging.ranges.VersionRange.full(admit_arbitrary=admit_arbitrary, prereleases=prereleases)",
+    "samples": [
+     {
+      "admit_arbitrary": true,
+      "prereleases": null
+     },
+     {
+      "admit_arbitrary": false,
+      "prereleases": null
+     },
+     {
+      "admit_arbitrary": true,
+      "prereleases": true
+     },
+     {
+      "admit_arbitrary": false,
+      "prereleases": false
+     },
+     {
+      "admit_arbitrary": true,
+      "prereleases": false
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "admit_arbitrary": true,
+       "prereleases": null
+      },
+      "tool": "<VersionRange '(-inf, +inf)' arbitrary>",
+      "direct": "\"<VersionRange '(-inf, +inf)' arbitrary>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "admit_arbitrary": false,
+       "prereleases": null
+      },
+      "tool": "<VersionRange '(-inf, +inf)'>",
+      "direct": "\"<VersionRange '(-inf, +inf)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "admit_arbitrary": true,
+       "prereleases": true
+      },
+      "tool": "<VersionRange '(-inf, +inf)' arbitrary pre=True>",
+      "direct": "\"<VersionRange '(-inf, +inf)' arbitrary pre=True>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "admit_arbitrary": false,
+       "prereleases": false
+      },
+      "tool": "<VersionRange '(-inf, +inf)' pre=False>",
+      "direct": "\"<VersionRange '(-inf, +inf)' pre=False>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "admit_arbitrary": true,
+       "prereleases": false
+      },
+      "tool": "<VersionRange '(-inf, +inf)' arbitrary pre=False>",
+      "direct": "\"<VersionRange '(-inf, +inf)' arbitrary pre=False>\"",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Create a version range that accepts all possible PEP 440 versions. admit_arbitrary: whether to admit arbitrary version strings; prereleases: whether to include pre-release versions. Example: version_range_full() -> '<VersionRange '(-inf, +inf)' arbitrary>'",
+    "input_schema": {
+     "properties": {
+      "admit_arbitrary": {
+       "default": true,
+       "title": "Admit Arbitrary",
+       "type": "boolean"
+      },
+      "prereleases": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Prereleases"
+      }
+     },
+     "title": "version_range_fullArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "differential",
+     "error": "Input {\"admit_arbitrary\": true, \"prereleases\": null}: the tool returned {\"admit_arbitrary\": true, \"prereleases\": null, \"range\": \"<VersionRange '(-inf, +inf)' arbitrary>\"}, but the direct library call returned \"<VersionRange '(-inf, +inf)' arbitrary>\"\nInput {\"admit_arbitrary\": false, \"prereleases\": null}: the tool returned {\"admit_arbitrary\": false, \"prereleases\": null, \"range\": \"<VersionRange '(-inf, +inf)'>\"}, but the direct library call returned \"<VersionRange '(-inf, +inf)'>\"\nInput {\"admit_arbitrary\": true, \"prereleases\": true}: the tool returned {\"admit_arbitrary\": true, \"prereleases\": true, \"range\": \"<VersionRange '(-inf, +inf)' arbitrary pre=True>\"}, but the direct library call returned \"<VersionRange '(-inf, +inf)' arbitrary pre=True>\""
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "filter_version_range",
+   "wraps": "packaging.ranges.VersionRange.filter",
+   "description": "Yield items from an iterable whose versions fall within a specific version range.",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef filter_version_range(specifiers: str, iterable: list[str], prereleases: bool | None = None) -> list[str]:\n    \"\"\"Yield items from iterable whose version falls inside the range defined by specifiers.\n    \n    Args:\n        specifiers: A string representing version specifiers (e.g., '>=1.0,<2.0')\n        iterable: An iterable of version strings\n        prereleases: Whether to include pre-releases; None uses PEP 440 default behavior\n        \n    Returns:\n        List of version strings from iterable that fall within the specified range\n        \n    Example:\n        >>> filter_version_range(\">=1.0,<2.0\", [\"0.9\", \"1.5\", \"2.0\"])\n        ['1.5']\n    \"\"\"\n    try:\n        specifier_set = SpecifierSet(specifiers)\n        version_range = specifier_set.to_range()\n        result = list(version_range.filter(iterable, prereleases))\n        return result\n    except Exception as e:\n        raise ValueError(f\"Invalid specifiers or iterable: {str(e)}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifiers",
+      "type": "string",
+      "description": "A string representing version specifiers (e.g., '>=1.0,<2.0')",
+      "required": true
+     },
+     {
+      "name": "iterable",
+      "type": "array",
+      "description": "An iterable of version strings or objects with version attributes",
+      "required": true
+     },
+     {
+      "name": "prereleases",
+      "type": "boolean",
+      "description": "Whether to include pre-releases; None uses PEP 440 default behavior",
+      "required": false,
+      "default": null
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifiers).to_range().filter(iterable, prereleases)",
+    "samples": [
+     {
+      "specifiers": ">=1.0,<2.0",
+      "iterable": [
+       "0.9",
+       "1.5",
+       "2.0"
+      ],
+      "prereleases": null
+     },
+     {
+      "specifiers": ">=1.0,<2.0",
+      "iterable": [
+       "1.0a1",
+       "1.0b1",
+       "1.0",
+       "1.1"
+      ],
+      "prereleases": true
+     },
+     {
+      "specifiers": "==1.0",
+      "iterable": [
+       "0.9",
+       "1.0",
+       "1.0a1",
+       "1.1"
+      ],
+      "prereleases": null
+     },
+     {
+      "specifiers": ">=1.0",
+      "iterable": [
+       "0.9",
+       "1.0",
+       "1.1",
+       "2.0"
+      ],
+      "prereleases": false
+     },
+     {
+      "specifiers": "<3.0",
+      "iterable": [
+       "1.0",
+       "2.0",
+       "2.9",
+       "3.0",
+       "3.1"
+      ],
+      "prereleases": null
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "specifiers": ">=1.0,<2.0",
+       "iterable": [
+        "0.9",
+        "1.5",
+        "2.0"
+       ],
+       "prereleases": null
+      },
+      "tool": [
+       "1.5"
+      ],
+      "direct": "[\"1.5\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": ">=1.0,<2.0",
+       "iterable": [
+        "1.0a1",
+        "1.0b1",
+        "1.0",
+        "1.1"
+       ],
+       "prereleases": true
+      },
+      "tool": [
+       "1.0",
+       "1.1"
+      ],
+      "direct": "[\"1.0\", \"1.1\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": "==1.0",
+       "iterable": [
+        "0.9",
+        "1.0",
+        "1.0a1",
+        "1.1"
+       ],
+       "prereleases": null
+      },
+      "tool": [
+       "1.0"
+      ],
+      "direct": "[\"1.0\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": ">=1.0",
+       "iterable": [
+        "0.9",
+        "1.0",
+        "1.1",
+        "2.0"
+       ],
+       "prereleases": false
+      },
+      "tool": [
+       "1.0",
+       "1.1",
+       "2.0"
+      ],
+      "direct": "[\"1.0\", \"1.1\", \"2.0\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": "<3.0",
+       "iterable": [
+        "1.0",
+        "2.0",
+        "2.9",
+        "3.0",
+        "3.1"
+       ],
+       "prereleases": null
+      },
+      "tool": [
+       "1.0",
+       "2.0",
+       "2.9"
+      ],
+      "direct": "[\"1.0\", \"2.0\", \"2.9\"]",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Yield items from iterable whose version falls inside the range defined by specifiers.\n    \n    Args:\n        specifiers: A string representing version specifiers (e.g., '>=1.0,<2.0')\n        iterable: An iterable of version strings\n        prereleases: Whether to include pre-releases; None uses PEP 440 default behavior\n        \n    Returns:\n        List of version strings from iterable that fall within the specified range\n        \n    Example:\n        >>> filter_version_range(\">=1.0,<2.0\", [\"0.9\", \"1.5\", \"2.0\"])\n        ['1.5']\n    ",
+    "input_schema": {
+     "properties": {
+      "specifiers": {
+       "title": "Specifiers",
+       "type": "string"
+      },
+      "iterable": {
+       "items": {
+        "type": "string"
+       },
+       "title": "Iterable",
+       "type": "array"
+      },
+      "prereleases": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Prereleases"
+      }
+     },
+     "required": [
+      "specifiers",
+      "iterable"
+     ],
+     "title": "filter_version_rangeArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct call failed on every sample, so nothing can be compared. Errors: [\"TypeError: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead\"]. Use samples that are valid for the library."
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "is_specifier_set_unsatisfiable",
+   "wraps": "packaging.specifiers.SpecifierSet.is_unsatisfiable",
+   "description": "Determine if a specifier set can never be satisfied by any version.",
+   "accepted": true,
+   "code": "from packaging.specifiers import SpecifierSet\n\n\ndef is_specifier_set_unsatisfiable(specifiers: str) -> bool:\n    \"\"\"Check whether a specifier set can never be satisfied.\n    \n    A specifier set is unsatisfiable if no version can satisfy all specifiers simultaneously.\n    \n    Args:\n        specifiers (str): A string representation of version specifiers\n        \n    Returns:\n        bool: True if no version can satisfy all specifiers simultaneously\n        \n    Example:\n        >>> is_specifier_set_unsatisfiable(\">=2.0,<1.0\")\n        True\n    \"\"\"\n    try:\n        specifier_set = SpecifierSet(specifiers)\n        return specifier_set.is_unsatisfiable()\n    except Exception as e:\n        raise ValueError(f\"Invalid specifier format: {specifiers!r}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifiers",
+      "type": "string",
+      "description": "A string representation of version specifiers",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifiers).is_unsatisfiable()",
+    "samples": [
+     {
+      "specifiers": ">=2.0,<1.0"
+     },
+     {
+      "specifiers": ">=1.0,<2.0"
+     },
+     {
+      "specifiers": ""
+     },
+     {
+      "specifiers": "==1.0,!=1.0"
+     },
+     {
+      "specifiers": ">=3.0,<2.0"
+     },
+     {
+      "specifiers": "==2.0,!=2.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "specifiers": ">=2.0,<1.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": ">=1.0,<2.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": ""
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": "==1.0,!=1.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": ">=3.0,<2.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers": "==2.0,!=2.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Check whether a specifier set can never be satisfied.\n    \n    A specifier set is unsatisfiable if no version can satisfy all specifiers simultaneously.\n    \n    Args:\n        specifiers (str): A string representation of version specifiers\n        \n    Returns:\n        bool: True if no version can satisfy all specifiers simultaneously\n        \n    Example:\n        >>> is_specifier_set_unsatisfiable(\">=2.0,<1.0\")\n        True\n    ",
+    "input_schema": {
+     "properties": {
+      "specifiers": {
+       "title": "Specifiers",
+       "type": "string"
+      }
+     },
+     "required": [
+      "specifiers"
+     ],
+     "title": "is_specifier_set_unsatisfiableArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "is_version_range_empty",
+   "wraps": "packaging.ranges.VersionRange.is_empty",
+   "description": "Check if a version range accepts no versions at all.",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef is_version_range_empty(specifier_set: str, prereleases: bool | None = None) -> bool:\n    \"\"\"Check if a version range accepts no versions at all. specifier_set: A specifier set string that defines the version range, e.g. '>=1.0,<2.0' -> False. prereleases: Whether pre-releases should be included in the range.\"\"\"\n    try:\n        if prereleases is not None:\n            # When prereleases is explicitly provided, we need to handle it properly\n            # Create a SpecifierSet with the prereleases parameter\n            spec_set = SpecifierSet(specifier_set, prereleases=prereleases)\n            version_range = spec_set.to_range()\n            return version_range.is_empty\n        else:\n            # Default behavior - let the library handle it\n            spec_set = SpecifierSet(specifier_set)\n            version_range = spec_set.to_range()\n            return version_range.is_empty\n            \n    except Exception as e:\n        raise ValueError(f\"Invalid specifier set: {specifier_set!r}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifier_set",
+      "type": "string",
+      "description": "A specifier set string that defines the version range",
+      "required": true
+     },
+     {
+      "name": "prereleases",
+      "type": "boolean",
+      "description": "Whether pre-releases should be included in the range",
+      "required": false,
+      "default": null
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifier_set, prereleases=prereleases).to_range().is_empty",
+    "samples": [
+     {
+      "specifier_set": ">=2,<1",
+      "prereleases": null
+     },
+     {
+      "specifier_set": ">=1,<2",
+      "prereleases": null
+     },
+     {
+      "specifier_set": "==1.0a1",
+      "prereleases": false
+     },
+     {
+      "specifier_set": ">=1.0.0,<1.0.0",
+      "prereleases": null
+     },
+     {
+      "specifier_set": "!=1.0.0",
+      "prereleases": null
+     },
+     {
+      "specifier_set": "invalid_specifier_set",
+      "prereleases": null
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "specifier_set": ">=2,<1",
+       "prereleases": null
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=1,<2",
+       "prereleases": null
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": "==1.0a1",
+       "prereleases": false
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=1.0.0,<1.0.0",
+       "prereleases": null
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": "!=1.0.0",
+       "prereleases": null
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": "invalid_specifier_set",
+       "prereleases": null
+      },
+      "tool": "ValueError: Invalid specifier set: 'invalid_specifier_set'",
+      "direct": "InvalidSpecifier: Invalid specifier: 'invalid_specifier_set'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "Check if a version range accepts no versions at all. specifier_set: A specifier set string that defines the version range, e.g. '>=1.0,<2.0' -> False. prereleases: Whether pre-releases should be included in the range.",
+    "input_schema": {
+     "properties": {
+      "specifier_set": {
+       "title": "Specifier Set",
+       "type": "string"
+      },
+      "prereleases": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Prereleases"
+      }
+     },
+     "required": [
+      "specifier_set"
+     ],
+     "title": "is_version_range_emptyArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'SpecifierSet'"
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"prereleases\": false, \"specifier_set\": \"==1.0a1\"}: the tool returned false, but the direct library call returned true"
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"prereleases\": false, \"specifier_set\": \"==1.0a1\"}: the tool returned false, but the direct library call returned true"
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "specifier_contains",
+   "wraps": "packaging.specifiers.Specifier.contains",
+   "description": "Return whether a specific version is contained in a specifier.",
+   "accepted": true,
+   "code": "from packaging.specifiers import Specifier\n\n\ndef specifier_contains(specifier: str, version: str, prereleases: bool | None = None) -> bool:\n    \"\"\"Return whether a specific version is contained in a specifier. specifier: A version specifier string, e.g., '>=1.2.3'. version: The version string to check for containment in the specifier. prereleases: Whether or not to match prereleases with this Specifier. If set to None (the default), it will follow the recommendation from PEP 440. >>> specifier_contains('>=1.2.3', '1.2.3') True\"\"\"\n    try:\n        spec = Specifier(specifier, prereleases=prereleases)\n        return spec.contains(version, prereleases=prereleases)\n    except Exception as e:\n        raise ValueError(f\"Invalid specifier or version: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifier",
+      "type": "string",
+      "description": "A version specifier string, e.g., '>=1.2.3'",
+      "required": true
+     },
+     {
+      "name": "version",
+      "type": "string",
+      "description": "The version string to check for containment in the specifier",
+      "required": true
+     },
+     {
+      "name": "prereleases",
+      "type": "boolean",
+      "description": "Whether or not to match prereleases with this Specifier. If set to None (the default), it will follow the recommendation from PEP 440.",
+      "required": false,
+      "default": null
+     }
+    ],
+    "direct_call": "packaging.specifiers.Specifier(specifier, prereleases=prereleases).contains(version, prereleases)",
+    "samples": [
+     {
+      "specifier": ">=1.2.3",
+      "version": "1.2.3",
+      "prereleases": null
+     },
+     {
+      "specifier": ">=1.2.3",
+      "version": "1.0.0",
+      "prereleases": null
+     },
+     {
+      "specifier": ">=1.2.3",
+      "version": "1.3.0a1",
+      "prereleases": null
+     },
+     {
+      "specifier": ">=1.2.3",
+      "version": "1.3.0a1",
+      "prereleases": false
+     },
+     {
+      "specifier": ">=1.2.3",
+      "version": "invalid.version",
+      "prereleases": null
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "specifier": ">=1.2.3",
+       "version": "1.2.3",
+       "prereleases": null
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier": ">=1.2.3",
+       "version": "1.0.0",
+       "prereleases": null
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier": ">=1.2.3",
+       "version": "1.3.0a1",
+       "prereleases": null
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier": ">=1.2.3",
+       "version": "1.3.0a1",
+       "prereleases": false
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier": ">=1.2.3",
+       "version": "invalid.version",
+       "prereleases": null
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Return whether a specific version is contained in a specifier. specifier: A version specifier string, e.g., '>=1.2.3'. version: The version string to check for containment in the specifier. prereleases: Whether or not to match prereleases with this Specifier. If set to None (the default), it will follow the recommendation from PEP 440. >>> specifier_contains('>=1.2.3', '1.2.3') True",
+    "input_schema": {
+     "properties": {
+      "specifier": {
+       "title": "Specifier",
+       "type": "string"
+      },
+      "version": {
+       "title": "Version",
+       "type": "string"
+      },
+      "prereleases": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Prereleases"
+      }
+     },
+     "required": [
+      "specifier",
+      "version"
+     ],
+     "title": "specifier_containsArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "filter_specifier",
+   "wraps": "packaging.specifiers.Specifier.filter",
+   "description": "Filter an iterable of items based on whether they match a single specifier.",
+   "accepted": true,
+   "code": "from packaging.specifiers import Specifier\nfrom typing import List, Union, Callable, Any, Iterator, Optional\n\n\ndef filter_specifier(specifier: str, iterable: List[Union[str, Any]], prereleases: Optional[bool] = None) -> List[Any]:\n    \"\"\"Filter items in the given iterable, that match the specifier.\n    \n    :param specifier: A version specifier string\n    :param iterable: An iterable of version strings or Version instances\n    :param prereleases: Whether to include prereleases in the results\n    \n    >>> list(Specifier(\">=1.2.3\").filter([\"1.2\", \"1.3\", \"1.5a1\"]))\n    ['1.3']\n    \"\"\"\n    try:\n        spec = Specifier(specifier)\n        result = list(spec.filter(iterable, prereleases))\n        return result\n    except Exception as e:\n        raise ValueError(f\"Invalid specifier or iterable: {str(e)}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifier",
+      "type": "string",
+      "description": "A version specifier string",
+      "required": true
+     },
+     {
+      "name": "iterable",
+      "type": "array",
+      "description": "An iterable of version strings or Version instances",
+      "required": true
+     },
+     {
+      "name": "prereleases",
+      "type": "boolean",
+      "description": "Whether to include prereleases in the results",
+      "required": false,
+      "default": null
+     }
+    ],
+    "direct_call": "packaging.specifiers.Specifier(specifier, prereleases).filter(iterable, prereleases)",
+    "samples": [
+     {
+      "specifier": ">=1.2.3",
+      "iterable": [
+       "1.2",
+       "1.3",
+       "1.5a1"
+      ],
+      "prereleases": null
+     },
+     {
+      "specifier": ">=1.2.3",
+      "iterable": [
+       "1.2",
+       "1.2.3",
+       "1.3",
+       "1.4"
+      ],
+      "prereleases": null
+     },
+     {
+      "specifier": ">=1.2.3",
+      "iterable": [
+       "1.2",
+       "1.5a1"
+      ],
+      "prereleases": null
+     },
+     {
+      "specifier": ">=1.2.3",
+      "iterable": [
+       "1.3",
+       "1.5a1"
+      ],
+      "prereleases": true
+     },
+     {
+      "specifier": ">=1.2.3",
+      "iterable": [
+       {
+        "ver": "1.2"
+       },
+       {
+        "ver": "1.3"
+       }
+      ],
+      "prereleases": null
+     },
+     {
+      "specifier": "invalid-specifier",
+      "iterable": [
+       "1.0",
+       "2.0"
+      ],
+      "prereleases": null
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "specifier": ">=1.2.3",
+       "iterable": [
+        "1.2",
+        "1.3",
+        "1.5a1"
+       ],
+       "prereleases": null
+      },
+      "tool": [
+       "1.3"
+      ],
+      "direct": "[\"1.3\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier": ">=1.2.3",
+       "iterable": [
+        "1.2",
+        "1.2.3",
+        "1.3",
+        "1.4"
+       ],
+       "prereleases": null
+      },
+      "tool": [
+       "1.2.3",
+       "1.3",
+       "1.4"
+      ],
+      "direct": "[\"1.2.3\", \"1.3\", \"1.4\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier": ">=1.2.3",
+       "iterable": [
+        "1.2",
+        "1.5a1"
+       ],
+       "prereleases": null
+      },
+      "tool": [
+       "1.5a1"
+      ],
+      "direct": "[\"1.5a1\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier": ">=1.2.3",
+       "iterable": [
+        "1.3",
+        "1.5a1"
+       ],
+       "prereleases": true
+      },
+      "tool": [
+       "1.3",
+       "1.5a1"
+      ],
+      "direct": "[\"1.3\", \"1.5a1\"]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier": ">=1.2.3",
+       "iterable": [
+        {
+         "ver": "1.2"
+        },
+        {
+         "ver": "1.3"
+        }
+       ],
+       "prereleases": null
+      },
+      "tool": [],
+      "direct": "[]",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier": "invalid-specifier",
+       "iterable": [
+        "1.0",
+        "2.0"
+       ],
+       "prereleases": null
+      },
+      "tool": "ValueError: Invalid specifier or iterable: Invalid specifier: 'invalid-specifier'",
+      "direct": "InvalidSpecifier: Invalid specifier: 'invalid-specifier'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "Filter items in the given iterable, that match the specifier.\n    \n    :param specifier: A version specifier string\n    :param iterable: An iterable of version strings or Version instances\n    :param prereleases: Whether to include prereleases in the results\n    \n    >>> list(Specifier(\">=1.2.3\").filter([\"1.2\", \"1.3\", \"1.5a1\"]))\n    ['1.3']\n    ",
+    "input_schema": {
+     "properties": {
+      "specifier": {
+       "title": "Specifier",
+       "type": "string"
+      },
+      "iterable": {
+       "items": {
+        "anyOf": [
+         {
+          "type": "string"
+         },
+         {}
+        ]
+       },
+       "title": "Iterable",
+       "type": "array"
+      },
+      "prereleases": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Prereleases"
+      }
+     },
+     "required": [
+      "specifier",
+      "iterable"
+     ],
+     "title": "filter_specifierArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'Specifier'"
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "specifier_set_check_contains",
+   "wraps": "packaging.specifiers.SpecifierSet.contains",
+   "description": "Check if a version is contained in a specifier set.",
+   "accepted": true,
+   "code": "from packaging.specifiers import SpecifierSet\n\n\ndef specifier_set_check_contains(\n    specifier_set: str,\n    version: str,\n    prereleases: bool | None = None,\n    installed: bool | None = None\n) -> bool:\n    \"\"\"Check if a version is contained in a specifier set.\n    \n    Args:\n        specifier_set: A string representation of the specifier set (e.g., '>=1.0.0,!=1.0.1')\n        version: The version string to check for containment in the specifier set\n        prereleases: Whether or not to match prereleases with this SpecifierSet. \n                     If set to None (the default), it will follow the recommendation from PEP 440.\n        installed: Whether or not the item is installed. If set to True, it will accept \n                   prerelease versions even if the specifier does not allow them.\n    \n    Returns:\n        bool: True if the version is contained in the specifier set, False otherwise\n    \n    Example:\n        >>> specifier_set_check_contains('>=1.0.0,!=1.0.1', '1.2.3')\n        True\n    \"\"\"\n    try:\n        spec_set = SpecifierSet(specifier_set, prereleases=prereleases)\n        return spec_set.contains(version, prereleases=prereleases, installed=installed)\n    except Exception as e:\n        raise ValueError(f\"Error checking specifier set containment: {str(e)}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifier_set",
+      "type": "string",
+      "description": "A string representation of the specifier set (e.g., '>=1.0.0,!=1.0.1')",
+      "required": true
+     },
+     {
+      "name": "version",
+      "type": "string",
+      "description": "The version string to check for containment in the specifier set",
+      "required": true
+     },
+     {
+      "name": "prereleases",
+      "type": "boolean",
+      "description": "Whether or not to match prereleases with this SpecifierSet. If set to None (the default), it will follow the recommendation from PEP 440.",
+      "required": false,
+      "default": null
+     },
+     {
+      "name": "installed",
+      "type": "boolean",
+      "description": "Whether or not the item is installed. If set to True, it will accept prerelease versions even if the specifier does not allow them.",
+      "required": false,
+      "default": null
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifier_set, prereleases=prereleases).contains(version, prereleases=prereleases, installed=installed)",
+    "samples": [
+     {
+      "specifier_set": ">=1.0.0,!=1.0.1",
+      "version": "1.2.3"
+     },
+     {
+      "specifier_set": ">=1.0.0,!=1.0.1",
+      "version": "1.0.1"
+     },
+     {
+      "specifier_set": ">=1.0.0,!=1.0.1",
+      "version": "1.3.0a1"
+     },
+     {
+      "specifier_set": ">=1.0.0,!=1.0.1",
+      "version": "1.3.0a1",
+      "prereleases": false
+     },
+     {
+      "specifier_set": ">=1.0.0,!=1.0.1",
+      "version": "1.3.0a1",
+      "prereleases": true
+     },
+     {
+      "specifier_set": "invalid_specifier_set",
+      "version": "1.0.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "specifier_set": ">=1.0.0,!=1.0.1",
+       "version": "1.2.3"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=1.0.0,!=1.0.1",
+       "version": "1.0.1"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=1.0.0,!=1.0.1",
+       "version": "1.3.0a1"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=1.0.0,!=1.0.1",
+       "version": "1.3.0a1",
+       "prereleases": false
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=1.0.0,!=1.0.1",
+       "version": "1.3.0a1",
+       "prereleases": true
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": "invalid_specifier_set",
+       "version": "1.0.0"
+      },
+      "tool": "ValueError: Error checking specifier set containment: Invalid specifier: 'invalid_specifier_set'",
+      "direct": "InvalidSpecifier: Invalid specifier: 'invalid_specifier_set'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "Check if a version is contained in a specifier set.\n    \n    Args:\n        specifier_set: A string representation of the specifier set (e.g., '>=1.0.0,!=1.0.1')\n        version: The version string to check for containment in the specifier set\n        prereleases: Whether or not to match prereleases with this SpecifierSet. \n                     If set to None (the default), it will follow the recommendation from PEP 440.\n        installed: Whether or not the item is installed. If set to True, it will accept \n                   prerelease versions even if the specifier does not allow them.\n    \n    Returns:\n        bool: True if the version is contained in the specifier set, False otherwise\n    \n    Example:\n        >>> specifier_set_check_contains('>=1.0.0,!=1.0.1', '1.2.3')\n        True\n    ",
+    "input_schema": {
+     "properties": {
+      "specifier_set": {
+       "title": "Specifier Set",
+       "type": "string"
+      },
+      "version": {
+       "title": "Version",
+       "type": "string"
+      },
+      "prereleases": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Prereleases"
+      },
+      "installed": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Installed"
+      }
+     },
+     "required": [
+      "specifier_set",
+      "version"
+     ],
+     "title": "specifier_set_check_containsArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "specifier_equal",
+   "wraps": "packaging.specifiers.Specifier.__eq__",
+   "description": "Compare two specifiers for equality using the '==' operator.",
+   "accepted": true,
+   "code": "from packaging.specifiers import Specifier\n\n\ndef specifier_equal(left: str, right: str) -> bool:\n    \"\"\"The `==` operator with Specifier objects, as in `left == right`. It is an operator, not a function: use it as an expression with `==`, never as a call of `__eq__`. At least one side is a Specifier object.\n    \n    Example: specifier_equal(\">=1.0\", \">=1.0\") -> True\n    \"\"\"\n    try:\n        left_spec = Specifier(left)\n        right_spec = Specifier(right)\n        return left_spec == right_spec\n    except Exception as e:\n        raise ValueError(f\"invalid specifier: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "left",
+      "type": "string",
+      "description": "The left-hand side specifier string",
+      "required": true
+     },
+     {
+      "name": "right",
+      "type": "string",
+      "description": "The right-hand side specifier string",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.Specifier(left) == packaging.specifiers.Specifier(right)",
+    "samples": [
+     {
+      "left": ">=1.0.0",
+      "right": ">=1.0.0"
+     },
+     {
+      "left": "==2.0.0",
+      "right": "!=2.0.0"
+     },
+     {
+      "left": "~1.2.3",
+      "right": "~=1.2.3"
+     },
+     {
+      "left": ">=1.0.0,<2.0.0",
+      "right": ">=1.0.0,<2.0.0"
+     },
+     {
+      "left": ">=1.0.0",
+      "right": "1.0.0"
+     },
+     {
+      "left": "invalid_specifier",
+      "right": ">=1.0.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "left": ">=1.0.0",
+       "right": ">=1.0.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "==2.0.0",
+       "right": "!=2.0.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "~1.2.3",
+       "right": "~=1.2.3"
+      },
+      "tool": "ValueError: invalid specifier: Invalid specifier: '~1.2.3'",
+      "direct": "InvalidSpecifier: Invalid specifier: '~1.2.3'",
+      "result": "both_error"
+     },
+     {
+      "arguments": {
+       "left": ">=1.0.0,<2.0.0",
+       "right": ">=1.0.0,<2.0.0"
+      },
+      "tool": "ValueError: invalid specifier: Invalid specifier: '>=1.0.0,<2.0.0'",
+      "direct": "InvalidSpecifier: Invalid specifier: '>=1.0.0,<2.0.0'",
+      "result": "both_error"
+     },
+     {
+      "arguments": {
+       "left": ">=1.0.0",
+       "right": "1.0.0"
+      },
+      "tool": "ValueError: invalid specifier: Invalid specifier: '1.0.0'",
+      "direct": "InvalidSpecifier: Invalid specifier: '1.0.0'",
+      "result": "both_error"
+     },
+     {
+      "arguments": {
+       "left": "invalid_specifier",
+       "right": ">=1.0.0"
+      },
+      "tool": "ValueError: invalid specifier: Invalid specifier: 'invalid_specifier'",
+      "direct": "InvalidSpecifier: Invalid specifier: 'invalid_specifier'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "The `==` operator with Specifier objects, as in `left == right`. It is an operator, not a function: use it as an expression with `==`, never as a call of `__eq__`. At least one side is a Specifier object.\n    \n    Example: specifier_equal(\">=1.0\", \">=1.0\") -> True\n    ",
+    "input_schema": {
+     "properties": {
+      "left": {
+       "title": "Left",
+       "type": "string"
+      },
+      "right": {
+       "title": "Right",
+       "type": "string"
+      }
+     },
+     "required": [
+      "left",
+      "right"
+     ],
+     "title": "specifier_equalArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "specifier_set_equal",
+   "wraps": "packaging.specifiers.SpecifierSet.__eq__",
+   "description": "Compare two specifier sets for equality using the '==' operator.",
+   "accepted": true,
+   "code": "from packaging.specifiers import SpecifierSet\n\n\ndef specifier_set_equal(left: str, right: str) -> bool:\n    \"\"\"The `==` operator with SpecifierSet objects, as in `left == right`. It is an operator, not a function: use it as an expression with `==`, never as a call of `__eq__`. At least one side is a SpecifierSet object.\n    \n    Example: specifier_set_equal(\">=3.0,!=3.1\", \">=3.0,!=3.1\") -> True\"\"\"\n    try:\n        left_set = SpecifierSet(left)\n        right_set = SpecifierSet(right)\n        return left_set == right_set\n    except Exception as e:\n        raise ValueError(f\"Invalid specifier set: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "left",
+      "type": "string",
+      "description": "A string representation of the left-hand side specifier set",
+      "required": true
+     },
+     {
+      "name": "right",
+      "type": "string",
+      "description": "A string representation of the right-hand side specifier set",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(left) == packaging.specifiers.SpecifierSet(right)",
+    "samples": [
+     {
+      "left": ">=3.0",
+      "right": ">=3.0"
+     },
+     {
+      "left": ">=3.0,!=3.1",
+      "right": ">=3.0,!=3.1"
+     },
+     {
+      "left": ">=3.0,!=3.1",
+      "right": "!=3.1,>=3.0"
+     },
+     {
+      "left": ">=3.0",
+      "right": ">=3.1"
+     },
+     {
+      "left": "",
+      "right": ""
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "left": ">=3.0",
+       "right": ">=3.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": ">=3.0,!=3.1",
+       "right": ">=3.0,!=3.1"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": ">=3.0,!=3.1",
+       "right": "!=3.1,>=3.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": ">=3.0",
+       "right": ">=3.1"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "",
+       "right": ""
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "The `==` operator with SpecifierSet objects, as in `left == right`. It is an operator, not a function: use it as an expression with `==`, never as a call of `__eq__`. At least one side is a SpecifierSet object.\n    \n    Example: specifier_set_equal(\">=3.0,!=3.1\", \">=3.0,!=3.1\") -> True",
+    "input_schema": {
+     "properties": {
+      "left": {
+       "title": "Left",
+       "type": "string"
+      },
+      "right": {
+       "title": "Right",
+       "type": "string"
+      }
+     },
+     "required": [
+      "left",
+      "right"
+     ],
+     "title": "specifier_set_equalArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "specifier_set_intersection",
+   "wraps": "packaging.specifiers.SpecifierSet.__and__",
+   "description": "Find the intersection of two specifier sets using the '&' operator.",
+   "accepted": true,
+   "code": "from packaging.specifiers import SpecifierSet\n\n\ndef specifier_set_intersection(left: str, right: str) -> str:\n    \"\"\"Find the intersection of two specifier sets using the '&' operator. left: A string representation of the left specifier set, right: A string representation of the right specifier set. Example: specifier_set_intersection('>=1.0,<2.0', '>=1.5,<2.5') -> '>=1.5,<2.0'.\"\"\"\n    try:\n        left_set = SpecifierSet(left)\n        right_set = SpecifierSet(right)\n        result = left_set & right_set\n        return str(result)\n    except Exception as e:\n        raise ValueError(f\"Invalid specifier set: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "left",
+      "type": "string",
+      "description": "A string representation of the left specifier set",
+      "required": true
+     },
+     {
+      "name": "right",
+      "type": "string",
+      "description": "A string representation of the right specifier set",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(left) & packaging.specifiers.SpecifierSet(right)",
+    "samples": [
+     {
+      "left": ">=3.0",
+      "right": "<4.0"
+     },
+     {
+      "left": ">=3.0,!=3.1",
+      "right": ">=3.0,<4.0"
+     },
+     {
+      "left": "==3.0",
+      "right": "==3.0"
+     },
+     {
+      "left": ">=3.0",
+      "right": "<3.0"
+     },
+     {
+      "left": "",
+      "right": ">=3.0"
+     },
+     {
+      "left": "invalid specifier",
+      "right": ">=3.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "left": ">=3.0",
+       "right": "<4.0"
+      },
+      "tool": "<4.0,>=3.0",
+      "direct": "\"<4.0,>=3.0\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": ">=3.0,!=3.1",
+       "right": ">=3.0,<4.0"
+      },
+      "tool": "!=3.1,<4.0,>=3.0",
+      "direct": "\"!=3.1,<4.0,>=3.0\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "==3.0",
+       "right": "==3.0"
+      },
+      "tool": "==3.0",
+      "direct": "\"==3.0\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": ">=3.0",
+       "right": "<3.0"
+      },
+      "tool": "<3.0,>=3.0",
+      "direct": "\"<3.0,>=3.0\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "",
+       "right": ">=3.0"
+      },
+      "tool": ">=3.0",
+      "direct": "\">=3.0\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "invalid specifier",
+       "right": ">=3.0"
+      },
+      "tool": "ValueError: Invalid specifier set: Invalid specifier: 'invalid specifier'",
+      "direct": "InvalidSpecifier: Invalid specifier: 'invalid specifier'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "Find the intersection of two specifier sets using the '&' operator. left: A string representation of the left specifier set, right: A string representation of the right specifier set. Example: specifier_set_intersection('>=1.0,<2.0', '>=1.5,<2.5') -> '>=1.5,<2.0'.",
+    "input_schema": {
+     "properties": {
+      "left": {
+       "title": "Left",
+       "type": "string"
+      },
+      "right": {
+       "title": "Right",
+       "type": "string"
+      }
+     },
+     "required": [
+      "left",
+      "right"
+     ],
+     "title": "specifier_set_intersectionArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "direct_call may not use __and__"
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "canonicalize_license_expression",
+   "wraps": "packaging.licenses.canonicalize_license_expression",
+   "description": "Normalize a license expression string to its canonical form.",
+   "accepted": false,
+   "code": "from packaging.licenses import canonicalize_license_expression, InvalidLicenseExpression\n\n\ndef canonicalize_license_expression(raw_license_expression: str) -> str:\n    \"\"\"Normalize a license expression string to its canonical form. raw_license_expression: The License-Expression to canonicalize, e.g. 'mit and apache-2.0' -> 'MIT AND Apache-2.0'.\"\"\"\n    try:\n        result = canonicalize_license_expression(raw_license_expression)\n        return str(result)\n    except InvalidLicenseExpression as e:\n        raise ValueError(str(e)) from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "raw_license_expression",
+      "type": "string",
+      "description": "The License-Expression to canonicalize",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.licenses.canonicalize_license_expression(raw_license_expression)",
+    "samples": [
+     {
+      "raw_license_expression": "mit"
+     },
+     {
+      "raw_license_expression": "mit and (apache-2.0 or bsd-2-clause)"
+     },
+     {
+      "raw_license_expression": "(mit"
+     },
+     {
+      "raw_license_expression": "Use-it-after-midnight"
+     },
+     {
+      "raw_license_expression": ""
+     }
+    ]
+   },
+   "check": {
+    "ok": false,
+    "stage": "runs",
+    "error": "Input {\"raw_license_expression\": \"mit\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT\"\nInput {\"raw_license_expression\": \"mit and (apache-2.0 or bsd-2-clause)\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT AND (Apache-2.0 OR BSD-2-Clause)\"",
+    "samples": [
+     {
+      "arguments": {
+       "raw_license_expression": "mit"
+      },
+      "tool": "RecursionError: maximum recursion depth exceeded",
+      "direct": "\"MIT\"",
+      "result": "crash",
+      "why": "the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT\""
+     },
+     {
+      "arguments": {
+       "raw_license_expression": "mit and (apache-2.0 or bsd-2-clause)"
+      },
+      "tool": "RecursionError: maximum recursion depth exceeded",
+      "direct": "\"MIT AND (Apache-2.0 OR BSD-2-Clause)\"",
+      "result": "crash",
+      "why": "the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT AND (Apache-2.0 OR BSD-2-Clause)\""
+     },
+     {
+      "arguments": {
+       "raw_license_expression": "(mit"
+      },
+      "tool": "RecursionError: maximum recursion depth exceeded",
+      "direct": "InvalidLicenseExpression: Invalid license expression: '(mit'",
+      "result": "both_error"
+     },
+     {
+      "arguments": {
+       "raw_license_expression": "Use-it-after-midnight"
+      },
+      "tool": "RecursionError: maximum recursion depth exceeded",
+      "direct": "InvalidLicenseExpression: Unknown license: 'use-it-after-midnight'",
+      "result": "both_error"
+     },
+     {
+      "arguments": {
+       "raw_license_expression": ""
+      },
+      "tool": "RecursionError: maximum recursion depth exceeded",
+      "direct": "InvalidLicenseExpression: Invalid license expression: ''",
+      "result": "both_error"
+     }
+    ],
+    "verified": false,
+    "description": "Normalize a license expression string to its canonical form. raw_license_expression: The License-Expression to canonicalize, e.g. 'mit and apache-2.0' -> 'MIT AND Apache-2.0'.",
+    "input_schema": {
+     "properties": {
+      "raw_license_expression": {
+       "title": "Raw License Expression",
+       "type": "string"
+      }
+     },
+     "required": [
+      "raw_license_expression"
+     ],
+     "title": "canonicalize_license_expressionArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "runs",
+     "error": "Input {\"raw_license_expression\": \"mit\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT\"\nInput {\"raw_license_expression\": \"mit and (apache-2.0 or bsd-2-clause)\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT AND (Apache-2.0 OR BSD-2-Clause)\""
+    },
+    {
+     "stage": "runs",
+     "error": "Input {\"raw_license_expression\": \"mit\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT\"\nInput {\"raw_license_expression\": \"mit and (apache-2.0 or bsd-2-clause)\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT AND (Apache-2.0 OR BSD-2-Clause)\""
+    },
+    {
+     "stage": "runs",
+     "error": "Input {\"raw_license_expression\": \"mit\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT\"\nInput {\"raw_license_expression\": \"mit and (apache-2.0 or bsd-2-clause)\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT AND (Apache-2.0 OR BSD-2-Clause)\""
+    },
+    {
+     "stage": "runs",
+     "error": "Input {\"raw_license_expression\": \"mit\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT\"\nInput {\"raw_license_expression\": \"mit and (apache-2.0 or bsd-2-clause)\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"MIT AND (Apache-2.0 OR BSD-2-Clause)\""
+    }
+   ]
+  },
+  {
+   "name": "version_range_empty",
+   "wraps": "packaging.ranges.VersionRange.empty",
+   "description": "Create an empty version range that accepts no versions.",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\n\n\ndef version_range_empty(prereleases: bool | None = None) -> str:\n    \"\"\"Create an empty version range that accepts no versions. prereleases: whether pre-release versions should be considered. -> string representation of the empty version range.\"\"\"\n    try:\n        result = VersionRange.empty(prereleases=prereleases)\n        return str(result)\n    except Exception as e:\n        raise ValueError(f\"failed to create empty version range: {str(e)}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "prereleases",
+      "type": "boolean",
+      "description": "Whether pre-release versions should be considered",
+      "required": false,
+      "default": null
+     }
+    ],
+    "direct_call": "packaging.ranges.VersionRange.empty(prereleases=prereleases)",
+    "samples": [
+     {
+      "prereleases": true
+     },
+     {
+      "prereleases": false
+     },
+     {
+      "prereleases": null
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "prereleases": true
+      },
+      "tool": "<VersionRange '(empty)' pre=True>",
+      "direct": "\"<VersionRange '(empty)' pre=True>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "prereleases": false
+      },
+      "tool": "<VersionRange '(empty)' pre=False>",
+      "direct": "\"<VersionRange '(empty)' pre=False>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "prereleases": null
+      },
+      "tool": "<VersionRange '(empty)'>",
+      "direct": "\"<VersionRange '(empty)'>\"",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Create an empty version range that accepts no versions. prereleases: whether pre-release versions should be considered. -> string representation of the empty version range.",
+    "input_schema": {
+     "properties": {
+      "prereleases": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Prereleases"
+      }
+     },
+     "title": "version_range_emptyArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the reply must be a JSON object with parameters, direct_call and samples"
+    },
+    {
+     "stage": "spec",
+     "error": "the reply must be a JSON object with parameters, direct_call and samples"
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_range_singleton",
+   "wraps": "packaging.ranges.VersionRange.singleton",
+   "description": "Create a strict singleton version range containing only a specific version.",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.version import Version\n\n\ndef version_range_singleton(version: str, prereleases: bool | None = None) -> str:\n    \"\"\"Return the strict singleton range `{version}`. version: A PEP 440 compliant version string, e.g. '1.0' -> '{1.0}'. prereleases: Whether to include pre-release versions.\"\"\"\n    try:\n        range_obj = VersionRange.singleton(version, prereleases=prereleases)\n        return str(range_obj)\n    except Exception as e:\n        if \"InvalidVersion\" in str(type(e)):\n            raise ValueError(f\"not a valid PEP 440 version: {version!r}\") from e\n        raise ValueError(str(e)) from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "version",
+      "type": "string",
+      "description": "A PEP 440 compliant version string",
+      "required": true
+     },
+     {
+      "name": "prereleases",
+      "type": "boolean",
+      "description": "Whether to include pre-release versions",
+      "required": false,
+      "default": null
+     }
+    ],
+    "direct_call": "packaging.ranges.VersionRange.singleton(version, prereleases=prereleases)",
+    "samples": [
+     {
+      "version": "1.0.0",
+      "prereleases": null
+     },
+     {
+      "version": "2.0.0a1",
+      "prereleases": true
+     },
+     {
+      "version": "3.0.0+build.1",
+      "prereleases": false
+     },
+     {
+      "version": "0.1.0.dev0",
+      "prereleases": null
+     },
+     {
+      "version": "invalid.version",
+      "prereleases": null
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "version": "1.0.0",
+       "prereleases": null
+      },
+      "tool": "<VersionRange '[1.0.0, 1.0.0]'>",
+      "direct": "\"<VersionRange '[1.0.0, 1.0.0]'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "2.0.0a1",
+       "prereleases": true
+      },
+      "tool": "<VersionRange '[2.0.0a1, 2.0.0a1]' pre=True>",
+      "direct": "\"<VersionRange '[2.0.0a1, 2.0.0a1]' pre=True>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "3.0.0+build.1",
+       "prereleases": false
+      },
+      "tool": "<VersionRange '[3.0.0+build.1, 3.0.0+build.1]' pre=False>",
+      "direct": "\"<VersionRange '[3.0.0+build.1, 3.0.0+build.1]' pre=False>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "0.1.0.dev0",
+       "prereleases": null
+      },
+      "tool": "<VersionRange '[0.1.0.dev0, 0.1.0.dev0]'>",
+      "direct": "\"<VersionRange '[0.1.0.dev0, 0.1.0.dev0]'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "invalid.version",
+       "prereleases": null
+      },
+      "tool": "ValueError: not a valid PEP 440 version: 'invalid.version'",
+      "direct": "InvalidVersion: Invalid version: 'invalid.version'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "Return the strict singleton range `{version}`. version: A PEP 440 compliant version string, e.g. '1.0' -> '{1.0}'. prereleases: Whether to include pre-release versions.",
+    "input_schema": {
+     "properties": {
+      "version": {
+       "title": "Version",
+       "type": "string"
+      },
+      "prereleases": {
+       "anyOf": [
+        {
+         "type": "boolean"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Prereleases"
+      }
+     },
+     "required": [
+      "version"
+     ],
+     "title": "version_range_singletonArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "canonicalize_version",
+   "wraps": "packaging.utils.canonicalize_version",
+   "description": "Return a canonical string representation of a version.",
+   "accepted": true,
+   "code": "from packaging.utils import canonicalize_version as _canonicalize_version\n\n\ndef canonicalize_version(version: str, strip_trailing_zero: bool = True) -> str:\n    \"\"\"Return a canonical form of a version as a string. version: A version string to canonicalize, e.g. '1.0.0' -> '1'. strip_trailing_zero: Whether to strip trailing zeros from the release segment, e.g. '1.0.0' with strip_trailing_zero=False -> '1.0.0'.\"\"\"\n    return _canonicalize_version(version, strip_trailing_zero=strip_trailing_zero)\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "version",
+      "type": "string",
+      "description": "A version string to canonicalize",
+      "required": true
+     },
+     {
+      "name": "strip_trailing_zero",
+      "type": "boolean",
+      "description": "Whether to strip trailing zeros from the release segment",
+      "required": false,
+      "default": true
+     }
+    ],
+    "direct_call": "packaging.utils.canonicalize_version(version, strip_trailing_zero=strip_trailing_zero)",
+    "samples": [
+     {
+      "version": "1.0.1"
+     },
+     {
+      "version": "1.0.0"
+     },
+     {
+      "version": "1.0.0",
+      "strip_trailing_zero": false
+     },
+     {
+      "version": "1.4.0.0.0"
+     },
+     {
+      "version": "foo bar baz"
+     },
+     {
+      "version": "2.0.0.0.0",
+      "strip_trailing_zero": false
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "version": "1.0.1"
+      },
+      "tool": "1.0.1",
+      "direct": "\"1.0.1\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "1.0.0"
+      },
+      "tool": "1",
+      "direct": "\"1\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "1.0.0",
+       "strip_trailing_zero": false
+      },
+      "tool": "1.0.0",
+      "direct": "\"1.0.0\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "1.4.0.0.0"
+      },
+      "tool": "1.4",
+      "direct": "\"1.4\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "foo bar baz"
+      },
+      "tool": "foo bar baz",
+      "direct": "\"foo bar baz\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "2.0.0.0.0",
+       "strip_trailing_zero": false
+      },
+      "tool": "2.0.0.0.0",
+      "direct": "\"2.0.0.0.0\"",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Return a canonical form of a version as a string. version: A version string to canonicalize, e.g. '1.0.0' -> '1'. strip_trailing_zero: Whether to strip trailing zeros from the release segment, e.g. '1.0.0' with strip_trailing_zero=False -> '1.0.0'.",
+    "input_schema": {
+     "properties": {
+      "version": {
+       "title": "Version",
+       "type": "string"
+      },
+      "strip_trailing_zero": {
+       "default": true,
+       "title": "Strip Trailing Zero",
+       "type": "boolean"
+      }
+     },
+     "required": [
+      "version"
+     ],
+     "title": "canonicalize_versionArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "differential",
+     "error": "Input {\"version\": \"1.0.1\"}: the tool raised ValueError: Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed t, but the direct library call returned \"1.0.1\"\nInput {\"version\": \"1.0.0\"}: the tool raised ValueError: Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed t, but the direct library call returned \"1\"\nInput {\"strip_trailing_zero\": false, \"version\": \"1.0.0\"}: the tool raised ValueError: Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed t, but the direct library call returned \"1.0.0\""
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"version\": \"1.0.1\"}: the tool raised ValueError: Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed to canonicalize version '1.0.1': Failed t, but the direct library call returned \"1.0.1\"\nInput {\"version\": \"1.0.0\"}: the tool raised ValueError: Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed t, but the direct library call returned \"1\"\nInput {\"strip_trailing_zero\": false, \"version\": \"1.0.0\"}: the tool raised ValueError: Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed to canonicalize version '1.0.0': Failed t, but the direct library call returned \"1.0.0\""
+    },
+    {
+     "stage": "runs",
+     "error": "Input {\"version\": \"1.0.1\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"1.0.1\"\nInput {\"version\": \"1.0.0\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"1\"\nInput {\"strip_trailing_zero\": false, \"version\": \"1.0.0\"}: the tool raised RecursionError: maximum recursion depth exceeded, but the direct library call returned \"1.0.0\""
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_range_complement",
+   "wraps": "packaging.ranges.VersionRange.complement",
+   "description": "Get a version range that contains all versions not in the original range.",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef version_range_complement(version_specifier: str) -> str:\n    \"\"\"Get a version range that contains all versions not in the original range.\n    \n    Args:\n        version_specifier: A version specifier string (e.g., '>=1.0', '<2.0', '==1.5')\n        \n    Returns:\n        A string representation of the complement version range\n        \n    Example:\n        >>> version_range_complement('>=1.0')\n        '<1.0'\n    \"\"\"\n    try:\n        specifier_set = SpecifierSet(version_specifier)\n        version_range = specifier_set.to_range()\n        complement_range = version_range.complement()\n        return str(complement_range)\n    except Exception as e:\n        raise ValueError(f\"Invalid version specifier: {version_specifier!r}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "version_specifier",
+      "type": "string",
+      "description": "A version specifier string (e.g., '>=1.0', '<2.0', '==1.5')",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(version_specifier).to_range().complement()",
+    "samples": [
+     {
+      "version_specifier": ">=1.0"
+     },
+     {
+      "version_specifier": "<2.0"
+     },
+     {
+      "version_specifier": "==1.5"
+     },
+     {
+      "version_specifier": "!=1.5"
+     },
+     {
+      "version_specifier": ">=1.0,<2.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "version_specifier": ">=1.0"
+      },
+      "tool": "<VersionRange '(-inf, 1.0)'>",
+      "direct": "\"<VersionRange '(-inf, 1.0)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version_specifier": "<2.0"
+      },
+      "tool": "<VersionRange '[2.0.dev0, +inf)'>",
+      "direct": "\"<VersionRange '[2.0.dev0, +inf)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version_specifier": "==1.5"
+      },
+      "tool": "<VersionRange '(-inf, 1.5) | (1.5[AFTER_LOCALS], +inf)'>",
+      "direct": "\"<VersionRange '(-inf, 1.5) | (1.5[AFTER_LOCALS], +inf)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version_specifier": "!=1.5"
+      },
+      "tool": "<VersionRange '[1.5, 1.5[AFTER_LOCALS]]'>",
+      "direct": "\"<VersionRange '[1.5, 1.5[AFTER_LOCALS]]'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version_specifier": ">=1.0,<2.0"
+      },
+      "tool": "<VersionRange '(-inf, 1.0) | [2.0.dev0, +inf)'>",
+      "direct": "\"<VersionRange '(-inf, 1.0) | [2.0.dev0, +inf)'>\"",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Get a version range that contains all versions not in the original range.\n    \n    Args:\n        version_specifier: A version specifier string (e.g., '>=1.0', '<2.0', '==1.5')\n        \n    Returns:\n        A string representation of the complement version range\n        \n    Example:\n        >>> version_range_complement('>=1.0')\n        '<1.0'\n    ",
+    "input_schema": {
+     "properties": {
+      "version_specifier": {
+       "title": "Version Specifier",
+       "type": "string"
+      }
+     },
+     "required": [
+      "version_specifier"
+     ],
+     "title": "version_range_complementArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "is_version_range_subset",
+   "wraps": "packaging.ranges.VersionRange.is_subset",
+   "description": "Check if every version in one range is also in another range.",
+   "accepted": false,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef is_version_range_subset(range1: str, range2: str) -> bool:\n    \"\"\"Check if every version in range1 is also in range2. range1: a version range specifier, e.g. '>=1.0,<2.0' -> true. range2: another version range to check against.\"\"\"\n    try:\n        version_range1 = SpecifierSet(range1).to_range()\n        version_range2 = SpecifierSet(range2).to_range()\n        return version_range1.is_subset(version_range2)\n    except Exception as e:\n        raise ValueError(f\"invalid version range: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "range1",
+      "type": "string",
+      "description": "A version range specifier string (e.g., '>=1.0,<2.0')",
+      "required": true
+     },
+     {
+      "name": "range2",
+      "type": "string",
+      "description": "Another version range specifier string to check if range1 is a subset of this",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.ranges.VersionRange.parse(range1).is_subset(packaging.ranges.VersionRange.parse(range2))",
+    "samples": [
+     {
+      "range1": ">=1.5,<1.8",
+      "range2": ">=1.0,<2.0"
+     },
+     {
+      "range1": ">=1.0,<2.0",
+      "range2": ">=1.5,<1.8"
+     },
+     {
+      "range1": "==1.5.0",
+      "range2": ">=1.0,<2.0"
+     },
+     {
+      "range1": ">=1.0,<2.0",
+      "range2": "==1.5.0"
+     },
+     {
+      "range1": ">=1.0,<2.0",
+      "range2": ">=1.0,<2.0"
+     },
+     {
+      "range1": "invalid-range",
+      "range2": ">=1.0,<2.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": false,
+    "stage": "spec",
+    "error": "the direct_call expression is wrong: AttributeError: type object 'VersionRange' has no attribute 'parse'",
+    "samples": [
+     {
+      "arguments": {
+       "range1": ">=1.5,<1.8",
+       "range2": ">=1.0,<2.0"
+      },
+      "tool": true,
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'parse', but the tool returned true",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "range1": ">=1.0,<2.0",
+       "range2": ">=1.5,<1.8"
+      },
+      "tool": false,
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'parse', but the tool returned false",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "range1": "==1.5.0",
+       "range2": ">=1.0,<2.0"
+      },
+      "tool": true,
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'parse', but the tool returned true",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "range1": ">=1.0,<2.0",
+       "range2": "==1.5.0"
+      },
+      "tool": false,
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'parse', but the tool returned false",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "range1": ">=1.0,<2.0",
+       "range2": ">=1.0,<2.0"
+      },
+      "tool": true,
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+      "result": "mismatch",
+      "why": "the direct library call raised AttributeError: type object 'VersionRange' has no attribute 'parse', but the tool returned true",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+       "broken": true,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "range1": "invalid-range",
+       "range2": ">=1.0,<2.0"
+      },
+      "tool": "ValueError: invalid version range: Invalid specifier: 'invalid-range'",
+      "direct": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+      "result": "both_error",
+      "direct_error": {
+       "error": "AttributeError: type object 'VersionRange' has no attribute 'parse'",
+       "broken": true,
+       "type_error": false
+      }
+     }
+    ],
+    "verified": false,
+    "description": "Check if every version in range1 is also in range2. range1: a version range specifier, e.g. '>=1.0,<2.0' -> true. range2: another version range to check against.",
+    "input_schema": {
+     "properties": {
+      "range1": {
+       "title": "Range1",
+       "type": "string"
+      },
+      "range2": {
+       "title": "Range2",
+       "type": "string"
+      }
+     },
+     "required": [
+      "range1",
+      "range2"
+     ],
+     "title": "is_version_range_subsetArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'SpecifierSet'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'VersionRange'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: type object 'VersionRange' has no attribute 'from_specifier_set'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: AttributeError: type object 'VersionRange' has no attribute 'parse'"
+    }
+   ]
+  },
+  {
+   "name": "canonicalize_package_name",
+   "wraps": "packaging.utils.canonicalize_name",
+   "description": "Normalize a Python package or extra name to its canonical form.",
+   "accepted": true,
+   "code": "from packaging.utils import canonicalize_name, InvalidName\n\n\ndef canonicalize_package_name(name: str, validate: bool = False) -> str:\n    \"\"\"Normalize a Python package or extra name to its canonical form. name: The name to normalize. validate: Check whether the name is a valid distribution name. >>> canonicalize_package_name('Django') 'django'\"\"\"\n    try:\n        result = canonicalize_name(name, validate=validate)\n        return str(result)\n    except InvalidName as e:\n        raise ValueError(str(e)) from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "name",
+      "type": "string",
+      "description": "The name to normalize.",
+      "required": true
+     },
+     {
+      "name": "validate",
+      "type": "boolean",
+      "description": "Check whether the name is a valid distribution name.",
+      "required": false,
+      "default": false
+     }
+    ],
+    "direct_call": "packaging.utils.canonicalize_name(name, validate=validate)",
+    "samples": [
+     {
+      "name": "Django"
+     },
+     {
+      "name": "oslo.concurrency"
+     },
+     {
+      "name": "requests"
+     },
+     {
+      "name": "My_Package_Name"
+     },
+     {
+      "name": "invalid..package--name",
+      "validate": true
+     },
+     {
+      "name": "valid-package-name",
+      "validate": true
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "name": "Django"
+      },
+      "tool": "django",
+      "direct": "\"django\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "name": "oslo.concurrency"
+      },
+      "tool": "oslo-concurrency",
+      "direct": "\"oslo-concurrency\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "name": "requests"
+      },
+      "tool": "requests",
+      "direct": "\"requests\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "name": "My_Package_Name"
+      },
+      "tool": "my-package-name",
+      "direct": "\"my-package-name\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "name": "invalid..package--name",
+       "validate": true
+      },
+      "tool": "invalid-package-name",
+      "direct": "\"invalid-package-name\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "name": "valid-package-name",
+       "validate": true
+      },
+      "tool": "valid-package-name",
+      "direct": "\"valid-package-name\"",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Normalize a Python package or extra name to its canonical form. name: The name to normalize. validate: Check whether the name is a valid distribution name. >>> canonicalize_package_name('Django') 'django'",
+    "input_schema": {
+     "properties": {
+      "name": {
+       "title": "Name",
+       "type": "string"
+      },
+      "validate": {
+       "default": false,
+       "title": "Validate",
+       "type": "boolean"
+      }
+     },
+     "required": [
+      "name"
+     ],
+     "title": "canonicalize_package_nameArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_range_union_method",
+   "wraps": "packaging.ranges.VersionRange.union",
+   "description": "Create a union of two version ranges containing all versions from both.",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef version_range_union_method(version_range_a: str, version_range_b: str) -> str:\n    \"\"\"Create a union of two version ranges containing all versions from both.\n    \n    Args:\n        version_range_a (str): First version range in string format\n        version_range_b (str): Second version range in string format\n    \n    Returns:\n        str: A string representation of the union of the two version ranges\n    \n    Example:\n        >>> version_range_union_method(\">=1.0,<2.0\", \">=2.0,<3.0\")\n        '>=1.0,<3.0'\n    \"\"\"\n    try:\n        # Create VersionRange instances using SpecifierSet.to_range()\n        spec_a = SpecifierSet(version_range_a)\n        spec_b = SpecifierSet(version_range_b)\n        \n        range_a = spec_a.to_range()\n        range_b = spec_b.to_range()\n        \n        result = range_a.union(range_b)\n        return str(result)\n    except Exception as e:\n        raise ValueError(f\"Failed to compute union of version ranges: {str(e)}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "version_range_a",
+      "type": "string",
+      "description": "First version range in string format",
+      "required": true
+     },
+     {
+      "name": "version_range_b",
+      "type": "string",
+      "description": "Second version range in string format",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(version_range_a).to_range().union(packaging.specifiers.SpecifierSet(version_range_b).to_range())",
+    "samples": [
+     {
+      "version_range_a": ">=1.0,<2.0",
+      "version_range_b": ">=2.0,<3.0"
+     },
+     {
+      "version_range_a": "==1.0",
+      "version_range_b": "==2.0"
+     },
+     {
+      "version_range_a": ">=1.0",
+      "version_range_b": "<3.0"
+     },
+     {
+      "version_range_a": "~=1.0",
+      "version_range_b": "~=2.0"
+     },
+     {
+      "version_range_a": ">=1.0,<2.0",
+      "version_range_b": ">=1.5,<2.5"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "version_range_a": ">=1.0,<2.0",
+       "version_range_b": ">=2.0,<3.0"
+      },
+      "tool": "<VersionRange '[1.0, 2.0.dev0) | [2.0, 3.0.dev0)'>",
+      "direct": "\"<VersionRange '[1.0, 2.0.dev0) | [2.0, 3.0.dev0)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version_range_a": "==1.0",
+       "version_range_b": "==2.0"
+      },
+      "tool": "<VersionRange '[1.0, 1.0[AFTER_LOCALS]] | [2.0, 2.0[AFTER_LOCALS]]'>",
+      "direct": "\"<VersionRange '[1.0, 1.0[AFTER_LOCALS]] | [2.0, 2.0[AFTER_LOCALS]]'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version_range_a": ">=1.0",
+       "version_range_b": "<3.0"
+      },
+      "tool": "<VersionRange '(-inf, +inf)'>",
+      "direct": "\"<VersionRange '(-inf, +inf)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version_range_a": "~=1.0",
+       "version_range_b": "~=2.0"
+      },
+      "tool": "<VersionRange '[1.0, 2.dev0) | [2.0, 3.dev0)'>",
+      "direct": "\"<VersionRange '[1.0, 2.dev0) | [2.0, 3.dev0)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version_range_a": ">=1.0,<2.0",
+       "version_range_b": ">=1.5,<2.5"
+      },
+      "tool": "<VersionRange '[1.0, 2.5.dev0)'>",
+      "direct": "\"<VersionRange '[1.0, 2.5.dev0)'>\"",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Create a union of two version ranges containing all versions from both.\n    \n    Args:\n        version_range_a (str): First version range in string format\n        version_range_b (str): Second version range in string format\n    \n    Returns:\n        str: A string representation of the union of the two version ranges\n    \n    Example:\n        >>> version_range_union_method(\">=1.0,<2.0\", \">=2.0,<3.0\")\n        '>=1.0,<3.0'\n    ",
+    "input_schema": {
+     "properties": {
+      "version_range_a": {
+       "title": "Version Range A",
+       "type": "string"
+      },
+      "version_range_b": {
+       "title": "Version Range B",
+       "type": "string"
+      }
+     },
+     "required": [
+      "version_range_a",
+      "version_range_b"
+     ],
+     "title": "version_range_union_methodArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'VersionRange'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct call failed on every sample, so nothing can be compared. Errors: [\"TypeError: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead\"]. Use samples that are valid for the library."
+    },
+    {
+     "stage": "differential",
+     "error": "Input {\"version_range_a\": \">=1.0,<2.0\", \"version_range_b\": \">=2.0,<3.0\"}: the tool raised ValueError: Failed to compute union of version ranges: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead, but the direct library call returned \"<VersionRange '[1.0, 2.0.dev0) | [2.0, 3.0.dev0)'>\"\nInput {\"version_range_a\": \"==1.0\", \"version_range_b\": \"==2.0\"}: the tool raised ValueError: Failed to compute union of version ranges: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead, but the direct library call returned \"<VersionRange '[1.0, 1.0[AFTER_LOCALS]] | [2.0, 2.0[AFTER_LOCALS]]'>\"\nInput {\"version_range_a\": \">=1.0\", \"version_range_b\": \"<3.0\"}: the tool raised ValueError: Failed to compute union of version ranges: cannot create 'VersionRange' instances directly; use SpecifierSet.to_range(), VersionRange.full(), VersionRange.empty(), or VersionRange.singleton() instead, but the direct library call returned \"<VersionRange '(-inf, +inf)'>\""
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_range_difference",
+   "wraps": "packaging.ranges.VersionRange.difference",
+   "description": "Compute the difference between two version ranges (versions in first but not second).",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef version_range_difference(first_range: str, second_range: str) -> str:\n    \"\"\"Compute the difference between two version ranges (versions in first but not second).\n    \n    Args:\n        first_range (str): The first version range specifier\n        second_range (str): The second version range specifier to subtract from the first\n    \n    Returns:\n        str: A string representation of the resulting version range\n    \n    Example:\n        >>> version_range_difference(\">=1.0\", \">=2.0\")\n        '>=1.0,<2.0'\n    \"\"\"\n    try:\n        first = SpecifierSet(first_range).to_range()\n        second = SpecifierSet(second_range).to_range()\n        result = first.difference(second)\n        return str(result)\n    except Exception as e:\n        raise ValueError(f\"Invalid version range specification: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "first_range",
+      "type": "string",
+      "description": "The first version range specifier",
+      "required": true
+     },
+     {
+      "name": "second_range",
+      "type": "string",
+      "description": "The second version range specifier to subtract from the first",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(first_range).to_range().difference(packaging.specifiers.SpecifierSet(second_range).to_range())",
+    "samples": [
+     {
+      "first_range": ">=1.0",
+      "second_range": ">=2.0"
+     },
+     {
+      "first_range": "<3.0",
+      "second_range": ">=1.0"
+     },
+     {
+      "first_range": "==1.0.0",
+      "second_range": "==1.0.0"
+     },
+     {
+      "first_range": ">=1.0,<2.0",
+      "second_range": ">=1.5,<2.0"
+     },
+     {
+      "first_range": ">=1.0",
+      "second_range": ">=1.0"
+     },
+     {
+      "first_range": "invalid_specifier",
+      "second_range": ">=1.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "first_range": ">=1.0",
+       "second_range": ">=2.0"
+      },
+      "tool": "<VersionRange '[1.0, 2.0)'>",
+      "direct": "\"<VersionRange '[1.0, 2.0)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "first_range": "<3.0",
+       "second_range": ">=1.0"
+      },
+      "tool": "<VersionRange '(-inf, 1.0)'>",
+      "direct": "\"<VersionRange '(-inf, 1.0)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "first_range": "==1.0.0",
+       "second_range": "==1.0.0"
+      },
+      "tool": "<VersionRange '(empty)'>",
+      "direct": "\"<VersionRange '(empty)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "first_range": ">=1.0,<2.0",
+       "second_range": ">=1.5,<2.0"
+      },
+      "tool": "<VersionRange '[1.0, 1.5)'>",
+      "direct": "\"<VersionRange '[1.0, 1.5)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "first_range": ">=1.0",
+       "second_range": ">=1.0"
+      },
+      "tool": "<VersionRange '(empty)'>",
+      "direct": "\"<VersionRange '(empty)'>\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "first_range": "invalid_specifier",
+       "second_range": ">=1.0"
+      },
+      "tool": "ValueError: Invalid version range specification: Invalid specifier: 'invalid_specifier'",
+      "direct": "InvalidSpecifier: Invalid specifier: 'invalid_specifier'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "Compute the difference between two version ranges (versions in first but not second).\n    \n    Args:\n        first_range (str): The first version range specifier\n        second_range (str): The second version range specifier to subtract from the first\n    \n    Returns:\n        str: A string representation of the resulting version range\n    \n    Example:\n        >>> version_range_difference(\">=1.0\", \">=2.0\")\n        '>=1.0,<2.0'\n    ",
+    "input_schema": {
+     "properties": {
+      "first_range": {
+       "title": "First Range",
+       "type": "string"
+      },
+      "second_range": {
+       "title": "Second Range",
+       "type": "string"
+      }
+     },
+     "required": [
+      "first_range",
+      "second_range"
+     ],
+     "title": "version_range_differenceArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "is_version_range_disjoint",
+   "wraps": "packaging.ranges.VersionRange.is_disjoint",
+   "description": "Check if two version ranges have no overlapping versions.",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef is_version_range_disjoint(range1: str, range2: str) -> bool:\n    \"\"\"Check if two version ranges have no overlapping versions.\n    \n    Args:\n        range1 (str): A version range specifier string (e.g., '>=1.0,<2.0')\n        range2 (str): Another version range specifier string (e.g., '>=2.0,<3.0')\n        \n    Returns:\n        bool: True if the ranges are disjoint (no overlap), False otherwise\n        \n    Example:\n        >>> is_version_range_disjoint('>=1.0,<2.0', '>=2.0,<3.0')\n        True\n    \"\"\"\n    try:\n        range_obj1 = SpecifierSet(range1).to_range()\n        range_obj2 = SpecifierSet(range2).to_range()\n        return range_obj1.is_disjoint(range_obj2)\n    except Exception as e:\n        raise ValueError(f\"invalid version range: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "range1",
+      "type": "string",
+      "description": "A version range specifier string (e.g., '>=1.0,<2.0')",
+      "required": true
+     },
+     {
+      "name": "range2",
+      "type": "string",
+      "description": "Another version range specifier string (e.g., '>=2.0,<3.0')",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(range1).to_range().is_disjoint(packaging.specifiers.SpecifierSet(range2).to_range())",
+    "samples": [
+     {
+      "range1": ">=1.0,<2.0",
+      "range2": ">=2.0,<3.0"
+     },
+     {
+      "range1": ">=1.5,<2.5",
+      "range2": ">=1.0,<2.0"
+     },
+     {
+      "range1": "==1.0.0",
+      "range2": "==1.0.0"
+     },
+     {
+      "range1": ">=1.0.0,<2.0.0",
+      "range2": ">=1.5.0,<1.9.0"
+     },
+     {
+      "range1": ">=1.0.0,<2.0.0",
+      "range2": ">=2.0.0,<3.0.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "range1": ">=1.0,<2.0",
+       "range2": ">=2.0,<3.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range1": ">=1.5,<2.5",
+       "range2": ">=1.0,<2.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range1": "==1.0.0",
+       "range2": "==1.0.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range1": ">=1.0.0,<2.0.0",
+       "range2": ">=1.5.0,<1.9.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range1": ">=1.0.0,<2.0.0",
+       "range2": ">=2.0.0,<3.0.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Check if two version ranges have no overlapping versions.\n    \n    Args:\n        range1 (str): A version range specifier string (e.g., '>=1.0,<2.0')\n        range2 (str): Another version range specifier string (e.g., '>=2.0,<3.0')\n        \n    Returns:\n        bool: True if the ranges are disjoint (no overlap), False otherwise\n        \n    Example:\n        >>> is_version_range_disjoint('>=1.0,<2.0', '>=2.0,<3.0')\n        True\n    ",
+    "input_schema": {
+     "properties": {
+      "range1": {
+       "title": "Range1",
+       "type": "string"
+      },
+      "range2": {
+       "title": "Range2",
+       "type": "string"
+      }
+     },
+     "required": [
+      "range1",
+      "range2"
+     ],
+     "title": "is_version_range_disjointArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'SpecifierSet'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'VersionRange'"
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "is_specifier_set_subset",
+   "wraps": "packaging.specifiers.SpecifierSet.is_subset",
+   "description": "Check if every version matching this set also matches another set.",
+   "accepted": true,
+   "code": "from packaging.specifiers import SpecifierSet\n\n\ndef is_specifier_set_subset(specifier_set: str, other_set: str) -> bool:\n    \"\"\"Check if every version matching this set also matches another set.\n    \n    Args:\n        specifier_set: A string representation of the first specifier set\n        other_set: A string representation of the second specifier set to check against\n    \n    Returns:\n        True if every version matching the first set also matches the second set, False otherwise\n    \n    Example:\n        >>> is_specifier_set_subset(\">=3.12,<3.13\", \">=3.12\")\n        True\n    \"\"\"\n    try:\n        set1 = SpecifierSet(specifier_set)\n        set2 = SpecifierSet(other_set)\n        return set1.is_subset(set2)\n    except ValueError as e:\n        raise ValueError(str(e)) from e\n    except TypeError as e:\n        raise ValueError(f\"Invalid argument type: {str(e)}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifier_set",
+      "type": "string",
+      "description": "A string representation of the first specifier set",
+      "required": true
+     },
+     {
+      "name": "other_set",
+      "type": "string",
+      "description": "A string representation of the second specifier set to check against",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifier_set).is_subset(packaging.specifiers.SpecifierSet(other_set))",
+    "samples": [
+     {
+      "specifier_set": ">=3.12,<3.13",
+      "other_set": ">=3.12"
+     },
+     {
+      "specifier_set": ">=3.12",
+      "other_set": ">=3.12,<3.13"
+     },
+     {
+      "specifier_set": "==3.12.0",
+      "other_set": ">=3.12"
+     },
+     {
+      "specifier_set": ">=3.10",
+      "other_set": ">=3.11"
+     },
+     {
+      "specifier_set": "~=3.12",
+      "other_set": ">=3.12,<3.14"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "specifier_set": ">=3.12,<3.13",
+       "other_set": ">=3.12"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=3.12",
+       "other_set": ">=3.12,<3.13"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": "==3.12.0",
+       "other_set": ">=3.12"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=3.10",
+       "other_set": ">=3.11"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": "~=3.12",
+       "other_set": ">=3.12,<3.14"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Check if every version matching this set also matches another set.\n    \n    Args:\n        specifier_set: A string representation of the first specifier set\n        other_set: A string representation of the second specifier set to check against\n    \n    Returns:\n        True if every version matching the first set also matches the second set, False otherwise\n    \n    Example:\n        >>> is_specifier_set_subset(\">=3.12,<3.13\", \">=3.12\")\n        True\n    ",
+    "input_schema": {
+     "properties": {
+      "specifier_set": {
+       "title": "Specifier Set",
+       "type": "string"
+      },
+      "other_set": {
+       "title": "Other Set",
+       "type": "string"
+      }
+     },
+     "required": [
+      "specifier_set",
+      "other_set"
+     ],
+     "title": "is_specifier_set_subsetArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "is_specifier_set_disjoint",
+   "wraps": "packaging.specifiers.SpecifierSet.is_disjoint",
+   "description": "Check if two specifier sets share no matching versions.",
+   "accepted": true,
+   "code": "from packaging.specifiers import SpecifierSet\n\n\ndef is_specifier_set_disjoint(specifiers1: str, specifiers2: str) -> bool:\n    \"\"\"Check if two specifier sets share no matching versions.\n    \n    Args:\n        specifiers1 (str): A string of version specifiers for the first set\n        specifiers2 (str): A string of version specifiers for the second set\n    \n    Returns:\n        bool: True if the sets share no matching versions, False otherwise\n    \n    Example:\n        >>> is_specifier_set_disjoint(\"<3.12\", \">=3.12\")\n        True\n    \"\"\"\n    try:\n        set1 = SpecifierSet(specifiers1)\n        set2 = SpecifierSet(specifiers2)\n        return set1.is_disjoint(set2)\n    except ValueError as e:\n        raise ValueError(str(e)) from e\n    except TypeError as e:\n        raise ValueError(str(e)) from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifiers1",
+      "type": "string",
+      "description": "A string of version specifiers for the first set",
+      "required": true
+     },
+     {
+      "name": "specifiers2",
+      "type": "string",
+      "description": "A string of version specifiers for the second set",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifiers1).is_disjoint(packaging.specifiers.SpecifierSet(specifiers2))",
+    "samples": [
+     {
+      "specifiers1": "<3.12",
+      "specifiers2": ">=3.12"
+     },
+     {
+      "specifiers1": "<3.12",
+      "specifiers2": ">=3.11"
+     },
+     {
+      "specifiers1": ">=2.0,<3.0",
+      "specifiers2": ">3.0,<4.0"
+     },
+     {
+      "specifiers1": "==1.0.0",
+      "specifiers2": "==1.0.0"
+     },
+     {
+      "specifiers1": ">=1.0",
+      "specifiers2": "<1.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "specifiers1": "<3.12",
+       "specifiers2": ">=3.12"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers1": "<3.12",
+       "specifiers2": ">=3.11"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers1": ">=2.0,<3.0",
+       "specifiers2": ">3.0,<4.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers1": "==1.0.0",
+       "specifiers2": "==1.0.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifiers1": ">=1.0",
+       "specifiers2": "<1.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Check if two specifier sets share no matching versions.\n    \n    Args:\n        specifiers1 (str): A string of version specifiers for the first set\n        specifiers2 (str): A string of version specifiers for the second set\n    \n    Returns:\n        bool: True if the sets share no matching versions, False otherwise\n    \n    Example:\n        >>> is_specifier_set_disjoint(\"<3.12\", \">=3.12\")\n        True\n    ",
+    "input_schema": {
+     "properties": {
+      "specifiers1": {
+       "title": "Specifiers1",
+       "type": "string"
+      },
+      "specifiers2": {
+       "title": "Specifiers2",
+       "type": "string"
+      }
+     },
+     "required": [
+      "specifiers1",
+      "specifiers2"
+     ],
+     "title": "is_specifier_set_disjointArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "is_normalized_package_name",
+   "wraps": "packaging.utils.is_normalized_name",
+   "description": "Check if a name is already in its normalized form.",
+   "accepted": true,
+   "code": "from packaging.utils import is_normalized_name\n\n\ndef is_normalized_package_name(name: str) -> bool:\n    \"\"\"Check if a name is already in its normalized form. name: The project name to check for normalization -> true if the name is normalized, false otherwise.\"\"\"\n    try:\n        return is_normalized_name(name)\n    except Exception as e:\n        raise ValueError(f\"failed to check if name is normalized: {name!r}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "name",
+      "type": "string",
+      "description": "The project name to check for normalization",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.utils.is_normalized_name(name)",
+    "samples": [
+     {
+      "name": "requests"
+     },
+     {
+      "name": "Django"
+     },
+     {
+      "name": "-not-legal"
+     },
+     {
+      "name": "my_project"
+     },
+     {
+      "name": "_invalid"
+     },
+     {
+      "name": "valid-name"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "name": "requests"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "name": "Django"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "name": "-not-legal"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "name": "my_project"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "name": "_invalid"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "name": "valid-name"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Check if a name is already in its normalized form. name: The project name to check for normalization -> true if the name is normalized, false otherwise.",
+    "input_schema": {
+     "properties": {
+      "name": {
+       "title": "Name",
+       "type": "string"
+      }
+     },
+     "required": [
+      "name"
+     ],
+     "title": "is_normalized_package_nameArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "normalize_pre_release",
+   "wraps": "packaging.version.normalize_pre",
+   "description": "Normalize the pre-release segment of a version string.",
+   "accepted": true,
+   "code": "from packaging.version import normalize_pre as _normalize_pre\n\n\ndef normalize_pre_release(letter: str) -> str:\n    \"\"\"Normalize the pre-release segment of a version string. letter: The pre-release identifier to normalize, e.g. 'alpha' -> 'a'.\"\"\"\n    try:\n        return _normalize_pre(letter)\n    except Exception as e:\n        raise ValueError(f\"failed to normalize pre-release identifier: {letter!r}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "letter",
+      "type": "string",
+      "description": "The pre-release identifier to normalize",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.version.normalize_pre(letter)",
+    "samples": [
+     {
+      "letter": "alpha"
+     },
+     {
+      "letter": "BETA"
+     },
+     {
+      "letter": "rc"
+     },
+     {
+      "letter": "gamma"
+     },
+     {
+      "letter": "123"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "letter": "alpha"
+      },
+      "tool": "a",
+      "direct": "\"a\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "letter": "BETA"
+      },
+      "tool": "b",
+      "direct": "\"b\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "letter": "rc"
+      },
+      "tool": "rc",
+      "direct": "\"rc\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "letter": "gamma"
+      },
+      "tool": "gamma",
+      "direct": "\"gamma\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "letter": "123"
+      },
+      "tool": "123",
+      "direct": "\"123\"",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Normalize the pre-release segment of a version string. letter: The pre-release identifier to normalize, e.g. 'alpha' -> 'a'.",
+    "input_schema": {
+     "properties": {
+      "letter": {
+       "title": "Letter",
+       "type": "string"
+      }
+     },
+     "required": [
+      "letter"
+     ],
+     "title": "normalize_pre_releaseArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "is_version_range_superset",
+   "wraps": "packaging.ranges.VersionRange.is_superset",
+   "description": "Check if every version in another range is also in this range.",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef is_version_range_superset(range1: str, range2: str) -> bool:\n    \"\"\"Check if every version in another range is also in this range. range1: A version range specifier string, e.g. '>=1.0,<2.0'. range2: Another version range specifier string to check if it's a subset of range1. Example: is_version_range_superset('>=1.0,<2.0', '>=1.5,<1.8') -> True.\"\"\"\n    try:\n        range1_obj = SpecifierSet(range1).to_range()\n        range2_obj = SpecifierSet(range2).to_range()\n        return range1_obj.is_superset(range2_obj)\n    except Exception as e:\n        raise ValueError(f\"invalid version range: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "range1",
+      "type": "string",
+      "description": "A version range specifier string (e.g., '>=1.0,<2.0')",
+      "required": true
+     },
+     {
+      "name": "range2",
+      "type": "string",
+      "description": "Another version range specifier string to check if it's a subset of range1",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(range1).to_range().is_superset(packaging.specifiers.SpecifierSet(range2).to_range())",
+    "samples": [
+     {
+      "range1": ">=1.0,<2.0",
+      "range2": ">=1.5,<1.8"
+     },
+     {
+      "range1": ">=1.0,<3.0",
+      "range2": ">=1.0,<2.0"
+     },
+     {
+      "range1": "==1.0.0",
+      "range2": "==1.0.0"
+     },
+     {
+      "range1": ">=1.0,<2.0",
+      "range2": ">=2.0,<3.0"
+     },
+     {
+      "range1": ">=1.0,<2.0",
+      "range2": ">=1.5,<1.8"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "range1": ">=1.0,<2.0",
+       "range2": ">=1.5,<1.8"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range1": ">=1.0,<3.0",
+       "range2": ">=1.0,<2.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range1": "==1.0.0",
+       "range2": "==1.0.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range1": ">=1.0,<2.0",
+       "range2": ">=2.0,<3.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range1": ">=1.0,<2.0",
+       "range2": ">=1.5,<1.8"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Check if every version in another range is also in this range. range1: A version range specifier string, e.g. '>=1.0,<2.0'. range2: Another version range specifier string to check if it's a subset of range1. Example: is_version_range_superset('>=1.0,<2.0', '>=1.5,<1.8') -> True.",
+    "input_schema": {
+     "properties": {
+      "range1": {
+       "title": "Range1",
+       "type": "string"
+      },
+      "range2": {
+       "title": "Range2",
+       "type": "string"
+      }
+     },
+     "required": [
+      "range1",
+      "range2"
+     ],
+     "title": "is_version_range_supersetArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'SpecifierSet'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'VersionRange'"
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_range_check_contains",
+   "wraps": "packaging.ranges.VersionRange.contains",
+   "description": "Check if a version is contained in a version range.",
+   "accepted": true,
+   "code": "from packaging.ranges import VersionRange\nfrom packaging.specifiers import SpecifierSet\n\n\ndef version_range_check_contains(range_spec: str, version: str) -> bool:\n    \"\"\"Check if a version is contained in a version range.\n    \n    :param range_spec: A version range specifier compatible with packaging.specifiers.SpecifierSet\n    :param version: The version string to check against the range\n    :return: True if the version is contained in the range, False otherwise\n    \n    >>> version_range_check_contains(\">=1.0,<2.0\", \"1.5\")\n    True\n    >>> version_range_check_contains(\">=1.0,<2.0\", \"2.0\")\n    False\n    \"\"\"\n    try:\n        specifier_set = SpecifierSet(range_spec)\n        version_range = specifier_set.to_range()\n        return version_range.contains(version)\n    except Exception as e:\n        raise ValueError(f\"Invalid version range specification '{range_spec}': {str(e)}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "range_spec",
+      "type": "string",
+      "description": "A version range specifier compatible with packaging.specifiers.SpecifierSet",
+      "required": true
+     },
+     {
+      "name": "version",
+      "type": "string",
+      "description": "The version string to check against the range",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(range_spec).to_range().contains(version)",
+    "samples": [
+     {
+      "range_spec": ">=1.0,<2.0",
+      "version": "1.5"
+     },
+     {
+      "range_spec": ">=1.0,<2.0",
+      "version": "2.0"
+     },
+     {
+      "range_spec": "==1.0.0",
+      "version": "1.0.0"
+     },
+     {
+      "range_spec": ">=1.0",
+      "version": "0.9.0"
+     },
+     {
+      "range_spec": ">=1.0,<2.0",
+      "version": "invalid-version"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "range_spec": ">=1.0,<2.0",
+       "version": "1.5"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range_spec": ">=1.0,<2.0",
+       "version": "2.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range_spec": "==1.0.0",
+       "version": "1.0.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range_spec": ">=1.0",
+       "version": "0.9.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "range_spec": ">=1.0,<2.0",
+       "version": "invalid-version"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Check if a version is contained in a version range.\n    \n    :param range_spec: A version range specifier compatible with packaging.specifiers.SpecifierSet\n    :param version: The version string to check against the range\n    :return: True if the version is contained in the range, False otherwise\n    \n    >>> version_range_check_contains(\">=1.0,<2.0\", \"1.5\")\n    True\n    >>> version_range_check_contains(\">=1.0,<2.0\", \"2.0\")\n    False\n    ",
+    "input_schema": {
+     "properties": {
+      "range_spec": {
+       "title": "Range Spec",
+       "type": "string"
+      },
+      "version": {
+       "title": "Version",
+       "type": "string"
+      }
+     },
+     "required": [
+      "range_spec",
+      "version"
+     ],
+     "title": "version_range_check_containsArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'VersionRange'"
+    },
+    {
+     "stage": "spec",
+     "error": "the direct_call expression is wrong: ModuleNotFoundError: No module named 'SpecifierSet'"
+    },
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "is_specifier_set_superset",
+   "wraps": "packaging.specifiers.SpecifierSet.is_superset",
+   "description": "Check if every version matching another set also matches this set.",
+   "accepted": true,
+   "code": "from packaging.specifiers import SpecifierSet\n\n\ndef is_specifier_set_superset(specifier_set: str, other_set: str) -> bool:\n    \"\"\"Return whether every version matching other also matches this set.\n    \n    Args:\n        specifier_set (str): A string representation of the main specifier set\n        other_set (str): A string representation of the other specifier set to check against\n    \n    Returns:\n        bool: True if every version matching other also matches this set, False otherwise\n    \n    Example:\n        >>> is_specifier_set_superset(\">=3.12\", \">=3.12,<3.13\")\n        True\n    \"\"\"\n    try:\n        main_specifier_set = SpecifierSet(specifier_set)\n        other_specifier_set = SpecifierSet(other_set)\n        return main_specifier_set.is_superset(other_specifier_set)\n    except ValueError as e:\n        raise ValueError(str(e)) from e\n    except TypeError as e:\n        raise ValueError(f\"Invalid type for specifier set: {e}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "specifier_set",
+      "type": "string",
+      "description": "A string representation of the main specifier set",
+      "required": true
+     },
+     {
+      "name": "other_set",
+      "type": "string",
+      "description": "A string representation of the other specifier set to check against",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.specifiers.SpecifierSet(specifier_set).is_superset(packaging.specifiers.SpecifierSet(other_set))",
+    "samples": [
+     {
+      "specifier_set": ">=3.12",
+      "other_set": ">=3.12,<3.13"
+     },
+     {
+      "specifier_set": ">=3.12,<3.15",
+      "other_set": ">=3.13"
+     },
+     {
+      "specifier_set": "==3.12.0",
+      "other_set": ">=3.12"
+     },
+     {
+      "specifier_set": ">=3.10",
+      "other_set": "<3.11"
+     },
+     {
+      "specifier_set": ">=3.12",
+      "other_set": ">=3.13"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "specifier_set": ">=3.12",
+       "other_set": ">=3.12,<3.13"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=3.12,<3.15",
+       "other_set": ">=3.13"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": "==3.12.0",
+       "other_set": ">=3.12"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=3.10",
+       "other_set": "<3.11"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "specifier_set": ">=3.12",
+       "other_set": ">=3.13"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     }
+    ],
+    "verified": true,
+    "description": "Return whether every version matching other also matches this set.\n    \n    Args:\n        specifier_set (str): A string representation of the main specifier set\n        other_set (str): A string representation of the other specifier set to check against\n    \n    Returns:\n        bool: True if every version matching other also matches this set, False otherwise\n    \n    Example:\n        >>> is_specifier_set_superset(\">=3.12\", \">=3.12,<3.13\")\n        True\n    ",
+    "input_schema": {
+     "properties": {
+      "specifier_set": {
+       "title": "Specifier Set",
+       "type": "string"
+      },
+      "other_set": {
+       "title": "Other Set",
+       "type": "string"
+      }
+     },
+     "required": [
+      "specifier_set",
+      "other_set"
+     ],
+     "title": "is_specifier_set_supersetArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "parse_version",
+   "wraps": "packaging.version.parse",
+   "description": "Parse a version string into a Version object.",
+   "accepted": true,
+   "code": "from packaging.version import parse as _parse_version\n\n\ndef parse_version(version: str) -> str:\n    \"\"\"Parse the given version string.\n    \n    This is identical to the :class:`Version` constructor.\n    \n    >>> parse_version('1.0.dev1')\n    '1.0.dev1'\n    \n    :param version: The version string to parse.\n    :raises ValueError: When the version string is not a valid version.\n    \"\"\"\n    try:\n        return str(_parse_version(version))\n    except Exception as e:\n        raise ValueError(f\"not a valid version: {version!r}\") from e\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "version",
+      "type": "string",
+      "description": "The version string to parse.",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.version.parse(version)",
+    "samples": [
+     {
+      "version": "1.0.dev1"
+     },
+     {
+      "version": "2.0.0"
+     },
+     {
+      "version": "1.2.3a1"
+     },
+     {
+      "version": "1.0.0.post1"
+     },
+     {
+      "version": "invalid.version"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "version": "1.0.dev1"
+      },
+      "tool": "1.0.dev1",
+      "direct": "\"1.0.dev1\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "2.0.0"
+      },
+      "tool": "2.0.0",
+      "direct": "\"2.0.0\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "1.2.3a1"
+      },
+      "tool": "1.2.3a1",
+      "direct": "\"1.2.3a1\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "1.0.0.post1"
+      },
+      "tool": "1.0.0.post1",
+      "direct": "\"1.0.0.post1\"",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "version": "invalid.version"
+      },
+      "tool": "ValueError: not a valid version: 'invalid.version'",
+      "direct": "InvalidVersion: Invalid version: 'invalid.version'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "Parse the given version string.\n    \n    This is identical to the :class:`Version` constructor.\n    \n    >>> parse_version('1.0.dev1')\n    '1.0.dev1'\n    \n    :param version: The version string to parse.\n    :raises ValueError: When the version string is not a valid version.\n    ",
+    "input_schema": {
+     "properties": {
+      "version": {
+       "title": "Version",
+       "type": "string"
+      }
+     },
+     "required": [
+      "version"
+     ],
+     "title": "parse_versionArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "create_version_from_parts",
+   "wraps": "packaging.version.Version.from_parts",
+   "description": "Construct a Version object from individual components like epoch, release, etc.",
+   "accepted": false,
+   "code": "from packaging.version import Version\n\n\ndef create_version_from_parts(\n    release: list[int],\n    epoch: int | None = 0,\n    pre: list[str | int] | None = None,\n    post: int | None = None,\n    dev: int | None = None,\n    local: str | None = None,\n) -> str:\n    \"\"\"Construct a Version object from individual components. release: The release tuple is required, e.g. [1, 2, 3] -> \"1.2.3\". epoch: Epoch value, e.g. 1 -> \"1!1.2.3\". pre: Pre-release identifier and number, e.g. [\"b\", 1] -> \"1.2.3b1\". post: Post-release number, e.g. 1 -> \"1.2.3.post1\". dev: Development release number, e.g. 1 -> \"1.2.3.dev1\". local: Local version identifier, e.g. \"ubuntu1\" -> \"1.2.3+ubuntu1\". Example: create_version_from_parts(release=[1,2,3]) -> \"1.2.3\".\"\"\"\n    try:\n        # Convert pre to tuple if provided\n        pre_tuple = None\n        if pre is not None:\n            if len(pre) != 2:\n                raise ValueError(\"pre must be a list with exactly two elements: [identifier, number]\")\n            pre_tuple = (str(pre[0]), int(pre[1]))\n        \n        # Validate inputs\n        if not isinstance(release, list):\n            raise ValueError(\"release must be a list of integers\")\n        if not all(isinstance(x, int) for x in release):\n            raise ValueError(\"all elements in release must be integers\")\n        \n        # Create the version using the library's from_parts method\n        version_obj = Version.from_parts(\n            epoch=epoch or 0,\n            release=tuple(release),\n            pre=pre_tuple,\n            post=post,\n            dev=dev,\n            local=local\n        )\n        \n        return str(version_obj)\n    \n    except Exception as e:\n        if isinstance(e, ValueError):\n            raise e\n        raise ValueError(f\"Failed to create version from parts: {str(e)}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "release",
+      "type": "array",
+      "items": {
+       "type": "integer"
+      },
+      "description": "The release tuple is required",
+      "required": true
+     },
+     {
+      "name": "epoch",
+      "type": "integer",
+      "description": "Epoch value",
+      "required": false,
+      "default": 0
+     },
+     {
+      "name": "pre",
+      "type": "array",
+      "items": {
+       "type": [
+        "string",
+        "integer"
+       ]
+      },
+      "description": "Pre-release identifier and number",
+      "required": false,
+      "default": null
+     },
+     {
+      "name": "post",
+      "type": "integer",
+      "description": "Post-release number",
+      "required": false,
+      "default": null
+     },
+     {
+      "name": "dev",
+      "type": "integer",
+      "description": "Development release number",
+      "required": false,
+      "default": null
+     },
+     {
+      "name": "local",
+      "type": "string",
+      "description": "Local version identifier",
+      "required": false,
+      "default": null
+     }
+    ],
+    "direct_call": "packaging.version.Version.from_parts(epoch=epoch, release=release, pre=pre, post=post, dev=dev, local=local)",
+    "samples": [
+     {
+      "release": [
+       1,
+       2,
+       3
+      ]
+     },
+     {
+      "release": [
+       1,
+       0,
+       1
+      ],
+      "pre": [
+       "b",
+       1
+      ]
+     },
+     {
+      "release": [
+       2,
+       0,
+       1
+      ],
+      "epoch": 1,
+      "post": 1
+     },
+     {
+      "release": [
+       1,
+       0,
+       1
+      ],
+      "dev": 2
+     },
+     {
+      "release": [
+       1,
+       0,
+       1
+      ],
+      "local": "ubuntu1"
+     }
+    ]
+   },
+   "check": {
+    "ok": false,
+    "stage": "spec",
+    "error": "the direct call failed on every sample, so nothing can be compared. Errors: ['InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1]', 'InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 2, 3]', 'InvalidVersion: release must be a non-empty tuple of non-negative integers, got [2, 0, 1]']. Use samples that are valid for the library.",
+    "samples": [
+     {
+      "arguments": {
+       "release": [
+        1,
+        2,
+        3
+       ]
+      },
+      "tool": "1.2.3",
+      "direct": "InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 2, 3]",
+      "result": "mismatch",
+      "why": "the direct library call raised InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 2, 3], but the tool returned \"1.2.3\"",
+      "direct_error": {
+       "error": "InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 2, 3]",
+       "broken": false,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "release": [
+        1,
+        0,
+        1
+       ],
+       "pre": [
+        "b",
+        1
+       ]
+      },
+      "tool": "1.0.1b1",
+      "direct": "InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1]",
+      "result": "mismatch",
+      "why": "the direct library call raised InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1], but the tool returned \"1.0.1b1\"",
+      "direct_error": {
+       "error": "InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1]",
+       "broken": false,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "release": [
+        2,
+        0,
+        1
+       ],
+       "epoch": 1,
+       "post": 1
+      },
+      "tool": "1!2.0.1.post1",
+      "direct": "InvalidVersion: release must be a non-empty tuple of non-negative integers, got [2, 0, 1]",
+      "result": "mismatch",
+      "why": "the direct library call raised InvalidVersion: release must be a non-empty tuple of non-negative integers, got [2, 0, 1], but the tool returned \"1!2.0.1.post1\"",
+      "direct_error": {
+       "error": "InvalidVersion: release must be a non-empty tuple of non-negative integers, got [2, 0, 1]",
+       "broken": false,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "release": [
+        1,
+        0,
+        1
+       ],
+       "dev": 2
+      },
+      "tool": "1.0.1.dev2",
+      "direct": "InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1]",
+      "result": "mismatch",
+      "why": "the direct library call raised InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1], but the tool returned \"1.0.1.dev2\"",
+      "direct_error": {
+       "error": "InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1]",
+       "broken": false,
+       "type_error": false
+      }
+     },
+     {
+      "arguments": {
+       "release": [
+        1,
+        0,
+        1
+       ],
+       "local": "ubuntu1"
+      },
+      "tool": "1.0.1+ubuntu1",
+      "direct": "InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1]",
+      "result": "mismatch",
+      "why": "the direct library call raised InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1], but the tool returned \"1.0.1+ubuntu1\"",
+      "direct_error": {
+       "error": "InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1]",
+       "broken": false,
+       "type_error": false
+      }
+     }
+    ],
+    "verified": false,
+    "description": "Construct a Version object from individual components. release: The release tuple is required, e.g. [1, 2, 3] -> \"1.2.3\". epoch: Epoch value, e.g. 1 -> \"1!1.2.3\". pre: Pre-release identifier and number, e.g. [\"b\", 1] -> \"1.2.3b1\". post: Post-release number, e.g. 1 -> \"1.2.3.post1\". dev: Development release number, e.g. 1 -> \"1.2.3.dev1\". local: Local version identifier, e.g. \"ubuntu1\" -> \"1.2.3+ubuntu1\". Example: create_version_from_parts(release=[1,2,3]) -> \"1.2.3\".",
+    "input_schema": {
+     "properties": {
+      "release": {
+       "items": {
+        "type": "integer"
+       },
+       "title": "Release",
+       "type": "array"
+      },
+      "epoch": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": 0,
+       "title": "Epoch"
+      },
+      "pre": {
+       "anyOf": [
+        {
+         "items": {
+          "anyOf": [
+           {
+            "type": "string"
+           },
+           {
+            "type": "integer"
+           }
+          ]
+         },
+         "type": "array"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Pre"
+      },
+      "post": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Post"
+      },
+      "dev": {
+       "anyOf": [
+        {
+         "type": "integer"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Dev"
+      },
+      "local": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": null,
+       "title": "Local"
+      }
+     },
+     "required": [
+      "release"
+     ],
+     "title": "create_version_from_partsArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "spec",
+     "error": "the direct call failed on every sample, so nothing can be compared. Errors: ['InvalidVersion: release must be a non-empty tuple of non-negative integers, got [0, 1, 0]', 'InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 0]', 'InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 2, 3]']. Use samples that are valid for the library."
+    },
+    {
+     "stage": "spec",
+     "error": "the direct call failed on every sample, so nothing can be compared. Errors: ['InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 0]', 'InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 2, 3]', 'InvalidVersion: release must be a non-empty tuple of non-negative integers, got [2, 0, 0]']. Use samples that are valid for the library."
+    },
+    {
+     "stage": "spec",
+     "error": "the direct call failed on every sample, so nothing can be compared. Errors: ['InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1]', 'InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 2, 3]', 'InvalidVersion: release must be a non-empty tuple of non-negative integers, got [2, 0, 1]']. Use samples that are valid for the library."
+    },
+    {
+     "stage": "spec",
+     "error": "the direct call failed on every sample, so nothing can be compared. Errors: ['InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 0, 1]', 'InvalidVersion: release must be a non-empty tuple of non-negative integers, got [1, 2, 3]', 'InvalidVersion: release must be a non-empty tuple of non-negative integers, got [2, 0, 1]']. Use samples that are valid for the library."
+    }
+   ]
+  },
+  {
+   "name": "version_equal",
+   "wraps": "packaging.version.Version.__eq__",
+   "description": "Compare two version objects for equality using the '==' operator.",
+   "accepted": true,
+   "code": "from packaging.version import Version\n\n\ndef version_equal(left: str, right: str) -> bool:\n    \"\"\"The `==` operator with Version objects, as in `left == right`. It is an operator, not a function: use it as an expression with `==`, never as a call of `__eq__`. At least one side is a Version object.\n    \n    Example:\n    >>> version_equal(\"1.0a5\", \"1.0\")\n    False\n    \"\"\"\n    try:\n        left_version = Version(left)\n        right_version = Version(right)\n        return left_version == right_version\n    except Exception as e:\n        raise ValueError(f\"Invalid version string: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "left",
+      "type": "string",
+      "description": "The left-hand version string to compare",
+      "required": true
+     },
+     {
+      "name": "right",
+      "type": "string",
+      "description": "The right-hand version string to compare",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.version.Version(left) == packaging.version.Version(right)",
+    "samples": [
+     {
+      "left": "1.0a5",
+      "right": "1.0"
+     },
+     {
+      "left": "2.0",
+      "right": "2.0"
+     },
+     {
+      "left": "1.0.0",
+      "right": "1.0"
+     },
+     {
+      "left": "1.0b1",
+      "right": "1.0b1"
+     },
+     {
+      "left": "1.0.dev1",
+      "right": "1.0"
+     },
+     {
+      "left": "invalid.version",
+      "right": "1.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "left": "1.0a5",
+       "right": "1.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "2.0",
+       "right": "2.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0.0",
+       "right": "1.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0b1",
+       "right": "1.0b1"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0.dev1",
+       "right": "1.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "invalid.version",
+       "right": "1.0"
+      },
+      "tool": "ValueError: Invalid version string: Invalid version: 'invalid.version'",
+      "direct": "InvalidVersion: Invalid version: 'invalid.version'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "The `==` operator with Version objects, as in `left == right`. It is an operator, not a function: use it as an expression with `==`, never as a call of `__eq__`. At least one side is a Version object.\n    \n    Example:\n    >>> version_equal(\"1.0a5\", \"1.0\")\n    False\n    ",
+    "input_schema": {
+     "properties": {
+      "left": {
+       "title": "Left",
+       "type": "string"
+      },
+      "right": {
+       "title": "Right",
+       "type": "string"
+      }
+     },
+     "required": [
+      "left",
+      "right"
+     ],
+     "title": "version_equalArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_less_than",
+   "wraps": "packaging.version.Version.__lt__",
+   "description": "Compare two version objects using the '<' operator.",
+   "accepted": true,
+   "code": "from packaging.version import Version\n\n\ndef version_less_than(left: str, right: str) -> bool:\n    \"\"\"The `<` operator with Version objects, as in `left < right`. It is an operator, not a function: use it as an expression with `<`, never as a call of `__lt__`. At least one side is a Version object.\n    \n    Example: version_less_than(\"1.0a5\", \"1.0\") -> True\"\"\"\n    try:\n        return Version(left) < Version(right)\n    except Exception as e:\n        raise ValueError(f\"invalid version string: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "left",
+      "type": "string",
+      "description": "The left-hand version string to compare",
+      "required": true
+     },
+     {
+      "name": "right",
+      "type": "string",
+      "description": "The right-hand version string to compare",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.version.Version(left) < packaging.version.Version(right)",
+    "samples": [
+     {
+      "left": "1.0a5",
+      "right": "1.0"
+     },
+     {
+      "left": "2.0",
+      "right": "1.9.9"
+     },
+     {
+      "left": "1.0.0",
+      "right": "1.0.0"
+     },
+     {
+      "left": "1.0.0.post1",
+      "right": "1.0.0"
+     },
+     {
+      "left": "1.0.dev0",
+      "right": "1.0a1"
+     },
+     {
+      "left": "invalid-version",
+      "right": "1.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "left": "1.0a5",
+       "right": "1.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "2.0",
+       "right": "1.9.9"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0.0",
+       "right": "1.0.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0.0.post1",
+       "right": "1.0.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0.dev0",
+       "right": "1.0a1"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "invalid-version",
+       "right": "1.0"
+      },
+      "tool": "ValueError: invalid version string: Invalid version: 'invalid-version'",
+      "direct": "InvalidVersion: Invalid version: 'invalid-version'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "The `<` operator with Version objects, as in `left < right`. It is an operator, not a function: use it as an expression with `<`, never as a call of `__lt__`. At least one side is a Version object.\n    \n    Example: version_less_than(\"1.0a5\", \"1.0\") -> True",
+    "input_schema": {
+     "properties": {
+      "left": {
+       "title": "Left",
+       "type": "string"
+      },
+      "right": {
+       "title": "Right",
+       "type": "string"
+      }
+     },
+     "required": [
+      "left",
+      "right"
+     ],
+     "title": "version_less_thanArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_less_equal",
+   "wraps": "packaging.version.Version.__le__",
+   "description": "Compare two version objects using the '<=' operator.",
+   "accepted": true,
+   "code": "from packaging.version import Version\n\n\ndef version_less_equal(left: str, right: str) -> bool:\n    \"\"\"The `<=` operator with Version objects, as in `left <= right`. It is an operator, not a function: use it as an expression with `<=`, never as a call of `__le__`. At least one side is a Version object.\n    \n    Example:\n    >>> version_less_equal(\"1.0a5\", \"1.0\")\n    True\n    \"\"\"\n    try:\n        left_version = Version(left)\n        right_version = Version(right)\n        return left_version <= right_version\n    except Exception as e:\n        raise ValueError(f\"Invalid version string: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "left",
+      "type": "string",
+      "description": "The left-hand version string to compare",
+      "required": true
+     },
+     {
+      "name": "right",
+      "type": "string",
+      "description": "The right-hand version string to compare",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.version.Version(left) <= packaging.version.Version(right)",
+    "samples": [
+     {
+      "left": "1.0a5",
+      "right": "1.0"
+     },
+     {
+      "left": "2.0",
+      "right": "1.5"
+     },
+     {
+      "left": "1.0",
+      "right": "1.0"
+     },
+     {
+      "left": "1.0.1",
+      "right": "1.0.0"
+     },
+     {
+      "left": "1.0rc1",
+      "right": "1.0"
+     },
+     {
+      "left": "invalid-version",
+      "right": "1.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "left": "1.0a5",
+       "right": "1.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "2.0",
+       "right": "1.5"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0",
+       "right": "1.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0.1",
+       "right": "1.0.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0rc1",
+       "right": "1.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "invalid-version",
+       "right": "1.0"
+      },
+      "tool": "ValueError: Invalid version string: Invalid version: 'invalid-version'",
+      "direct": "InvalidVersion: Invalid version: 'invalid-version'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "The `<=` operator with Version objects, as in `left <= right`. It is an operator, not a function: use it as an expression with `<=`, never as a call of `__le__`. At least one side is a Version object.\n    \n    Example:\n    >>> version_less_equal(\"1.0a5\", \"1.0\")\n    True\n    ",
+    "input_schema": {
+     "properties": {
+      "left": {
+       "title": "Left",
+       "type": "string"
+      },
+      "right": {
+       "title": "Right",
+       "type": "string"
+      }
+     },
+     "required": [
+      "left",
+      "right"
+     ],
+     "title": "version_less_equalArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_greater_than",
+   "wraps": "packaging.version.Version.__gt__",
+   "description": "Compare two version objects using the '>' operator.",
+   "accepted": true,
+   "code": "from packaging.version import Version\n\n\ndef version_greater_than(left: str, right: str) -> bool:\n    \"\"\"The `>` operator with Version objects, as in `left > right`. It is an operator, not a function: use it as an expression with `>`, never as a call of `__gt__`. At least one side is a Version object.\n    \n    Example: version_greater_than(\"2.0\", \"1.5\") -> True\"\"\"\n    try:\n        left_version = Version(left)\n        right_version = Version(right)\n        return left_version > right_version\n    except Exception as e:\n        raise ValueError(f\"Invalid version string: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "left",
+      "type": "string",
+      "description": "The left-hand version string to compare",
+      "required": true
+     },
+     {
+      "name": "right",
+      "type": "string",
+      "description": "The right-hand version string to compare",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.version.Version(left) > packaging.version.Version(right)",
+    "samples": [
+     {
+      "left": "1.0a5",
+      "right": "1.0"
+     },
+     {
+      "left": "2.0",
+      "right": "1.9.9"
+     },
+     {
+      "left": "1.0.0",
+      "right": "1.0.0"
+     },
+     {
+      "left": "1.0.1",
+      "right": "1.0.0"
+     },
+     {
+      "left": "1.0b1",
+      "right": "1.0a1"
+     },
+     {
+      "left": "invalid-version",
+      "right": "1.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "left": "1.0a5",
+       "right": "1.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "2.0",
+       "right": "1.9.9"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0.0",
+       "right": "1.0.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0.1",
+       "right": "1.0.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0b1",
+       "right": "1.0a1"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "invalid-version",
+       "right": "1.0"
+      },
+      "tool": "ValueError: Invalid version string: Invalid version: 'invalid-version'",
+      "direct": "InvalidVersion: Invalid version: 'invalid-version'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "The `>` operator with Version objects, as in `left > right`. It is an operator, not a function: use it as an expression with `>`, never as a call of `__gt__`. At least one side is a Version object.\n    \n    Example: version_greater_than(\"2.0\", \"1.5\") -> True",
+    "input_schema": {
+     "properties": {
+      "left": {
+       "title": "Left",
+       "type": "string"
+      },
+      "right": {
+       "title": "Right",
+       "type": "string"
+      }
+     },
+     "required": [
+      "left",
+      "right"
+     ],
+     "title": "version_greater_thanArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  },
+  {
+   "name": "version_greater_equal",
+   "wraps": "packaging.version.Version.__ge__",
+   "description": "Compare two version objects using the '>=' operator.",
+   "accepted": true,
+   "code": "from packaging.version import Version\n\n\ndef version_greater_equal(left: str, right: str) -> bool:\n    \"\"\"The `>=` operator with Version objects, as in `left >= right`. It is an operator, not a function: use it as an expression with `>=`, never as a call of `__ge__`. At least one side is a Version object.\n    \n    Example:\n    >>> version_greater_equal(\"1.0a5\", \"1.0\")\n    False\n    \"\"\"\n    try:\n        left_version = Version(left)\n        right_version = Version(right)\n        return left_version >= right_version\n    except Exception as e:\n        raise ValueError(f\"Invalid version string: {e}\")\n",
+   "spec": {
+    "parameters": [
+     {
+      "name": "left",
+      "type": "string",
+      "description": "The left-hand version string to compare",
+      "required": true
+     },
+     {
+      "name": "right",
+      "type": "string",
+      "description": "The right-hand version string to compare",
+      "required": true
+     }
+    ],
+    "direct_call": "packaging.version.Version(left) >= packaging.version.Version(right)",
+    "samples": [
+     {
+      "left": "1.0",
+      "right": "0.9"
+     },
+     {
+      "left": "2.0.0",
+      "right": "2.0.0"
+     },
+     {
+      "left": "1.9.9",
+      "right": "2.0.0"
+     },
+     {
+      "left": "1.0a5",
+      "right": "1.0"
+     },
+     {
+      "left": "1.0b1",
+      "right": "1.0a1"
+     },
+     {
+      "left": "invalid-version",
+      "right": "1.0"
+     }
+    ]
+   },
+   "check": {
+    "ok": true,
+    "stage": "ok",
+    "error": null,
+    "samples": [
+     {
+      "arguments": {
+       "left": "1.0",
+       "right": "0.9"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "2.0.0",
+       "right": "2.0.0"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.9.9",
+       "right": "2.0.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0a5",
+       "right": "1.0"
+      },
+      "tool": false,
+      "direct": "false",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "1.0b1",
+       "right": "1.0a1"
+      },
+      "tool": true,
+      "direct": "true",
+      "result": "same"
+     },
+     {
+      "arguments": {
+       "left": "invalid-version",
+       "right": "1.0"
+      },
+      "tool": "ValueError: Invalid version string: Invalid version: 'invalid-version'",
+      "direct": "InvalidVersion: Invalid version: 'invalid-version'",
+      "result": "both_error"
+     }
+    ],
+    "verified": true,
+    "description": "The `>=` operator with Version objects, as in `left >= right`. It is an operator, not a function: use it as an expression with `>=`, never as a call of `__ge__`. At least one side is a Version object.\n    \n    Example:\n    >>> version_greater_equal(\"1.0a5\", \"1.0\")\n    False\n    ",
+    "input_schema": {
+     "properties": {
+      "left": {
+       "title": "Left",
+       "type": "string"
+      },
+      "right": {
+       "title": "Right",
+       "type": "string"
+      }
+     },
+     "required": [
+      "left",
+      "right"
+     ],
+     "title": "version_greater_equalArguments",
+     "type": "object"
+    }
+   },
+   "attempts": [
+    {
+     "stage": "ok",
+     "error": null
+    }
+   ]
+  }
+ ]
+}
