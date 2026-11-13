@@ -1173,6 +1173,7 @@ name = "repo2tools"
 version = "0.2.0"
 source = { editable = "." }
 dependencies = [
+    { name = "httpx" },
     { name = "mcp" },
     { name = "openai" },
     { name = "packaging" },
@@ -1190,6 +1191,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "httpx", specifier = ">=0.27" },
     { name = "mcp", specifier = ">=1.26,<2" },
     { name = "openai", specifier = ">=1.40" },
     { name = "packaging", git = "https://github.com/pypa/packaging?rev=c1d2a9d8f5ca7cc11b7d2e902ed5ee3e255e8560" },
