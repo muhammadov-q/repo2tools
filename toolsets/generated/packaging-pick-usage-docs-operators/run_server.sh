@@ -5,7 +5,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/../../.." && pwd)
 ENV_DIR="$ROOT/.cache/envs/packaging-pick-usage-docs-operators"
 if [ ! -x "$ENV_DIR/bin/python" ]; then
-    echo "No environment yet. Run: uv run python src/repo2tools.py https://github.com/pypa/packaging --commit c1d2a9d8f5ca7cc11b7d2e902ed5ee3e255e8560 --tag pick-usage-docs-operators --env-only" >&2
+    echo "No environment yet. Run: uv run repo2tools generate https://github.com/pypa/packaging --commit c1d2a9d8f5ca7cc11b7d2e902ed5ee3e255e8560 --tag pick-usage-docs-operators --env-only" >&2
     exit 1
 fi
 PROFILE="$ROOT/.cache/envs/packaging-pick-usage-docs-operators.sb"

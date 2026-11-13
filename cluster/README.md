@@ -36,7 +36,7 @@ export OPENAI_API_KEY=<contents of ~/.vllm_api_key on the cluster>
 
 ## A code model for writing tools
 
-`repo2tools.py` gets better code from a code model. `serve_qwen3_coder.sbatch` serves Qwen3-Coder-30B on one H100. Download it first, as above, with `hf download Qwen/Qwen3-Coder-30B-A3B-Instruct`. It needs about 57 GB of scratch space. A good setup is two jobs and two tunnels: Qwen3-Coder writes the tools, and Qwen3-8B uses them.
+``repo2tools generate`` gets better code from a code model. `serve_qwen3_coder.sbatch` serves Qwen3-Coder-30B on one H100. Download it first, as above, with `hf download Qwen/Qwen3-Coder-30B-A3B-Instruct`. It needs about 57 GB of scratch space. A good setup is two jobs and two tunnels: Qwen3-Coder writes the tools, and Qwen3-8B uses them.
 
 ```sh
 ssh -N -L 18000:<RTX 4090 node>:8000 -L 18001:<H100 node>:8000 <your UBELIX login>
