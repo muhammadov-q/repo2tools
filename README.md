@@ -19,6 +19,7 @@ Author: Kobiljon Muhammadov. Supervisor: Roman Macháček.
 - [Results at a glance](#results-at-a-glance)
 - [Quick start](#quick-start)
 - [Stage 1: from a repo link to tools](#stage-1-from-a-repo-link-to-tools)
+- [Many repositories: the candidate list](#many-repositories-the-candidate-list)
 - [Usability: can a small model call the tools](#usability-can-a-small-model-call-the-tools)
 - [Stage 2: chains and synthetic traces with ToolGym](#stage-2-chains-and-synthetic-traces-with-toolgym)
 - [Stage 3: exercises, traces and repetition](#stage-3-exercises-traces-and-repetition)
@@ -254,6 +255,16 @@ A third option, `--operators`, lists each operator the repo uses with a class (`
 - `--operators` does give comparison tools (`version_less_than`, `version_equality`, ...; `version_compare` 12 of 20 in one run, against 6 to 9), but up to 18 operator tools push out others and the total falls. Six small comparison tools are a worse fit than the one `compare_versions` of the hand-made set. That is a question of tool size, not of picking.
 - One run each for the last five rows, and the model that picks is not deterministic, so read those as single observations.
 
+## Many repositories: the candidate list
+
+The experiments on tool granularity run over many libraries. Which ones is decided by a list that a person approves:
+
+```sh
+uv run repo2tools corpus-candidates --scan 600 --want 100
+```
+
+It reads the public list of the most downloaded PyPI packages and PyPI's description of each newest release. Nothing is cloned, and no package code is downloaded or run. A package is a candidate if its wheels are pure Python, its source archive is at most 5 MB and it names a GitHub repository; type stubs are left out, and a repository counts once. From the 600 most downloaded packages (list of 1 November 2026): 100 candidates kept, 281 more would qualify, 126 have compiled code, 33 name no GitHub repository, 27 share a repository with a kept one, 22 are too large, 10 are stubs. The list is in `out/corpus/candidates.md`.
+
 ## Usability: can a small model call the tools
 
 A tool that agrees with the library is still of no use if the model can't pick it or call it. `repo2tools usability` measures this per tool, with two models: a larger one writes, a small one uses the tools.
@@ -431,6 +442,8 @@ src/repo2tools/
 │   ├── format.py                               one format for agent traces: every request, with token counts
 │   ├── reference.py         reference-traces   known-good solutions as traces
 │   └── analyze.py           analyze-traces     what repeats, and what compression would save
+├── corpus/                  many repositories at once
+│   └── candidates.py        corpus-candidates  pure-Python PyPI packages with a GitHub repository, for a person to approve
 └── toolgym/                 everything that talks to ToolGym; this repo contains no ToolGym code
     ├── type_inference.py    toolgym-types      types for a generated tool set, checked by running the tools
     ├── catalog_export.py    toolgym-export     the hand-made tools as a ToolGym catalog server
@@ -443,10 +456,10 @@ src/repo2tools/
 
 | Path | What is there |
 | --- | --- |
-| `tests/` | 150 tests. `helpers.py` holds the scripted LLM they share. |
+| `tests/` | 155 tests. `helpers.py` holds the scripted LLM they share. |
 | `toolsets/pypa_packaging/` | The reference tool set, written by hand: 21 tools over pypa/packaging (`tools.py`), a coarser cut (`coarse_tools.py`), the MCP server (`server.py`, stdio or `--http PORT`; `--level function\|feature\|workflow\|all`), and its ToolGym types. These files stay flat so that they can be handed to other harnesses as they are. |
 | `toolsets/generated/` | Generated tool sets, one folder per run and one file per tool, each with `server.py`, `run_server.sh` and `manifest.json`. Not reviewed by a person. |
-| `out/` | Results: `baseline/` (ToolGym's catalog today), `packaging/` (API, exercises, tool check), `packaging_toolgym/` (ToolGym's view of our tools), `usage/` (usage scans), `runs/` (model runs), `traces/` (full traces and their analysis), `generated/` (reports and LLM logs of generated tool sets), `toolgym_exercises/` (ToolGym tasks as exercises), `toolgym_runs/` (summaries of ToolGym pipeline runs). |
+| `out/` | Results: `corpus/` (candidate repositories for the many-repo experiments), `baseline/` (ToolGym's catalog today), `packaging/` (API, exercises, tool check), `packaging_toolgym/` (ToolGym's view of our tools), `usage/` (usage scans), `runs/` (model runs), `traces/` (full traces and their analysis), `generated/` (reports and LLM logs of generated tool sets), `toolgym_exercises/` (ToolGym tasks as exercises), `toolgym_runs/` (summaries of ToolGym pipeline runs). |
 | `docs/` | The README figures and `make_figures.py`, which draws them (the results figure from the result files); `handover/README.md`, the README of the handover zip. |
 | `cluster/` | How to serve a model on UBELIX, with the Slurm job scripts. |
 | `.cache/` | Not in git: clones of source repositories and one environment per tool set. |

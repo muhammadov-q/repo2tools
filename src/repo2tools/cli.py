@@ -32,6 +32,9 @@ COMMANDS: dict[str, dict[str, tuple[str, str]]] = {
         "reference-traces": ("repo2tools.traces.reference", "known-good solutions as traces"),
         "analyze-traces": ("repo2tools.traces.analyze", "what repeats in traces, and what compression would save"),
     },
+    "Corpus: many repositories": {
+        "corpus-candidates": ("repo2tools.corpus.candidates", "list pure-Python PyPI packages with a GitHub repository, for a person to approve"),
+    },
     "ToolGym": {
         "toolgym-types": ("repo2tools.toolgym.type_inference", "ToolGym types for a generated tool set, checked by running the tools"),
         "toolgym-export": ("repo2tools.toolgym.catalog_export", "write the hand-made tools into a ToolGym catalog"),
