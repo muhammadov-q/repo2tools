@@ -1,6 +1,6 @@
 """Turn a repository link into checked MCP tools.
 
-    uv run python repo2tools.py https://github.com/pypa/packaging --commit c1d2a9d \\
+    uv run python src/repo2tools.py https://github.com/pypa/packaging --commit c1d2a9d \\
         --base-url http://127.0.0.1:18000/v1 --model qwen3-8b
 
 Steps:
@@ -52,8 +52,9 @@ from run_reference_calls import output_value
 from scrape_repo import constructors, scrape_package
 from tool_worker import DANGEROUS_MODULES, FORBIDDEN_NAMES, direct_call_problem
 
-HERE = Path(__file__).resolve().parent
-ROOT = HERE  # toolsets/ and out/ go here; tests point this at a temporary folder
+HERE = Path(__file__).resolve().parent  # this folder: the scripts, with tool_worker.py
+REPO = HERE.parent  # the repository: the API key file is here
+ROOT = REPO  # toolsets/ and out/ go here; tests point this at a temporary folder
 CACHE = ROOT / ".cache"
 MCP_REQUIREMENT = "mcp>=1.26,<2"
 NOT_A_PACKAGE = {"benchmarks", "build", "ci", "dist", "doc", "docs", "example", "examples", "scripts", "site",
@@ -198,7 +199,7 @@ def make_box(set_name: str, base: Path, package: str, dependencies: list[str], t
         interpreter_root = Path(config["home"]).resolve().parent
         box.profile = envs / f"{set_name}.sb"
         box.profile.write_text(sandbox_profile([box.env_dir, interpreter_root, HERE / "tool_worker.py", toolset_dir],
-                                               box.scratch, HERE / ".vllm_api_key"))
+                                               box.scratch, REPO / ".vllm_api_key"))
     else:
         print("WARNING: no sandbox on this system. Generated code runs without network or file limits.", file=sys.stderr)
     return box
@@ -211,7 +212,7 @@ def api_key_for(base_url: str) -> str:
     key = os.environ.get("OPENAI_API_KEY")
     if key:
         return key
-    keyfile = HERE / ".vllm_api_key"
+    keyfile = REPO / ".vllm_api_key"
     if urlparse(base_url).hostname in ("127.0.0.1", "localhost") and keyfile.is_file():
         return keyfile.read_text().strip()
     raise SystemExit("set OPENAI_API_KEY")
@@ -714,7 +715,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/../../.." && pwd)
 ENV_DIR="$ROOT/.cache/envs/{name}"
 if [ ! -x "$ENV_DIR/bin/python" ]; then
-    echo "No environment yet. Run: uv run python repo2tools.py {url} --commit {commit} --tag {tag} --env-only" >&2
+    echo "No environment yet. Run: uv run python src/repo2tools.py {url} --commit {commit} --tag {tag} --env-only" >&2
     exit 1
 fi
 PROFILE="$ROOT/.cache/envs/{name}.sb"
@@ -823,7 +824,7 @@ def write_report(path: Path, meta: dict, results: list[ToolResult], picks_count:
             error = re.sub(r"\s+", " ", str(last["error"]))[:220].replace("|", "\\|")
             lines.append(f"| `{r.name}` | `{r.wraps}` | {last['stage']} | {error} |")
     lines += ["", "## Use", "", "```sh",
-              f"uv run python run_model.py <exercises> --mode tools --base-url <url> --model <model> -- {meta['toolset']}/run_server.sh",
+              f"uv run python src/run_model.py <exercises> --mode tools --base-url <url> --model <model> -- {meta['toolset']}/run_server.sh",
               "```", ""]
     path.with_suffix(".md").write_text("\n".join(lines), encoding="utf-8")
     return report

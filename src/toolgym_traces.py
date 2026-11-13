@@ -1,6 +1,6 @@
 """Turn the entries of a ToolGym pipeline run into our trace format (see traces.py).
 
-    uv run python toolgym_traces.py ../tool-gym/results/gym/repo2tools/<run> -o out/traces/toolgym-<name>.jsonl.gz
+    uv run python src/toolgym_traces.py ../tool-gym/results/gym/repo2tools/<run> -o out/traces/toolgym-<name>.jsonl.gz
 
 Needs a run made with `toolgym_local.py generate`, which saves each entry as JSON. One entry is one
 synthetic task: ToolGym sampled a chain of tools, ran it, and had an LLM write the task and the final

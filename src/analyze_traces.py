@@ -1,6 +1,6 @@
 """Show what repeats in agent traces, and how many tokens each compression idea would save.
 
-    uv run --group analysis python analyze_traces.py out/traces/reference-function.jsonl out/traces/<run>.jsonl.gz \\
+    uv run --group analysis python src/analyze_traces.py out/traces/reference-function.jsonl out/traces/<run>.jsonl.gz \\
         -o out/traces/analysis
 
 This reports tokens saved, not accuracy. A compression idea can hurt a model's answers, and that is

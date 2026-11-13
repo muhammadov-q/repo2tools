@@ -4,7 +4,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/../../.." && pwd)
 ENV_DIR="$ROOT/.cache/envs/arrow-qwen3-coder"
 if [ ! -x "$ENV_DIR/bin/python" ]; then
-    echo "No environment yet. Run: uv run python repo2tools.py https://github.com/arrow-py/arrow --commit 2224255c4acc594d734cef0bbc83360452a67983 --tag qwen3-coder --env-only" >&2
+    echo "No environment yet. Run: uv run python src/repo2tools.py https://github.com/arrow-py/arrow --commit 2224255c4acc594d734cef0bbc83360452a67983 --tag qwen3-coder --env-only" >&2
     exit 1
 fi
 PROFILE="$ROOT/.cache/envs/arrow-qwen3-coder.sb"

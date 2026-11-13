@@ -8,7 +8,7 @@ Long exercises (8 or more calls) check a small requirements list against a made-
 index for a target environment. Their answers come from direct library calls.
 
 Usage:
-    uv run python make_packaging_exercises.py [--per-kind 20] [--long 20] [--seed 0]
+    uv run python src/make_packaging_exercises.py [--per-kind 20] [--long 20] [--seed 0]
 Reads out/packaging/test_cases.jsonl (from extract_test_cases.py) and writes
 out/packaging/exercises.jsonl and out/packaging/exercises_preview.md.
 """
@@ -28,7 +28,7 @@ from packaging.specifiers import SpecifierSet
 from packaging.utils import canonicalize_name, canonicalize_version, parse_wheel_filename
 from packaging.version import InvalidVersion, Version
 
-HERE = Path(__file__).parent
+HERE = Path(__file__).resolve().parent.parent  # the repository's root
 sys.path.insert(0, str(HERE / "toolsets" / "pypa_packaging"))
 from tools import BASELINE_ENVIRONMENT  # noqa: E402  (the marker tool's documented defaults)
 

@@ -5,7 +5,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 ROOT=$(cd "$HERE/../../.." && pwd)
 ENV_DIR="$ROOT/.cache/envs/more-itertools-qwen3-32b"
 if [ ! -x "$ENV_DIR/bin/python" ]; then
-    echo "No environment yet. Run: uv run python repo2tools.py https://github.com/more-itertools/more-itertools --commit ceafee8ce96f4bc1eb74c528bc247c91d648a0bb --tag qwen3-32b --env-only" >&2
+    echo "No environment yet. Run: uv run python src/repo2tools.py https://github.com/more-itertools/more-itertools --commit ceafee8ce96f4bc1eb74c528bc247c91d648a0bb --tag qwen3-32b --env-only" >&2
     exit 1
 fi
 PROFILE="$ROOT/.cache/envs/more-itertools-qwen3-32b.sb"

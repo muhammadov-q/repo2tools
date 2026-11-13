@@ -10,14 +10,15 @@ import shutil
 import tomllib
 from pathlib import Path
 
-HERE = Path(__file__).parent
+SRC = Path(__file__).resolve().parent
+HERE = SRC.parent  # the repository's root
 NAME = "packaging-exercises-v0"
 FILES = {
     "README.md": HERE / "handover" / "README.md",
     "exercises.jsonl": HERE / "out" / "packaging" / "exercises.jsonl",
     "exercises_preview.md": HERE / "out" / "packaging" / "exercises_preview.md",
-    "exercise_check.py": HERE / "exercise_check.py",
-    "run_reference_calls.py": HERE / "run_reference_calls.py",
+    "exercise_check.py": SRC / "exercise_check.py",
+    "run_reference_calls.py": SRC / "run_reference_calls.py",
     "server.py": HERE / "toolsets" / "pypa_packaging" / "server.py",
     "tools.py": HERE / "toolsets" / "pypa_packaging" / "tools.py",
     "coarse_tools.py": HERE / "toolsets" / "pypa_packaging" / "coarse_tools.py",

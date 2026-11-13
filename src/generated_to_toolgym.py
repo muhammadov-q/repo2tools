@@ -1,6 +1,6 @@
 """Put a generated tool set into ToolGym's catalog, with types that are checked by running the tools.
 
-    uv run python generated_to_toolgym.py toolsets/generated/packaging-coder-60 \\
+    uv run python src/generated_to_toolgym.py toolsets/generated/packaging-coder-60 \\
         --dest ../tool-gym/gym/tools/mcp_servers/catalog --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
 
 ToolGym builds tool chains from types: a tool's output can feed another tool's input if the types
@@ -41,7 +41,7 @@ from mcp.client.stdio import stdio_client
 from repo2tools import LLM, extract_json
 from run_reference_calls import output_value
 
-HERE = Path(__file__).resolve().parent
+HERE = Path(__file__).resolve().parent.parent  # the repository's root
 OUT = HERE / "out" / "generated"  # reports go here; tests point this at a temporary folder
 PRIMITIVES = {"string", "integer", "number", "boolean", "array", "object"}
 TYPE_NAME = re.compile(r"[A-Z][A-Za-z0-9]*$")

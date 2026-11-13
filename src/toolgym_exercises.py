@@ -1,6 +1,6 @@
 """Turn the entries of a ToolGym pipeline run into exercises that run_model.py can score.
 
-    uv run python toolgym_exercises.py ../tool-gym/results/gym/repo2tools/<run> -o out/toolgym_exercises/<name>.jsonl
+    uv run python src/toolgym_exercises.py ../tool-gym/results/gym/repo2tools/<run> -o out/toolgym_exercises/<name>.jsonl
 
 ToolGym validates its synthetic tasks with an LLM judge and an LLM challenger. This gives a check
 that needs no LLM: the task asks for the result of a chain of tool calls, and the chain was really
