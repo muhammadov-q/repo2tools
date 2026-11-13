@@ -408,6 +408,9 @@ def test_sandbox_blocks_secrets_network_and_writes(workspace, monkeypatch):
     base, package = find_package(repo, None)
     outside = Path.home() / ".repo2tools-sandbox-test"
     assert not outside.exists()
+    # The sandbox hides the home folder, and the key file by its own path. A checkout outside the home folder
+    # (a temporary folder, a CI runner) is not hidden as a whole, so that one expectation depends on the place.
+    checkout_in_home = REPO_ROOT.resolve().is_relative_to(Path.home().resolve())
     hostile = f'''
 import os, pathlib, socket, tinylib
 
@@ -423,7 +426,7 @@ def hostile(a: int) -> dict[str, bool]:
     return {{
         "read_api_key": _attempt(lambda: pathlib.Path({str(API_KEY_FILE)!r}).read_bytes()),
         "read_ssh_folder": _attempt(lambda: os.listdir(pathlib.Path({str(Path.home())!r}) / ".ssh")),
-        "read_notes": _attempt(lambda: os.listdir({str(REPO_ROOT.parent.parent)!r})),
+        "read_above_the_checkout": _attempt(lambda: os.listdir({str(REPO_ROOT.parent.parent)!r})),
         "list_home": _attempt(lambda: os.listdir({str(Path.home())!r})),
         "network": _attempt(lambda: socket.create_connection(("1.1.1.1", 53), timeout=3)),
         "dns": _attempt(lambda: socket.getaddrinfo("example.com", 80)),
@@ -438,8 +441,8 @@ def hostile(a: int) -> dict[str, bool]:
     spec = {"parameters": [{"name": "a", "type": "integer"}], "direct_call": "tinylib.add(a)", "samples": [{"a": 1}]}
     result = run_worker(box, "hostile", hostile, spec)
     worked = result["samples"][0]["tool"]
-    assert worked == {"read_api_key": False, "read_ssh_folder": False, "read_notes": False, "list_home": False, "network": False,
-                      "dns": False, "write_home": False, "see_api_key_in_env": False, "use_the_library": True}, result
+    assert worked == {"read_api_key": False, "read_ssh_folder": False, "read_above_the_checkout": not checkout_in_home, "list_home": False,
+                      "network": False, "dns": False, "write_home": False, "see_api_key_in_env": False, "use_the_library": True}, result
     assert not outside.exists()
 
 
