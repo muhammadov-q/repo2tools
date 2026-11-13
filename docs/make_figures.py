@@ -271,7 +271,7 @@ def results(theme: dict, path: pathlib.Path) -> None:
         parts = data[group]["parts"]
         total = sum(parts.values())
         left = 0.0
-        for j, (label, keys) in enumerate(PARTS):
+        for j, (_, keys) in enumerate(PARTS):
             share = 100 * sum(parts.get(k, 0) for k in keys) / total
             if j == len(PARTS) - 1:
                 rounded_end(b, left, left + share, i, 0.46, theme["series"][j])

@@ -1,6 +1,6 @@
 """ToolGym semantic types for the pypa/packaging tools (repo2tools, version 0).
 
-Copied into ToolGym's catalog as types.py by export_toolgym_catalog.py; imports only what a
+Copied into ToolGym's catalog as types.py by `repo2tools toolgym-export`; imports only what a
 catalog folder may import. Sample pools come from packaging's own test cases (samples.json,
 written next to this file by the same script).
 

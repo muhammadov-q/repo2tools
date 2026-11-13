@@ -1,8 +1,7 @@
-"""Tests for toolgym_exercises.py."""
+"""Tests for `repo2tools toolgym-exercises`."""
 
-from exercise_check import check
-from exercise_check import resolve
-from toolgym_exercises import compose, exercise
+from repo2tools.evaluation.exercise_check import check, resolve
+from repo2tools.toolgym.exercises import compose, exercise
 
 RECORD = {"conversation": {"messages": [{"role": "user", "content": "Sort the allowed versions."}]}, "tools": []}
 

@@ -1,8 +1,8 @@
-"""Tests for toolgym_local.py that need no ToolGym checkout."""
+"""Tests for `repo2tools toolgym-local` that need no ToolGym checkout."""
 
 import pytest
 
-from toolgym_local import patched
+from repo2tools.toolgym.local import patched
 
 
 def test_patch_replaces_exactly_one_line():

@@ -1,6 +1,6 @@
 [project]
 name = "repo2tools"
-version = "0.1.0"
+version = "0.2.0"
 description = "Turn a Python repository into tools an AI model can call, and measure how well models use them"
 requires-python = ">=3.12"
 dependencies = [
@@ -12,13 +12,42 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest>=8"]
+dev = ["pytest>=8", "ruff>=0.6"]
 # counting tokens with the model's own tokenizer and chat template; no torch needed
 analysis = ["transformers>=4.51", "jinja2>=3.1"]
 
-[tool.uv]
-package = false
+[project.scripts]
+repo2tools = "repo2tools.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/repo2tools"]
+
+[tool.hatch.metadata]
+allow-direct-references = true  # packaging is pinned to a git commit
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["tests"]  # tests/helpers.py
+
+[tool.ruff]
+line-length = 180
+src = ["src", "tests"]
+extend-exclude = ["toolsets/generated", "out", ".cache"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = [
+    "E501",  # prompts and report lines are long on purpose
+    "B905",  # zip() over lists built together; strict= would only add noise
+]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"toolsets/pypa_packaging/*" = ["I001"]  # shipped to other harnesses as flat files; their imports stay as delivered
+

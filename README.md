@@ -44,9 +44,9 @@ Three things follow from that rule, one per stage:
 
 | Stage | What it does | Entry point |
 | --- | --- | --- |
-| 1. Synthesize | Clone a repo at a recorded commit, scan its public API without running it, generate tools, verify them in a sandbox, repair on failure | `repo2tools.py` |
-| 2. Chain | Give the tools semantic types checked by execution, load them into ToolGym, run its live chain check and its data-generation pipeline | `generated_to_toolgym.py`, `toolgym_local.py` |
-| 3. Measure | Run a model on exercises with and without tools; save every request as a trace; quantify repetition and simulate context compression | `run_model.py`, `analyze_traces.py` |
+| 1. Synthesize | Clone a repo at a recorded commit, scan its public API without running it, generate tools, verify them in a sandbox, repair on failure | `repo2tools generate` |
+| 2. Chain | Give the tools semantic types checked by execution, load them into ToolGym, run its live chain check and its data-generation pipeline | `repo2tools toolgym-types`, `repo2tools toolgym-local` |
+| 3. Measure | Run a model on exercises with and without tools; save every request as a trace; quantify repetition and simulate context compression | `repo2tools run-model`, `repo2tools analyze-traces` |
 
 Also included: 21 reference tools over [pypa/packaging](https://github.com/pypa/packaging) that were written before the pipeline existed (called "hand-made" below, as the baseline the generated tools are compared with), 242 exercises with known answers, and a test suite of over 100 tests that needs no GPU and no API key.
 
@@ -125,14 +125,14 @@ Generated tools in ToolGym, 11 November 2026. Qwen3-32B proposes the types and r
 
 - **Checked types give usable short chains.** Hand-typed tools get chains through ToolGym's automatic casts (a package name fed into a specifier check), and its validation rejects all of them.
 - **Long chains are not solved by asking for more steps.** With 16 links, a long walk loops: one chain is `parse_tag` eight times, and 34 of 104 calls repeat an earlier call exactly.
-- **The check finds tools that cannot be chained.** Eight range tools take a constraint like `>=1.0` but return text like `<VersionRange '[1.0, 2.0.dev0)'>`, which no tool accepts. They passed every check of `repo2tools.py`.
+- **The check finds tools that cannot be chained.** Eight range tools take a constraint like `>=1.0` but return text like `<VersionRange '[1.0, 2.0.dev0)'>`, which no tool accepts. They passed every check of `repo2tools generate`.
 - **A harder repo:** more-itertools gives 50 accepted tools of 142 picked. Its values are plain lists, so the LLM found only 2 types and 21 links. Kinds of values work for a domain library like packaging, not for generic data.
 
 Chaining, 12 November 2026. Qwen3-32B repairs and types the tools and runs ToolGym; Qwen3-8B is the second model. One run each, small numbers.
 
 | Step | Result |
 | --- | --- |
-| Dead-end tools repaired (`repair_chains.py`) | 3 of 8. One more "repair" passed the library check and the consumer check but returned `""` for every union of ranges; a third guard (different results must stay different) rejected it |
+| Dead-end tools repaired (`repo2tools repair-chains`) | 3 of 8. One more "repair" passed the library check and the consumer check but returned `""` for every union of ranges; a third guard (different results must stay different) rejected it |
 | Links between the 29 generated tools, same type claims before and after | 45 before, 69 after; tools with no link: 16, then 8. ToolGym's live chain check: 44 of 44, then 86 of 86 |
 | Hand-made tools with checked types instead of hand-written ones | 49 links; short chains accepted by ToolGym: 11 of 26 (hand-written types: 0 of 15) |
 | Longest chain in which every tool appears once | 4 calls (generated, before and after repair), 8 (hand-made), 3 (more-itertools) |
@@ -164,10 +164,12 @@ Usability, 12 November 2026. Qwen3-8B uses the 29 generated packaging tools; Qwe
 
 ## Quick start
 
-Needs [uv](https://docs.astral.sh/uv/). This replays a known-good solution for every exercise through the tools:
+Needs [uv](https://docs.astral.sh/uv/). `uv run` installs the package and its dependencies on first use, and `uv run repo2tools --help` lists every command.
+
+This replays a known-good solution for every exercise through the tools:
 
 ```sh
-uv run python src/run_reference_calls.py out/packaging/exercises.jsonl -- uv run python toolsets/pypa_packaging/server.py
+uv run repo2tools check-tools out/packaging/exercises.jsonl -- uv run python toolsets/pypa_packaging/server.py
 ```
 
 The last line should say `242/242 exercises solved by their reference calls`.
@@ -176,15 +178,15 @@ To run a model, start an OpenAI-compatible server with tool calling. `cluster/RE
 
 ```sh
 export OPENAI_API_KEY=<the server's key>
-uv run python src/run_model.py out/packaging/exercises.jsonl --mode tools --base-url http://127.0.0.1:18000/v1 --model qwen3-8b -- uv run python toolsets/pypa_packaging/server.py
-uv run python src/run_model.py out/packaging/exercises.jsonl --mode none --base-url http://127.0.0.1:18000/v1 --model qwen3-8b
-python3 -I compare_runs.py out/runs/qwen3-8b-tools.jsonl out/runs/qwen3-8b-none.jsonl
+uv run repo2tools run-model out/packaging/exercises.jsonl --mode tools --base-url http://127.0.0.1:18000/v1 --model qwen3-8b -- uv run python toolsets/pypa_packaging/server.py
+uv run repo2tools run-model out/packaging/exercises.jsonl --mode none --base-url http://127.0.0.1:18000/v1 --model qwen3-8b
+uv run repo2tools compare-runs out/runs/qwen3-8b-tools.jsonl out/runs/qwen3-8b-none.jsonl
 ```
 
 ## Stage 1: from a repo link to tools
 
 ```sh
-uv run python src/repo2tools.py https://github.com/pypa/packaging --commit c1d2a9d \
+uv run repo2tools generate https://github.com/pypa/packaging --commit c1d2a9d \
     --base-url http://127.0.0.1:18000/v1 --model qwen3-8b
 ```
 
@@ -209,24 +211,24 @@ The result goes to `toolsets/generated/<repo>-<model>/` (one file per tool, `ser
 - On macOS it runs inside `sandbox-exec`: no network, no reading the home folder (SSH keys, the API key), writing only to one scratch folder. `tests/test_repo2tools.py` runs hostile code to check this.
 - Other systems have no such sandbox. The tool then warns, and the report says so. Only use repos you trust there.
 
-To score generated tools on exercises, use `run_model.py` with `run_server.sh` as the server command. `run_reference_calls.py` needs the hand-made tool names, so it doesn't work on generated tools.
+To score generated tools on exercises, use `repo2tools run-model` with `run_server.sh` as the server command. `repo2tools check-tools` needs the hand-made tool names, so it doesn't work on generated tools.
 
 ### Which functions to wrap: how the repo itself uses its API
 
 By default the LLM picks functions from a plain list of the public API. Two options give it more to go on:
 
 ```sh
-uv run python src/repo_usage.py out/generated/packaging-coder-60/api.json .cache/repos/packaging \
+uv run repo2tools usage out/generated/packaging-coder-60/api.json .cache/repos/packaging \
     --package-dir .cache/repos/packaging/src/packaging -o out/usage/packaging.json
-uv run python src/repo2tools.py https://github.com/pypa/packaging --commit c1d2a9d \
+uv run repo2tools generate https://github.com/pypa/packaging --commit c1d2a9d \
     --base-url http://127.0.0.1:18000/v1 --model qwen3-coder --usage docs --classes
 ```
 
-- `repo_usage.py` counts how often each API function is used in the repo's own documentation (doctest lines, code blocks, docstring examples) and in its tests. It only reads the files with `ast`; nothing is run. It also counts, per class, how often the class is built and which operators (`<`, `==`, `in`, `&`, ...) are used on its objects.
+- `repo2tools usage` counts how often each API function is used in the repo's own documentation (doctest lines, code blocks, docstring examples) and in its tests. It only reads the files with `ast`; nothing is run. It also counts, per class, how often the class is built and which operators (`<`, `==`, `in`, `&`, ...) are used on its objects.
 - `--usage docs|tests|both` sorts the list shown to the LLM by these counts and prints the counts next to each entry.
 - `--classes` adds each class as an entry. A class may be picked several times, once per operation, so a tool can wrap `Version(a) < Version(b)` or `version in SpecifierSet(spec)`, which no single function offers.
 
-On packaging (28 doc files, 35 test files, 92 API functions): 45 functions appear in the docs and 87 in the tests. The most used things are not functions at all: `Version` is built 17 times in the docs and 680 times in the tests, and operators are used on its objects about 340 times (mostly `in`, `==`, `<`, `not in`, `>`). 5 of the 13 exercise kinds (100 of 222 exercises) need exactly that, and a function-only list cannot offer it.
+On packaging (28 doc files, 35 test files, 92 API functions): 64 functions appear in the docs and 86 in the tests. The most used things are not functions at all: `Version` is built 64 times in the docs and 680 times in the tests, and operators are used on its objects about 350 times (mostly `in`, `==`, `<`, `not in`, `>`). 5 of the 13 exercise kinds (100 of 222 exercises) need exactly that, and a function-only list cannot offer it.
 
 `--usage tests` and `--usage both` are **circular** for the packaging exercises, because the exercises are built from the same tests. `--usage docs` is the independent signal.
 
@@ -254,23 +256,23 @@ A third option, `--operators`, lists each operator the repo uses with a class (`
 
 ## Usability: can a small model call the tools
 
-A tool that agrees with the library is still of no use if the model can't pick it or call it. `usability.py` measures this per tool, with two models: a larger one writes, a small one uses the tools.
+A tool that agrees with the library is still of no use if the model can't pick it or call it. `repo2tools usability` measures this per tool, with two models: a larger one writes, a small one uses the tools.
 
 ```sh
 T=toolsets/generated/packaging-coder-60
 # one task per checked sample call, written from the library function, never from the tool's name or description
-uv run python src/usability.py tasks  $T --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
+uv run repo2tools usability tasks  $T --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
 # the small model gets each task with the tool alone, with the whole set, and with no tools
-uv run python src/usability.py check  $T --base-url http://127.0.0.1:18001/v1 --model qwen3-8b
+uv run repo2tools usability check  $T --base-url http://127.0.0.1:18001/v1 --model qwen3-8b
 # rewrite names and descriptions of tools with a failed task; the result is the tool set <set>-usable
-uv run python src/usability.py repair $T --base-url http://127.0.0.1:18001/v1 --model qwen3-8b \
+uv run repo2tools usability repair $T --base-url http://127.0.0.1:18001/v1 --model qwen3-8b \
     --writer-url http://127.0.0.1:18000/v1 --writer-model qwen3-32b
 ```
 
 - **A task is right** when the model calls the tool the task was written for, with the task's arguments or with others that give the same result. A true/false result needs the arguments themselves. A right final answer without that call does not count: 51 of 135 answers can be guessed without tools.
 - **Half of each tool's tasks are held out.** The rewriter sees only the other half, with what the small model did on them.
 - **A rewrite is kept** only if the small model then gets more of the tool's tasks right and its final answer is the tool's result at least as often as before.
-- **The LLM never touches the code.** The script replaces the function name and the docstring, and the tool must pass the checks of `repo2tools.py` again. The new set is then measured through its own server.
+- **The LLM never touches the code.** The script replaces the function name and the docstring, and the tool must pass the checks of `repo2tools generate` again. The new set is then measured through its own server.
 
 Reports: `out/generated/<set>/usability.md` and `out/generated/<set>-usable/usability_repair.md`.
 
@@ -284,22 +286,22 @@ Needs a ToolGym checkout next to this repo (`../tool-gym`) and a model with tool
 T=toolsets/generated/packaging-coder-60
 
 # 1. types for the generated tools, checked by running them; writes ToolGym's catalog folder
-uv run python src/generated_to_toolgym.py $T --dest ../tool-gym/gym/tools/mcp_servers/catalog --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
+uv run repo2tools toolgym-types $T --dest ../tool-gym/gym/tools/mcp_servers/catalog --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
 
 # 2. local variants of ToolGym's chain check and pipeline, in its ignored local/ folders
-uv run python src/toolgym_local.py install ../tool-gym
+uv run repo2tools toolgym-local install ../tool-gym
 
 # 3. ToolGym's own checks: the catalog loads, and every 2-step chain runs on the live tools
 (cd ../tool-gym && uv run python -m gym.tools.mcp_servers.check --no-report-file)
-uv run python src/toolgym_local.py chains ../tool-gym repo2tools_packaging_coder_60 --tool-server $T/run_server.sh
+uv run repo2tools toolgym-local chains ../tool-gym repo2tools_packaging_coder_60 --tool-server $T/run_server.sh
 
 # 4. synthetic tasks from ToolGym's pipeline, then as traces in our format
-uv run python src/toolgym_local.py generate ../tool-gym repo2tools_packaging_coder_60 --tool-server $T/run_server.sh \
+uv run repo2tools toolgym-local generate ../tool-gym repo2tools_packaging_coder_60 --tool-server $T/run_server.sh \
     --base-url http://127.0.0.1:18000/v1 --model qwen3-32b --min-length 2 --max-length 4 --chains 40 --run-name generated-short
-uv run python src/toolgym_traces.py ../tool-gym/results/gym/repo2tools/generated-short-* -o out/traces/toolgym-generated-short.jsonl.gz
+uv run repo2tools toolgym-traces ../tool-gym/results/gym/repo2tools/generated-short-* -o out/traces/toolgym-generated-short.jsonl.gz
 ```
 
-How the types are made (`generated_to_toolgym.py`):
+How the types are made (`repo2tools toolgym-types`):
 
 1. Every tool is called on its sample inputs. Inputs that work, and their outputs, are the examples.
 2. An LLM proposes a small shared vocabulary, e.g. `VersionString` for every parameter that takes a version.
@@ -312,20 +314,20 @@ More steps around ToolGym:
 
 ```sh
 # rewrite tools whose output no tool accepts; the result is the tool set <set>-chained
-uv run python src/repair_chains.py $T --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
+uv run repo2tools repair-chains $T --base-url http://127.0.0.1:18000/v1 --model qwen3-32b
 # type the repaired set with the same claims as the original, so the two can be compared
-uv run python src/generated_to_toolgym.py $T-chained --dest ../tool-gym/gym/tools/mcp_servers/catalog --proposal-from out/generated/packaging-coder-60/toolgym_proposal.json
+uv run repo2tools toolgym-types $T-chained --dest ../tool-gym/gym/tools/mcp_servers/catalog --proposal-from out/generated/packaging-coder-60/toolgym_proposal.json
 
 # longer chains that do not loop: walk to the least visited step, and drop chains that still repeat a tool
-uv run python src/toolgym_local.py generate ../tool-gym repo2tools_packaging_coder_60_chained --tool-server $T-chained/run_server.sh \
+uv run repo2tools toolgym-local generate ../tool-gym repo2tools_packaging_coder_60_chained --tool-server $T-chained/run_server.sh \
     --base-url http://127.0.0.1:18000/v1 --model qwen3-32b --min-length 4 --max-length 6 --chains 60 --spread-walk --max-tool-uses 2
 
 # ToolGym's tasks as exercises with known answers (the output of the chain's last call), for any model
-uv run python src/toolgym_exercises.py ../tool-gym/results/gym/repo2tools/<run> -o out/toolgym_exercises/<name>.jsonl
-uv run python src/run_model.py out/toolgym_exercises/<name>.jsonl --mode tools --base-url <url> --model <model> -- $T-chained/run_server.sh
+uv run repo2tools toolgym-exercises ../tool-gym/results/gym/repo2tools/<run> -o out/toolgym_exercises/<name>.jsonl
+uv run repo2tools run-model out/toolgym_exercises/<name>.jsonl --mode tools --base-url <url> --model <model> -- $T-chained/run_server.sh
 
 # recorded chains as worked examples before the task
-uv run python src/run_model.py out/packaging/exercises.jsonl --mode tools --horizon long --examples out/traces/<chains>.jsonl.gz --n-examples 3 \
+uv run repo2tools run-model out/packaging/exercises.jsonl --mode tools --horizon long --examples out/traces/<chains>.jsonl.gz --n-examples 3 \
     --base-url <url> --model <model> -- toolsets/pypa_packaging/run_server.sh
 ```
 
@@ -333,18 +335,18 @@ uv run python src/run_model.py out/packaging/exercises.jsonl --mode tools --hori
 
 ## Stage 3: exercises, traces and repetition
 
-A trace records every request of a run, with its full messages and token counts. `traces.py` describes the format. There's one format for all sources, and anything with a list of tool calls and outputs can be added with `trace_from_calls()`.
+A trace records every request of a run, with its full messages and token counts. `traces/format.py` describes the format. There's one format for all sources, and anything with a list of tool calls and outputs can be added with `trace_from_calls()`.
 
 ```sh
 # known-good solutions, no model (the file is 4.6 MB, so it isn't committed)
-uv run python src/collect_reference_traces.py out/packaging/exercises.jsonl -o out/traces/reference-function.jsonl -- uv run python toolsets/pypa_packaging/server.py
+uv run repo2tools reference-traces out/packaging/exercises.jsonl -o out/traces/reference-function.jsonl -- uv run python toolsets/pypa_packaging/server.py
 
 # model runs save traces to out/traces/. --tool-choice first|always forces tool use
-uv run python src/run_model.py out/packaging/exercises.jsonl --mode tools --horizon long --tool-choice always \
+uv run repo2tools run-model out/packaging/exercises.jsonl --mode tools --horizon long --tool-choice always \
     --base-url http://127.0.0.1:18000/v1 --model qwen3-8b -- uv run python toolsets/pypa_packaging/server.py
 
 # what repeats, and how many tokens each compression idea would save
-uv run --group analysis python src/analyze_traces.py out/traces/reference-function.jsonl out/traces/*.gz -o out/traces/analysis
+uv run --group analysis repo2tools analyze-traces out/traces/reference-function.jsonl out/traces/*.gz -o out/traces/analysis
 ```
 
 The analysis counts tokens with the model's own tokenizer and chat template. The parts of a prompt add up to exactly the rendered prompt. Savings are simulated on recorded runs, and their effect on accuracy is not measured.
@@ -395,43 +397,58 @@ Two of these rows exist because of failures in this project. In the first run wi
 ## Tests
 
 ```sh
-uv run --group dev --group analysis pytest
+uv run --group analysis pytest
+uv run ruff check
 ```
 
-No GPU or API key needed. The LLM and the endpoint are scripted.
+No GPU or API key needed. The LLM and the endpoint are scripted. Tools are generated, checked and served for real, in their own environment and sandbox, from tiny libraries the tests write.
 
 ## Repository layout
 
-All scripts are in `src/`. Run them from the repository's root, for example `uv run python src/repo2tools.py --help`.
+The code is one Python package with one command, `repo2tools <command>`. Every command is also a module: `repo2tools generate` is `python -m repo2tools.synthesis.pipeline`. The package is used from a checkout, because tool sets, results and caches live next to the code.
 
-| Path | What it does |
+```text
+src/repo2tools/
+├── cli.py                   the `repo2tools` command; imports a module only when its command is used
+├── paths.py                 where the checkout and the local API key file are
+├── synthesis/               repository -> checked tools
+│   ├── pipeline.py          generate           clone, propose, write, check, repair, serve
+│   ├── worker.py                               checks one tool; runs inside the tool set's own environment and sandbox
+│   ├── scrape.py            scrape             static `ast` scan of the public API; never imports the package
+│   ├── usage.py             usage              how the repo's own docs and tests use its API, classes and operators
+│   ├── chain_repair.py      repair-chains      rewrite tools whose output no tool accepts, with three checks
+│   └── usability.py         usability          a small model tries each tool; unclear names and descriptions are rewritten
+├── evaluation/              exercises and model runs
+│   ├── test_case_plugin.py                     pytest plugin: every collected test case as JSON; nothing is run
+│   ├── packaging_exercises.py  make-exercises  exercises with known answers from packaging's test cases
+│   ├── exercise_check.py                       stdlib-only answer checker and `$ref` resolver, for any harness
+│   ├── reference_calls.py   check-tools        replay every known-good solution through a tool server
+│   ├── run_model.py         run-model          a model solves the exercises, with or without tools
+│   ├── compare_runs.py      compare-runs       two runs side by side
+│   └── handover.py          handover           self-contained zip of exercises and tools for another harness
+├── traces/
+│   ├── format.py                               one format for agent traces: every request, with token counts
+│   ├── reference.py         reference-traces   known-good solutions as traces
+│   └── analyze.py           analyze-traces     what repeats, and what compression would save
+└── toolgym/                 everything that talks to ToolGym; this repo contains no ToolGym code
+    ├── type_inference.py    toolgym-types      types for a generated tool set, checked by running the tools
+    ├── catalog_export.py    toolgym-export     the hand-made tools as a ToolGym catalog server
+    ├── local.py             toolgym-local      ToolGym's chain check and pipeline on tools served from this computer
+    ├── traces.py            toolgym-traces     ToolGym run results as traces
+    ├── exercises.py         toolgym-exercises  ToolGym's synthetic tasks as exercises with known answers
+    ├── catalog_chains.py    toolgym-chains     summary of ToolGym's chain listings
+    └── exercise_edges.py    toolgym-edges      are the links the exercises need in ToolGym's graph?
+```
+
+| Path | What is there |
 | --- | --- |
-| `src/repo2tools.py` | Repo link to checked tools; see above. |
-| `src/repo_usage.py` | Counts how the repo's own docs and tests use each API function, class and operator. Static; runs nothing. |
-| `toolsets/generated/` | Generated tool sets, one file per tool. Not reviewed by a person. |
-| `src/generated_to_toolgym.py` | ToolGym types for a generated tool set, checked by running the tools; writes the catalog folder. |
-| `src/repair_chains.py` | Rewrites tools whose output no tool accepts, with three checks on every repair. |
-| `src/usability.py` | A small model tries each generated tool; names and descriptions of tools it gets wrong are rewritten and measured again. |
-| `src/toolgym_exercises.py` | ToolGym's synthetic tasks as exercises with known answers; `--compose` joins several into one long task. |
-| `src/toolgym_local.py`, `src/toolgym_traces.py` | Run ToolGym's chain check and pipeline on tools served from this computer; turn the results into traces. |
-| `src/tool_worker.py` | Checks one generated tool. It runs inside the tool set's environment and sandbox. |
-| `src/traces.py` | The trace format. |
-| `src/collect_reference_traces.py`, `src/analyze_traces.py` | Known-good solutions as traces; what repeats and what compression would save. |
-| `src/scrape_repo.py` | Static `ast` scan of a package's public API: signatures, types, defaults, docstrings, source location. Never imports the package. |
-| `toolsets/pypa_packaging/tools.py` | 21 tools over pypa/packaging (versions, version constraints, requirements, markers, names, wheel files, tags). `GYM_TYPES` holds their ToolGym types. |
-| `toolsets/pypa_packaging/coarse_tools.py` | The same library cut coarser: `check_requirement` (one requirement line) and `check_requirements` (a whole list). |
-| `toolsets/pypa_packaging/server.py` | Serves the tools over MCP (stdio, or Streamable HTTP with `--http PORT`). `--level function\|feature\|workflow\|all` picks the tool set. |
-| `src/extract_test_cases.py` | pytest plugin: writes the parameters of every collected test case as JSON lines. Collection only; no tests run. |
-| `src/make_packaging_exercises.py` | Builds the exercises. Short ones come from packaging's test cases; the answer is the test's expected value, confirmed by a direct library call. Long ones check a requirements list against a made-up package index. |
-| `src/exercise_check.py` | Stdlib-only answer checker and `$ref` resolver, for any harness that runs the exercises. |
-| `src/run_reference_calls.py` | Replays every known-good solution through an MCP server and checks the answers. This tests the tools, not a model. |
-| `src/run_model.py`, `src/compare_runs.py` | Run a model on the exercises, and put two runs side by side. |
-| `src/make_handover.py`, `handover/README.md` | Build a self-contained zip of the exercises and tools for Alex's benchmark. |
-| `toolsets/pypa_packaging/toolgym_types.py`, `src/export_toolgym_catalog.py` | Write the tools into a ToolGym checkout as a catalog server. This repo contains no ToolGym code. |
-| `src/analyze_catalog_chains.py`, `src/check_exercise_edges.py` | Summarise ToolGym's chain listings, and check that the links the exercises need are in ToolGym's graph. |
-| `docs/` | The README figures, and `make_figures.py`, which draws them (the results figure from the result files). |
+| `tests/` | 150 tests. `helpers.py` holds the scripted LLM they share. |
+| `toolsets/pypa_packaging/` | The reference tool set, written by hand: 21 tools over pypa/packaging (`tools.py`), a coarser cut (`coarse_tools.py`), the MCP server (`server.py`, stdio or `--http PORT`; `--level function\|feature\|workflow\|all`), and its ToolGym types. These files stay flat so that they can be handed to other harnesses as they are. |
+| `toolsets/generated/` | Generated tool sets, one folder per run and one file per tool, each with `server.py`, `run_server.sh` and `manifest.json`. Not reviewed by a person. |
+| `out/` | Results: `baseline/` (ToolGym's catalog today), `packaging/` (API, exercises, tool check), `packaging_toolgym/` (ToolGym's view of our tools), `usage/` (usage scans), `runs/` (model runs), `traces/` (full traces and their analysis), `generated/` (reports and LLM logs of generated tool sets), `toolgym_exercises/` (ToolGym tasks as exercises), `toolgym_runs/` (summaries of ToolGym pipeline runs). |
+| `docs/` | The README figures and `make_figures.py`, which draws them (the results figure from the result files); `handover/README.md`, the README of the handover zip. |
 | `cluster/` | How to serve a model on UBELIX, with the Slurm job scripts. |
-| `out/` | Results: `baseline/` (ToolGym's catalog today), `packaging/` (API, exercises, tool check), `packaging_toolgym/` (ToolGym's view of our tools), `runs/` (model runs), `traces/` (full traces and their analysis), `generated/` (reports and LLM logs of generated tool sets), `toolgym_runs/` (summaries of ToolGym pipeline runs). |
+| `.cache/` | Not in git: clones of source repositories and one environment per tool set. |
 
 ## Reproducing the results
 
@@ -439,23 +456,23 @@ These steps need clones next to this repo: `../source-repos/packaging` (pypa/pac
 
 ```sh
 # scrape a public API
-python3 -I scrape_repo.py ../source-repos/arrow arrow -o out/arrow_api.json
-python3 -I scrape_repo.py ../source-repos/packaging/src packaging -o out/packaging/api.json
+uv run repo2tools scrape ../source-repos/arrow arrow -o out/arrow_api.json
+uv run repo2tools scrape ../source-repos/packaging/src packaging -o out/packaging/api.json
 
 # ToolGym's catalog today (offline; no LLM, no servers)
 (cd ../tool-gym && uv run python -m gym.tools.mcp_servers.check --no-report-file) > out/baseline/check.txt
 (cd ../tool-gym && uv run python -m gym.tools.mcp_servers.chain_check --dry-run) > out/baseline/chains.txt
-python3 -I analyze_catalog_chains.py out/baseline/check.txt out/baseline/chains.txt
+uv run repo2tools toolgym-chains out/baseline/check.txt out/baseline/chains.txt
 
 # packaging: test cases, then exercises (test_cases.jsonl is 17 MB and not committed)
 (cd ../source-repos/packaging && PYTHONPATH="$OLDPWD/src:src" TEST_CASES_OUT="$OLDPWD/out/packaging/test_cases.jsonl" \
-    uvx --with pretend --with tomli_w pytest --collect-only -q -p no:cacheprovider -p extract_test_cases tests --ignore=tests/property)
-uv run python src/make_packaging_exercises.py --per-kind 20 --long 20 --seed 0
+    uvx --with pretend --with tomli_w pytest --collect-only -q -p no:cacheprovider -p repo2tools.evaluation.test_case_plugin tests --ignore=tests/property)
+uv run repo2tools make-exercises --per-kind 20 --long 20 --seed 0
 
 # add the tools to ToolGym, then see which links it finds
-uv run python src/export_toolgym_catalog.py --dest ../tool-gym/gym/tools/mcp_servers/catalog
+uv run repo2tools toolgym-export --dest ../tool-gym/gym/tools/mcp_servers/catalog
 (cd ../tool-gym && uv run python -m gym.tools.mcp_servers.chain_check --dry-run kobiljon_pypa_packaging_tools) > out/packaging_toolgym/chains_packaging.txt
-python3 -I check_exercise_edges.py out/packaging_toolgym/chains_packaging.txt out/packaging/exercises.jsonl \
+uv run repo2tools toolgym-edges out/packaging_toolgym/chains_packaging.txt out/packaging/exercises.jsonl \
     ../tool-gym/gym/tools/mcp_servers/catalog/kobiljon_pypa_packaging_tools/mcp_server.json
 ```
 

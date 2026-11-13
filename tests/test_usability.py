@@ -1,4 +1,4 @@
-"""Tests for usability.py: a real generated tool set, a scripted task writer and rewriter, and a scripted small model."""
+"""Tests for `repo2tools usability`: a real generated tool set, a scripted task writer and rewriter, and a scripted small model."""
 
 import ast
 import asyncio
@@ -9,9 +9,8 @@ from types import SimpleNamespace
 
 import pytest
 
-import repo2tools
-import usability
-from test_repo2tools import ScriptedLLM, options
+from helpers import ScriptedLLM, options
+from repo2tools.synthesis import pipeline, usability
 from test_traces import completion
 
 LIBRARY = '''"""Product codes such as AB-12."""
@@ -73,8 +72,8 @@ def task_script(overrides=None):
 def toolset(tmp_path, monkeypatch):
     """Three generated tools over a tiny library. The scripted model cannot find label_code: nothing in it says "sticker"."""
     root = tmp_path / "root"
-    monkeypatch.setattr(repo2tools, "ROOT", root)
-    monkeypatch.setattr(repo2tools, "CACHE", root / ".cache")
+    monkeypatch.setattr(pipeline, "ROOT", root)
+    monkeypatch.setattr(pipeline, "CACHE", root / ".cache")
     root.mkdir()
     repo = tmp_path / "repo" / "codes"
     (repo / "codes").mkdir(parents=True)
@@ -89,7 +88,7 @@ def toolset(tmp_path, monkeypatch):
         script[("spec", name)] = [json.dumps({"parameters": [{"name": "code", "type": "string", "description": "a product code", "required": True}],
                                               "direct_call": f"codes.{function}(code)", "samples": [{"code": v} for v in values]})]
         script[("code", name)] = [f'```python\nimport codes\n\n\ndef {name}(code: str) -> str:\n    """{DOCS[name]}"""\n    return codes.{function}(code)\n```']
-    report = asyncio.run(repo2tools.generate(options(repo), llm=ScriptedLLM(script)))
+    report = asyncio.run(pipeline.generate(options(repo), llm=ScriptedLLM(script)))
     assert report["accepted"] == 3, [(t["name"], t["attempts"]) for t in report["tools"]]
     return root / "toolsets" / "generated" / "codes-test", root
 
